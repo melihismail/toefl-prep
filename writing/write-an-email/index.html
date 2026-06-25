@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Write an Email — TOEFL 2026</title>
+  <title>Write an Email — TOEFL</title>
   <link rel="stylesheet" href="../../css/style.css" />
 </head>
 <body class="section-writing">
 <div class="app">
   <div class="topbar">
-    <a href="../../pages/writing.html" class="back-btn" style="color:var(--muted)">← Writing</a>
-    <div class="exam-label">Write an Email</div>
-    <button class="btn" onclick="showApiKeyModal()" style="font-size:12px;padding:5px 10px">⚙️ API Key</button>
+    <a href="../../pages/writing.html" class="back-btn" style="color:var(--muted)" data-i18n="back_writing">← Writing</a>
+    <div class="exam-label" data-i18n="write_an_email">Write an Email</div>
+    <button class="btn" onclick="showApiKeyModal()" style="font-size:12px;padding:5px 10px" data-i18n="api_key_btn">⚙️ API Key</button>
   </div>
 
   <div class="card" id="main-card"></div>
@@ -18,11 +18,11 @@
   <!-- AI Feedback -->
   <div class="ai-feedback" id="ai-feedback">
     <div class="ai-feedback-header">
-      <div class="ai-feedback-title">🤖 AI Feedback</div>
-      <div class="ai-score-badge" id="ai-score-badge">Band —</div>
+      <div class="ai-feedback-title" data-i18n="ai_feedback_label">🤖 AI Feedback</div>
+      <div class="ai-score-badge" id="ai-score-badge"><span data-i18n="band">Band</span> —</div>
     </div>
     <div class="ai-feedback-body" id="ai-feedback-body">
-      <div class="loading-spinner"><div class="loading-dots"><span></span><span></span><span></span></div> Evaluating your response…</div>
+      <div class="loading-spinner"><div class="loading-dots"><span></span><span></span><span></span></div> <span data-i18n="evaluating">Evaluating your response…</span></div>
     </div>
   </div>
 </div>
@@ -30,18 +30,20 @@
 <!-- API Key Modal -->
 <div class="modal-overlay" id="api-modal">
   <div class="modal">
-    <h3>🔑 Anthropic API Key</h3>
-    <p>Enter your Anthropic API key to enable AI feedback. It is stored in your browser only and never sent to any third party.</p>
+    <h3 data-i18n="api_key_title">🔑 Anthropic API Key</h3>
+    <p data-i18n="api_key_desc">Enter your Anthropic API key to enable AI feedback. It is stored in your browser only and never sent to any third party.</p>
     <input type="password" id="api-key-input" placeholder="sk-ant-..." />
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveApiKey()">Save key</button>
-      <button class="btn" onclick="closeApiModal()">Cancel</button>
-      <button class="btn" onclick="clearApiKey()" style="margin-left:auto;color:var(--error-text)">Clear key</button>
+      <button class="btn btn-primary" onclick="saveApiKey()" data-i18n="save_key">Save key</button>
+      <button class="btn" onclick="closeApiModal()" data-i18n="cancel">Cancel</button>
+      <button class="btn" onclick="clearApiKey()" style="margin-left:auto;color:var(--error-text)" data-i18n="clear_key">Clear key</button>
     </div>
   </div>
 </div>
 
 <script src="questions.js"></script>
+<script src="../../lang/translations.js"></script>
+<script src="../../lang/i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

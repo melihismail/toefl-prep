@@ -2,35 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Speaking — TOEFL 2026</title>
+  <title>Speaking — TOEFL</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body class="section-speaking">
 <div class="hero">
   <div class="app-wide">
-    <a href="../index.html" class="back-btn">← Home</a>
+    <a href="../index.html" class="back-btn" data-i18n="back_home">← Home</a>
     <div class="hero-icon">🎤</div>
-    <h1>Speaking Section</h1>
-    <p>Two tasks testing real-time verbal communication. Record your responses and listen back to self-evaluate.</p>
+    <h1 data-i18n="speaking_section">Speaking Section</h1>
+    <p data-i18n="speaking_section_desc">Two tasks testing real-time verbal communication. Record your responses and listen back to self-evaluate.</p>
   </div>
 </div>
 <div class="app-wide">
   <div class="info-strip" style="margin-top:1rem">
     <span>🎤</span>
-    <span><strong>Record & Review mode.</strong> Your browser microphone is used to record your responses. Listen back and compare to the target. AI scoring coming in a future update.</span>
+    <span data-i18n="speaking_info">Record & Review mode. Your browser microphone is used to record your responses. Listen back and compare to the target. AI scoring coming in a future update.</span>
   </div>
 
-  <div class="section-label" style="margin-top:1.5rem">Choose a task</div>
+  <div class="section-label" style="margin-top:1.5rem" data-i18n="choose_a_task">Choose a task</div>
 
   <div class="task-card" onclick="location.href='../speaking/listen-and-repeat/index.html'">
     <div class="task-icon">🔁</div>
     <div class="task-info">
-      <div class="task-top"><div class="task-name">Listen and Repeat</div><span class="tag tag-available">Available</span></div>
-      <div class="task-desc">Read a sentence, then record yourself saying it. Play back your recording and compare your pronunciation and fluency to the target text.</div>
+      <div class="task-top"><div class="task-name" data-i18n="listen_and_repeat">Listen and Repeat</div><span class="tag tag-available" data-i18n="available">Available</span></div>
+      <div class="task-desc" data-i18n="lar_desc">Read a sentence, then record yourself saying it. Play back your recording and compare your pronunciation and fluency to the target text.</div>
       <div class="task-meta">
-        <div class="meta-item">📝 <strong>10 sentences</strong> per session</div>
-        <div class="meta-item">⏱ ~5 min</div>
-        <div class="meta-item">🎙️ Mic required</div>
+        <div class="meta-item" data-i18n="lar_meta1">📝 10 sentences per session</div>
+        <div class="meta-item" data-i18n="lar_meta2">⏱ ~5 min</div>
+        <div class="meta-item" data-i18n="lar_meta3">🎙️ Mic required</div>
       </div>
     </div>
     <div class="arrow">→</div>
@@ -39,12 +39,12 @@
   <div class="task-card" onclick="location.href='../speaking/take-an-interview/index.html'">
     <div class="task-icon">🎙️</div>
     <div class="task-info">
-      <div class="task-top"><div class="task-name">Take an Interview</div><span class="tag tag-available">Available</span></div>
-      <div class="task-desc">Answer interview-style questions about personal experiences and opinions. Read the question, think, then record your answer.</div>
+      <div class="task-top"><div class="task-name" data-i18n="take_an_interview">Take an Interview</div><span class="tag tag-available" data-i18n="available">Available</span></div>
+      <div class="task-desc" data-i18n="tai_desc">Answer interview-style questions about personal experiences and opinions. Read the question, think, then record your answer.</div>
       <div class="task-meta">
-        <div class="meta-item">📝 <strong>5 questions</strong> per session</div>
-        <div class="meta-item">⏱ ~10 min</div>
-        <div class="meta-item">🎙️ Mic required</div>
+        <div class="meta-item" data-i18n="tai_meta1">📝 5 questions per session</div>
+        <div class="meta-item" data-i18n="tai_meta2">⏱ ~10 min</div>
+        <div class="meta-item" data-i18n="tai_meta3">🎙️ Mic required</div>
       </div>
     </div>
     <div class="arrow">→</div>
@@ -52,12 +52,14 @@
 
   <div class="card" style="margin-top:1rem">
     <div class="timing-strip" style="padding:0">
-      <div class="timing-title">Speaking Section — Timing Reference</div>
-      <div class="timing-row"><span>Listen and Repeat</span><span class="timing-time">~5 min</span></div>
-      <div class="timing-row"><span>Take an Interview</span><span class="timing-time">~10 min</span></div>
-      <div class="timing-row total"><span>Total</span><span class="timing-time">~15 min</span></div>
+      <div class="timing-title" data-i18n="speaking_timing">Speaking Section — Timing Reference</div>
+      <div class="timing-row"><span data-i18n="listen_and_repeat">Listen and Repeat</span><span class="timing-time">~5 min</span></div>
+      <div class="timing-row"><span data-i18n="take_an_interview">Take an Interview</span><span class="timing-time">~10 min</span></div>
+      <div class="timing-row total"><span data-i18n="total">Total</span><span class="timing-time">~15 min</span></div>
     </div>
   </div>
 </div>
+<script src="../lang/translations.js"></script>
+<script src="../lang/i18n.js"></script>
 </body>
 </html>

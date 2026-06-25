@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Conversation — TOEFL 2026</title>
+  <title>Conversation — TOEFL</title>
   <link rel="stylesheet" href="../../css/style.css" />
 </head>
 <body class="section-listening">
 <div class="app">
   <div class="topbar">
-    <a href="../../pages/listening.html" class="back-btn" style="color:var(--muted)">← Listening</a>
-    <div class="exam-label">Conversation</div>
+    <a href="../../pages/listening.html" class="back-btn" style="color:var(--muted)" data-i18n="back_listening">← Listening</a>
+    <div class="exam-label" data-i18n="conversation">Conversation</div>
     <div class="q-counter" id="q-counter">Passage 1 of 3</div>
   </div>
   <div class="progress-wrap" style="margin-bottom:1.5rem">
@@ -17,20 +17,22 @@
   </div>
   <div class="card" id="main-card"></div>
   <div class="nav-row">
-    <button class="btn" id="btn-prev" onclick="goTo(currentIdx-1)">← Previous</button>
-    <button class="btn btn-primary" id="btn-next" onclick="handleNext()">Next →</button>
+    <button class="btn" id="btn-prev" onclick="goTo(currentIdx-1)" data-i18n="previous">← Previous</button>
+    <button class="btn btn-primary" id="btn-next" onclick="handleNext()" data-i18n="next">Next →</button>
   </div>
 </div>
 <div class="app score-screen" id="score-screen">
   <div class="score-hero">
-    <div class="score-circle"><span class="big" id="score-num"></span><span class="small">correct</span></div>
+    <div class="score-circle"><span class="big" id="score-num"></span><span class="small" data-i18n="correct">correct</span></div>
     <p class="score-msg" id="score-msg"></p>
-    <button class="btn btn-primary" onclick="restart()">New exam</button>
+    <button class="btn btn-primary" onclick="restart()" data-i18n="new_exam">New exam</button>
   </div>
-  <div class="card"><div class="review-title">Your answers</div><div id="review-list"></div></div>
-  <div class="restart-row" style="margin-top:1rem"><button class="btn btn-primary" onclick="restart()">New exam</button></div>
+  <div class="card"><div class="review-title" data-i18n="your_answers">Your answers</div><div id="review-list"></div></div>
+  <div class="restart-row" style="margin-top:1rem"><button class="btn btn-primary" onclick="restart()" data-i18n="new_exam">New exam</button></div>
 </div>
 <script src="questions.js"></script>
+<script src="../../lang/translations.js"></script>
+<script src="../../lang/i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
