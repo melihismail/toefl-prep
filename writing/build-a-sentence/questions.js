@@ -278,5 +278,325 @@ const questions = [
     prompt: "I'm",
     correct: ["checking","to see","if","it","has been","extended"],
     distractor: "whether"
+  },
+
+  // ── Conditionals ──
+  {
+    question: "Why didn't you take a different road?",
+    prompt: "If I",
+    correct: ["had","known","I","would","have","taken","a different route"],
+    distractor: "took"
+  },
+  {
+    question: "Do you think she'll pass the exam?",
+    prompt: "If she",
+    correct: ["studies","harder","she","will","pass","the exam"],
+    distractor: "passed"
+  },
+  {
+    question: "Why did you miss the train?",
+    prompt: "If we",
+    correct: ["had","left","earlier","we","would","not","have missed it"],
+    distractor: "leave"
+  },
+  {
+    question: "What happens if the weather is bad tomorrow?",
+    prompt: "If it",
+    correct: ["rains","tomorrow","we","will","cancel","the picnic"],
+    distractor: "cancelled"
+  },
+  {
+    question: "Why didn't he hear the announcement?",
+    prompt: "If he",
+    correct: ["had","been","paying","attention","he","would have","heard it"],
+    distractor: "was"
+  },
+
+  // ── Passive Voice ──
+  {
+    question: "Who submitted the report?",
+    prompt: "The report",
+    correct: ["was","submitted","by","the team","leader"],
+    distractor: "is"
+  },
+  {
+    question: "Has the board made a decision on the policy?",
+    prompt: "The new policy",
+    correct: ["has","been","approved","by","the board"],
+    distractor: "was"
+  },
+  {
+    question: "What's happening with the old building?",
+    prompt: "The building",
+    correct: ["is","being","renovated","right","now"],
+    distractor: "was"
+  },
+  {
+    question: "When will we know the results?",
+    prompt: "The results",
+    correct: ["will","be","announced","next","week"],
+    distractor: "are"
+  },
+  {
+    question: "Did the package arrive at the right place?",
+    prompt: "No, it",
+    correct: ["was","delivered","to","the wrong","address"],
+    distractor: "is"
+  },
+
+  // ── Reported Speech ──
+  {
+    question: "What did she say about the assignment?",
+    prompt: "She said",
+    correct: ["that","she","had","already","finished","it"],
+    distractor: "has"
+  },
+  {
+    question: "What did he tell you about the meeting?",
+    prompt: "He told me",
+    correct: ["he","would","be","arriving","late"],
+    distractor: "will"
+  },
+  {
+    question: "What did the teacher want to know?",
+    prompt: "The teacher",
+    correct: ["asked","if","we","had","completed","the homework"],
+    distractor: "have"
+  },
+  {
+    question: "Did they say anything about the event?",
+    prompt: "They mentioned",
+    correct: ["the event","had","been","postponed"],
+    distractor: "has"
+  },
+  {
+    question: "What did she say about her workload?",
+    prompt: "She explained",
+    correct: ["that","she","had","been","working","all week"],
+    distractor: "is"
+  },
+
+  // ── Relative Clauses ──
+  {
+    question: "Who won the scholarship?",
+    prompt: "The student",
+    correct: ["who","won","the scholarship","is","from","here"],
+    distractor: "which"
+  },
+  {
+    question: "When is the library book due?",
+    prompt: "The book",
+    correct: ["that","I","borrowed","is","due","next week"],
+    distractor: "which"
+  },
+  {
+    question: "Did you hear about the old professor?",
+    prompt: "The professor",
+    correct: ["whose","class","I","took","retired","recently"],
+    distractor: "who"
+  },
+  {
+    question: "How was dinner last night?",
+    prompt: "The restaurant",
+    correct: ["where","we","ate","last night","was","great"],
+    distractor: "which"
+  },
+  {
+    question: "Why did he leave the meeting early?",
+    prompt: "The reason",
+    correct: ["why","he","left","was","never","explained"],
+    distractor: "that"
+  },
+
+  // ── Present Perfect ──
+  {
+    question: "How long have you been in this city?",
+    prompt: "I have",
+    correct: ["lived","here","since","I","was","a child"],
+    distractor: "am"
+  },
+  {
+    question: "Does she talk to him anymore?",
+    prompt: "She has",
+    correct: ["not","spoken","to","him","since","last year"],
+    distractor: "from"
+  },
+  {
+    question: "What have you done on this trip so far?",
+    prompt: "We have",
+    correct: ["already","visited","three","museums","this trip"],
+    distractor: "went"
+  },
+  {
+    question: "How long has he been studying English?",
+    prompt: "He has been",
+    correct: ["studying","English","for","five","years"],
+    distractor: "since"
+  },
+  {
+    question: "Have they made vacation plans?",
+    prompt: "They have",
+    correct: ["not","decided","where","to","go","yet"],
+    distractor: "still"
+  },
+
+  // ── Modals ──
+  {
+    question: "Why didn't you tell me about the schedule change?",
+    prompt: "You should",
+    correct: ["have","told","me","about","it","earlier"],
+    distractor: "must"
+  },
+  {
+    question: "Why wasn't she at the appointment?",
+    prompt: "She must",
+    correct: ["have","forgotten","about","the","appointment"],
+    distractor: "should"
+  },
+  {
+    question: "Why didn't you take the earlier flight?",
+    prompt: "We could",
+    correct: ["have","taken","the","earlier","flight","instead"],
+    distractor: "would"
+  },
+  {
+    question: "Will he come to the conference?",
+    prompt: "He might",
+    correct: ["not","be","able","to","attend","next week"],
+    distractor: "can"
+  },
+  {
+    question: "That email looked suspicious. Why did you click it?",
+    prompt: "You should",
+    correct: ["not","have","opened","that","email"],
+    distractor: "must"
+  },
+
+  // ── Comparatives & Superlatives ──
+  {
+    question: "What did you think of the documentary?",
+    prompt: "This is the",
+    correct: ["most","interesting","film","I","have","ever","seen"],
+    distractor: "more"
+  },
+  {
+    question: "How is the new library compared to the old one?",
+    prompt: "The new library",
+    correct: ["is","much","bigger","than","the old","one"],
+    distractor: "more"
+  },
+  {
+    question: "Is she good at English?",
+    prompt: "She speaks",
+    correct: ["English","more","fluently","than","anyone","else"],
+    distractor: "most"
+  },
+  {
+    question: "How bad was the storm?",
+    prompt: "That was the",
+    correct: ["worst","storm","we","have","ever","experienced"],
+    distractor: "worse"
+  },
+  {
+    question: "Any tips for improving my pronunciation?",
+    prompt: "The more",
+    correct: ["you","practice","the","better","you","will","become"],
+    distractor: "good"
+  },
+
+  // ── Gerunds & Infinitives ──
+  {
+    question: "What does she do in her free time?",
+    prompt: "She enjoys",
+    correct: ["reading","books","about","history"],
+    distractor: "to read"
+  },
+  {
+    question: "Why did he apply for the job?",
+    prompt: "He decided",
+    correct: ["to","apply","after","seeing","the advertisement"],
+    distractor: "applying"
+  },
+  {
+    question: "How do they stay focused in class?",
+    prompt: "They avoid",
+    correct: ["using","their","phones","during","class"],
+    distractor: "to use"
+  },
+  {
+    question: "Are you interested in the writing course?",
+    prompt: "I would like",
+    correct: ["to","sign","up","for","that","course"],
+    distractor: "signing"
+  },
+  {
+    question: "Where should we meet?",
+    prompt: "She suggested",
+    correct: ["meeting","at","the café","instead"],
+    distractor: "to meet"
+  },
+
+  // ── Subject-Verb Agreement ──
+  {
+    question: "Did anyone know about the schedule change?",
+    prompt: "Neither the students",
+    correct: ["nor","the teacher","was","aware"],
+    distractor: "were"
+  },
+  {
+    question: "Did everyone get a certificate?",
+    prompt: "Each participant",
+    correct: ["has","received","a","certificate"],
+    distractor: "have"
+  },
+  {
+    question: "Are there more applicants this year?",
+    prompt: "The number of",
+    correct: ["applicants","has","increased","this","year"],
+    distractor: "have"
+  },
+  {
+    question: "What are the researchers doing?",
+    prompt: "A group of",
+    correct: ["researchers","is","working","on","it","now"],
+    distractor: "are"
+  },
+  {
+    question: "When is the paper due?",
+    prompt: "Every student",
+    correct: ["has","to","submit","the paper","by Friday"],
+    distractor: "have"
+  },
+
+  // ── Conjunctions & Complex Sentences ──
+  {
+    question: "Did he pass the final exam?",
+    prompt: "Although he",
+    correct: ["studied","all night","he","did","not","pass"],
+    distractor: "passed"
+  },
+  {
+    question: "Why did she go to the store?",
+    prompt: "She went",
+    correct: ["to","the store","because","she","needed","groceries"],
+    distractor: "buying"
+  },
+  {
+    question: "Did she help anyone after finishing her work?",
+    prompt: "Not only did",
+    correct: ["she","finish","early","but","she","also","helped"],
+    distractor: "too"
+  },
+  {
+    question: "Did the bad weather stop them from hiking?",
+    prompt: "Even though",
+    correct: ["the weather","was","bad","they","went","hiking"],
+    distractor: "good"
+  },
+  {
+    question: "What does he need to do to graduate?",
+    prompt: "He will not",
+    correct: ["graduate","unless","he","completes","the courses"],
+    distractor: "if"
   }
 ];
