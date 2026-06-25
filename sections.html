@@ -5,60 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Prep</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
-    .section-card { align-items: flex-start; gap: 16px; padding: 1.75rem; }
-    .section-card .card-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 24px; }
-    .section-card .card-title { font-size: 20px; font-weight: 800; margin-top: 8px; }
-    .section-card .card-underline { width: 28px; height: 3px; border-radius: 2px; background: var(--accent-mid); margin-top: 8px; }
+    .sections-header { background: rgba(255,255,255,.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.5); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .sections-header .label { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+    .sections-header h1 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 6px; line-height: 1.2; }
+    .sections-header .meta { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .sec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width:540px){ .sec-grid { grid-template-columns: 1fr; } }
+
+    .sec-card { background: rgba(255,255,255,.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.5); border-radius: 14px; padding: 1.5rem; cursor: pointer; transition: all .2s; text-decoration: none; color: inherit; display: block; }
+    .sec-card:hover { background: rgba(255,255,255,.75); border-color: var(--accent-mid); transform: translateY(-2px); box-shadow: 0 4px 24px rgba(124,58,237,.1); }
+
+    .sec-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .sec-icon i { font-size: 22px; }
+
+    .sec-card .title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .sec-card .sub { font-size: 12px; color: var(--muted); }
+    .sec-card .go { display: flex; align-items: center; gap: 4px; margin-top: 12px; font-size: 12px; font-weight: 600; }
+    .sec-card .go i { font-size: 14px; }
+
+    .sec-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 1.5rem; transition: color .15s; }
+    .sec-back:hover { color: #4338ca; }
+    .sec-back i { font-size: 18px; }
+
+    .lang-toggle { display: none !important; }
   </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="app-wide">
-    <a href="index.html" class="back-btn" data-i18n="back_home">← Home</a>
-    <h1 data-i18n="hero_title">Your TOEFL Prep Hub</h1>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num">4</div><div class="lbl" data-i18n="sections">Sections</div></div>
-      <div class="hero-stat"><div class="num">12</div><div class="lbl" data-i18n="task_types">Task Types</div></div>
-      <div class="hero-stat"><div class="num">1–6</div><div class="lbl" data-i18n="band_scale">Band Scale</div></div>
-      <div class="hero-stat"><div class="num">~90</div><div class="lbl" data-i18n="min_total">Min Total</div></div>
-    </div>
+<div class="app-wide" style="padding-top: 2rem;">
+
+  <a href="index.html" class="sec-back">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i>
+    <span data-i18n="back_home">Home</span>
+  </a>
+
+  <div class="sections-header">
+    <div class="label" data-i18n="exam_samples">Exam samples</div>
+    <h1 data-i18n="practice_by_section">Practice by section</h1>
+    <div class="meta">4 <span data-i18n="sections">Sections</span> · 12 <span data-i18n="task_types">Task Types</span> · ~90 <span data-i18n="min_total">Min Total</span></div>
   </div>
+
+  <div class="sec-grid">
+
+    <a class="sec-card" href="pages/reading.html">
+      <div class="sec-icon" style="background:rgba(238,242,255,.7)">
+        <i class="ti ti-book" style="color:#4f46e5" aria-hidden="true"></i>
+      </div>
+      <div class="title" data-i18n="reading">Reading</div>
+      <div class="sub">3 <span data-i18n="task_types">task types</span></div>
+      <div class="go" style="color:#c7d2fe"><span data-i18n="start_practicing">Start</span> <i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    </a>
+
+    <a class="sec-card" href="pages/writing.html">
+      <div class="sec-icon" style="background:rgba(254,249,236,.7)">
+        <i class="ti ti-pencil" style="color:#d97706" aria-hidden="true"></i>
+      </div>
+      <div class="title" data-i18n="writing">Writing</div>
+      <div class="sub">3 <span data-i18n="task_types">task types</span></div>
+      <div class="go" style="color:#fde68a"><span data-i18n="start_practicing">Start</span> <i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    </a>
+
+    <a class="sec-card" href="pages/listening.html">
+      <div class="sec-icon" style="background:rgba(236,253,245,.7)">
+        <i class="ti ti-headphones" style="color:#059669" aria-hidden="true"></i>
+      </div>
+      <div class="title" data-i18n="listening">Listening</div>
+      <div class="sub">3 <span data-i18n="task_types">task types</span></div>
+      <div class="go" style="color:#a7f3d0"><span data-i18n="start_practicing">Start</span> <i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    </a>
+
+    <a class="sec-card" href="pages/speaking.html">
+      <div class="sec-icon" style="background:rgba(253,244,255,.7)">
+        <i class="ti ti-microphone" style="color:#9333ea" aria-hidden="true"></i>
+      </div>
+      <div class="title" data-i18n="speaking">Speaking</div>
+      <div class="sub">2 <span data-i18n="task_types">task types</span></div>
+      <div class="go" style="color:#e9d5ff"><span data-i18n="start_practicing">Start</span> <i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+    </a>
+
+  </div>
+
 </div>
 
-<div class="app-wide">
-  <div class="section-label" data-i18n="practice_by_section">Practice by section</div>
-  <div class="section-grid">
-
-    <div class="section-card" onclick="location.href='pages/reading.html'">
-      <div class="card-icon">📖</div>
-      <div class="card-title" data-i18n="reading">Reading</div>
-      <div class="card-underline"></div>
-    </div>
-
-    <div class="section-card" onclick="location.href='pages/writing.html'">
-      <div class="card-icon">✍️</div>
-      <div class="card-title" data-i18n="writing">Writing</div>
-      <div class="card-underline"></div>
-    </div>
-
-    <div class="section-card" onclick="location.href='pages/listening.html'">
-      <div class="card-icon">🎧</div>
-      <div class="card-title" data-i18n="listening">Listening</div>
-      <div class="card-underline"></div>
-    </div>
-
-    <div class="section-card" onclick="location.href='pages/speaking.html'">
-      <div class="card-icon">🎤</div>
-      <div class="card-title" data-i18n="speaking">Speaking</div>
-      <div class="card-underline"></div>
-    </div>
-
-  </div>
-</div>
-
-<footer data-i18n="footer">TOEFL Prep · For practice purposes only · Not affiliated with ETS</footer>
 <script src="lang/translations.js"></script>
 <script src="lang/i18n.js"></script>
 </body>
