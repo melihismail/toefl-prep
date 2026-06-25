@@ -85,7 +85,20 @@ function render() {
 
   const parts = q.paragraph.split("__BLANK__");
   parts.forEach((part, pi) => {
-    if (part) para.appendChild(document.createTextNode(part));
+    if (part && pi < parts.length - 1) {
+      const lastSpace = part.lastIndexOf(" ");
+      const before = part.substring(0, lastSpace + 1);
+      const prefix = part.substring(lastSpace + 1);
+      if (before) para.appendChild(document.createTextNode(before));
+      if (prefix) {
+        const bold = document.createElement("strong");
+        bold.className = "word-shown";
+        bold.textContent = prefix;
+        para.appendChild(bold);
+      }
+    } else if (part) {
+      para.appendChild(document.createTextNode(part));
+    }
 
     if (pi < parts.length - 1) {
       const blank = q.blanks[blankIdx];
