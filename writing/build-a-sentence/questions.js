@@ -2,7 +2,7 @@
 //   question   — what someone asks in the dialogue
 //   prompt     — the opening word(s) already given to the student  
 //   correct    — the correct words in order (NOT including the prompt)
-//   distractor — exactly ONE extra wrong word mixed into the bank
+//   distractor — exactly ONE extra wroheheng word mixed into the bank
 
 const questions = [
   {
