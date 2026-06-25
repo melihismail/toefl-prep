@@ -154,5 +154,129 @@ const questions = [
     prompt: "No,",
     correct: ["she","has","not","responded","to my email","yet"],
     distractor: "replied"
+  },
+
+  // ── TOEFL iBT Practice Test 1 ──
+  {
+    question: "What was the highlight of your trip?",
+    prompt: "The",
+    correct: ["tour guides","who","showed us around","the","old city","were"],
+    distractor: "was"
+  },
+  {
+    question: "I heard Anna got a promotion.",
+    prompt: "",
+    correct: ["Do","you","know","if","she will be","moving to","a different department"],
+    distractor: "are"
+  },
+  {
+    question: "We're planning a trip to the mountains next weekend.",
+    prompt: "",
+    correct: ["Can","you","tell me","whether","the cabins","will be","available"],
+    distractor: "are"
+  },
+  {
+    question: "I'm looking forward to the concert this weekend.",
+    prompt: "",
+    correct: ["What","time","does","it","start"],
+    distractor: "is"
+  },
+  {
+    question: "The museum exhibition opens next month.",
+    prompt: "",
+    correct: ["Do","you","know","how","much","tickets","will cost"],
+    distractor: "are"
+  },
+  {
+    question: "I'm planning to go to the beach tomorrow.",
+    prompt: "",
+    correct: ["What","is","the water","temperature","like","this","time of year"],
+    distractor: "at"
+  },
+  {
+    question: "I need to buy groceries today.",
+    prompt: "",
+    correct: ["Do","you","have","a","shopping","list"],
+    distractor: "make"
+  },
+  {
+    question: "I'll be taking a cooking class this weekend.",
+    prompt: "",
+    correct: ["What","recipes","will","you","learn"],
+    distractor: "cook"
+  },
+  {
+    question: "What did Maria ask you about the book you're reading?",
+    prompt: "She",
+    correct: ["wanted","to know","where","she","could","buy","a copy"],
+    distractor: "can"
+  },
+  {
+    question: "How did you prepare for the exam?",
+    prompt: "I used",
+    correct: ["the study guide","that","was provided","by","the professor"],
+    distractor: "it"
+  },
+
+  // ── TOEFL iBT Practice Test 2 ──
+  {
+    question: "I need to buy a new laptop.",
+    prompt: "",
+    correct: ["Which","store","has","the best","deals"],
+    distractor: "have"
+  },
+  {
+    question: "I'm thinking about starting a blog.",
+    prompt: "",
+    correct: ["Have","you","decided","on","a topic"],
+    distractor: "chosen"
+  },
+  {
+    question: "I'm going to study at the library this afternoon.",
+    prompt: "",
+    correct: ["Do","you","need","to","borrow","any books"],
+    distractor: "some"
+  },
+  {
+    question: "I'm thinking about getting a pet.",
+    prompt: "",
+    correct: ["What","kind","of","animal","are","you","considering"],
+    distractor: "type"
+  },
+  {
+    question: "I'm excited to see the new science fiction movie tonight.",
+    prompt: "",
+    correct: ["Where","is","it","showing"],
+    distractor: "playing"
+  },
+  {
+    question: "I have an interview for a new job next week.",
+    prompt: "",
+    correct: ["Do","you","have","your","resume","ready"],
+    distractor: "prepared"
+  },
+  {
+    question: "I need to submit my assignment by tomorrow.",
+    prompt: "",
+    correct: ["Have","you","finished","writing","it"],
+    distractor: "completing"
+  },
+  {
+    question: "I'm planning a trip to Europe this summer.",
+    prompt: "",
+    correct: ["Did","you","book","your","flight","yet"],
+    distractor: "reserve"
+  },
+  {
+    question: "I just started learning French.",
+    prompt: "",
+    correct: ["Where","are","you","taking","classes"],
+    distractor: "attending"
+  },
+  {
+    question: "Why are you asking about the project deadline?",
+    prompt: "I'm",
+    correct: ["checking","to see","if","it","has been","extended"],
+    distractor: "whether"
   }
 ];

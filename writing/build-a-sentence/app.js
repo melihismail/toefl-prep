@@ -46,10 +46,12 @@ function render() {
   indRow.style.cssText = "display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:1rem;";
 
   // Prompt word
-  const promptSpan = document.createElement("span");
-  promptSpan.style.cssText = "font-size:15px;font-weight:700;color:var(--accent);margin-right:2px;";
-  promptSpan.textContent = q.prompt;
-  indRow.appendChild(promptSpan);
+  if (q.prompt) {
+    const promptSpan = document.createElement("span");
+    promptSpan.style.cssText = "font-size:15px;font-weight:700;color:var(--accent);margin-right:2px;";
+    promptSpan.textContent = q.prompt;
+    indRow.appendChild(promptSpan);
+  }
 
   // One box per correct word
   for (let i = 0; i < totalWords; i++) {
@@ -159,16 +161,18 @@ function render() {
     const fb = document.createElement("div");
     fb.className = "feedback " + (s.isCorrect ? "correct" : "wrong");
     fb.style.display = "block";
+    const fullAnswer = q.prompt ? `${q.prompt} ${q.correct.join(" ")}` : q.correct.join(" ");
     fb.innerHTML = s.isCorrect
-      ? `<strong>Correct!</strong> "${q.prompt} ${q.correct.join(" ")}"`
-      : `<strong>Not quite.</strong> Correct: <em>${q.prompt} ${q.correct.join(" ")}</em>`;
+      ? `<strong>Correct!</strong> "${fullAnswer}"`
+      : `<strong>Not quite.</strong> Correct: <em>${fullAnswer}</em>`;
     card.appendChild(fb);
   }
   if (s.revealed) {
     const rfb = document.createElement("div");
     rfb.className = "feedback reveal";
     rfb.style.display = "block";
-    rfb.innerHTML = `<strong>Answer:</strong> ${q.prompt} <em>${q.correct.join(" ")}</em> &nbsp;|&nbsp; <strong>Distractor:</strong> <span style="color:var(--error-text)">${q.distractor}</span>`;
+    const fullAns = q.prompt ? `${q.prompt} ${q.correct.join(" ")}` : q.correct.join(" ");
+    rfb.innerHTML = `<strong>Answer:</strong> <em>${fullAns}</em> &nbsp;|&nbsp; <strong>Distractor:</strong> <span style="color:var(--error-text)">${q.distractor}</span>`;
     card.appendChild(rfb);
   }
 }
@@ -197,12 +201,12 @@ function showScore() {
     const s = qState[i], ok = s.isCorrect === true;
     const item = document.createElement("div");
     item.className = "review-item " + (ok ? "correct-item" : "wrong-item");
-    const given = s.placed.length > 0 ? `${q.prompt} ${s.placed.join(" ")}` : "(no answer)";
+    const given = s.placed.length > 0 ? (q.prompt ? `${q.prompt} ${s.placed.join(" ")}` : s.placed.join(" ")) : "(no answer)";
     item.innerHTML = `
       <div class="tag ${ok ? "tag-correct" : "tag-wrong"}" style="margin-bottom:6px">${ok ? "✓ Correct" : "✗ Incorrect"}</div>
       <div class="review-q-text" style="font-style:italic;margin-bottom:4px">"${q.question}"</div>
       <div class="review-row"><span class="label">Your answer:</span><span class="${ok ? "ok" : "given"}">${given}</span></div>
-      ${ok ? "" : `<div class="review-row"><span class="label">Correct:</span><span class="correct">${q.prompt} ${q.correct.join(" ")}</span></div>`}
+      ${ok ? "" : `<div class="review-row"><span class="label">Correct:</span><span class="correct">${q.prompt ? q.prompt + " " : ""}${q.correct.join(" ")}</span></div>`}
     `;
     list.appendChild(item);
   });
