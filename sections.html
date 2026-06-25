@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOEFL Prep</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .section-card { align-items: flex-start; gap: 16px; padding: 1.75rem; }
+    .section-card .card-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 24px; }
+    .section-card .card-title { font-size: 20px; font-weight: 800; margin-top: 8px; }
+    .section-card .card-underline { width: 28px; height: 3px; border-radius: 2px; background: var(--accent-mid); margin-top: 8px; }
+  </style>
 </head>
 <body>
 
-<div class="hero" style="background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)">
+<div class="hero">
   <div class="app-wide">
-
+    <a href="index.html" class="back-btn" data-i18n="back_home">← Home</a>
     <h1 data-i18n="hero_title">Your TOEFL Prep Hub</h1>
-    <p data-i18n="hero_desc">Practice all four sections of the redesigned TOEFL exam — adaptive format, real task types, instant AI feedback.</p>
     <div class="hero-stats">
       <div class="hero-stat"><div class="num">4</div><div class="lbl" data-i18n="sections">Sections</div></div>
       <div class="hero-stat"><div class="num">12</div><div class="lbl" data-i18n="task_types">Task Types</div></div>
@@ -27,72 +32,29 @@
   <div class="section-grid">
 
     <div class="section-card" onclick="location.href='pages/reading.html'">
-      <div class="card-top">
-        <div class="card-icon" style="background:#eef2ff">📖</div>
-        <span class="tag tag-available" data-i18n="available">Available</span>
-      </div>
-      <div><div class="card-title" data-i18n="reading">Reading</div><div class="card-desc" data-i18n="reading_desc">Academic and everyday texts with comprehension questions. Adaptive format.</div></div>
-      <div class="task-list">
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="complete_the_words">Complete the Words</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="read_in_daily_life">Read in Daily Life</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="read_academic_passage">Read an Academic Passage</span></div>
-      </div>
-      <div class="card-arrow" data-i18n="start_practicing">Start practicing →</div>
+      <div class="card-icon">📖</div>
+      <div class="card-title" data-i18n="reading">Reading</div>
+      <div class="card-underline"></div>
     </div>
 
     <div class="section-card" onclick="location.href='pages/writing.html'">
-      <div class="card-top">
-        <div class="card-icon" style="background:#fef9ec">✍️</div>
-        <span class="tag tag-available" data-i18n="available">Available</span>
-      </div>
-      <div><div class="card-title" data-i18n="writing">Writing</div><div class="card-desc" data-i18n="writing_desc">Three task types with AI feedback on your open-ended responses.</div></div>
-      <div class="task-list">
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="build_a_sentence">Build a Sentence</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="write_an_email">Write an Email</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="academic_discussion">Academic Discussion</span></div>
-      </div>
-      <div class="card-arrow" data-i18n="start_practicing">Start practicing →</div>
+      <div class="card-icon">✍️</div>
+      <div class="card-title" data-i18n="writing">Writing</div>
+      <div class="card-underline"></div>
     </div>
 
     <div class="section-card" onclick="location.href='pages/listening.html'">
-      <div class="card-top">
-        <div class="card-icon" style="background:#ecfdf5">🎧</div>
-        <span class="tag tag-soon" data-i18n="transcript_mode">Transcript mode</span>
-      </div>
-      <div><div class="card-title" data-i18n="listening">Listening</div><div class="card-desc" data-i18n="listening_desc">Three task types. Practice with transcripts now — add audio files later.</div></div>
-      <div class="task-list">
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="choose_a_response">Choose a Response</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="conversation">Conversation</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="academic_talk">Academic Talk</span></div>
-      </div>
-      <div class="card-arrow" data-i18n="start_practicing">Start practicing →</div>
+      <div class="card-icon">🎧</div>
+      <div class="card-title" data-i18n="listening">Listening</div>
+      <div class="card-underline"></div>
     </div>
 
     <div class="section-card" onclick="location.href='pages/speaking.html'">
-      <div class="card-top">
-        <div class="card-icon" style="background:#fdf4ff">🎤</div>
-        <span class="tag tag-soon" data-i18n="record_review">Record & Review</span>
-      </div>
-      <div><div class="card-title" data-i18n="speaking">Speaking</div><div class="card-desc" data-i18n="speaking_desc">Two tasks with mic recording. Record yourself and listen back to improve.</div></div>
-      <div class="task-list">
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="listen_and_repeat">Listen and Repeat</span></div>
-        <div class="task-row"><div class="task-dot done"></div><span data-i18n="take_an_interview">Take an Interview</span></div>
-      </div>
-      <div class="card-arrow" data-i18n="start_practicing">Start practicing →</div>
+      <div class="card-icon">🎤</div>
+      <div class="card-title" data-i18n="speaking">Speaking</div>
+      <div class="card-underline"></div>
     </div>
 
-  </div>
-
-  <div class="card" style="margin-top:1.5rem">
-    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px" data-i18n="score_band_ref">Score Band Reference (1–6 per section)</div>
-    <div class="bands">
-      <div class="band band-1"><div class="band-num">1</div><div class="band-cefr">A1–A2</div><div class="band-lbl" data-i18n="beginner">Beginner</div></div>
-      <div class="band band-2"><div class="band-num">2</div><div class="band-cefr">B1</div><div class="band-lbl" data-i18n="elementary">Elementary</div></div>
-      <div class="band band-3"><div class="band-num">3</div><div class="band-cefr">B2</div><div class="band-lbl" data-i18n="intermediate">Intermediate</div></div>
-      <div class="band band-4"><div class="band-num">4</div><div class="band-cefr">C1</div><div class="band-lbl" data-i18n="upper_int">Upper-Int.</div></div>
-      <div class="band band-5"><div class="band-num">5</div><div class="band-cefr">C1+</div><div class="band-lbl" data-i18n="advanced">Advanced</div></div>
-      <div class="band band-6"><div class="band-num">6</div><div class="band-cefr">C2</div><div class="band-lbl" data-i18n="mastery">Mastery</div></div>
-    </div>
   </div>
 </div>
 

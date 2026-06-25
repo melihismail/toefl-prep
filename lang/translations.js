@@ -1,5 +1,12 @@
 const TRANSLATIONS = {
   en: {
+    // === LANDING PAGE ===
+    "landing_title_1": "Your journey to Band 6",
+    "landing_title_2": "begins here.",
+    "landing_status": "READY",
+    "learn_the_exam": "Learn the Exam",
+    "exam_samples": "Exam Samples",
+
     // === COMMON ===
     "home": "Home",
     "back_home": "← Home",
@@ -164,6 +171,13 @@ const TRANSLATIONS = {
   },
 
   tr: {
+    // === AÇILIŞ SAYFASI ===
+    "landing_title_1": "Bant 6'ya yolculuğunuz",
+    "landing_title_2": "burada başlıyor.",
+    "landing_status": "HAZIR",
+    "learn_the_exam": "Sınavı Öğren",
+    "exam_samples": "Sınav Örnekleri",
+
     // === ORTAK ===
     "home": "Ana Sayfa",
     "back_home": "← Ana Sayfa",
