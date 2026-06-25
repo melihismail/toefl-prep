@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn the Exam — TOEFL Prep</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    body { overflow-x: hidden; }
+    .learn-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 1.5rem; }
+    .learn-back:hover { color: #4338ca; }
+    .learn-back i { font-size: 18px; }
+    .learn-header { background: rgba(255,255,255,.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.5); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.5rem; }
+    .learn-header .tag { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+    .learn-header h1 { font-size: 24px; font-weight: 800; color: #1e1b4b; margin-bottom: 6px; line-height: 1.2; }
+    .learn-header .meta { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .learn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width: 540px) { .learn-grid { grid-template-columns: 1fr; } }
+    .learn-card { background: rgba(255,255,255,.5); backdrop-filter: blur(12px); border: 1.5px solid rgba(255,255,255,.5); border-radius: 14px; padding: 1.5rem; cursor: pointer; transition: all .2s; }
+    .learn-card:hover { background: rgba(255,255,255,.75); border-color: #c7d2fe; transform: translateY(-2px); box-shadow: 0 4px 24px rgba(124,58,237,.1); }
+    .learn-card .icon-wrap { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .learn-card .icon-wrap i { font-size: 24px; }
+    .learn-card .name { font-size: 18px; font-weight: 700; color: #1e1b4b; margin-bottom: 4px; }
+    .learn-card .info { font-size: 13px; color: #4b5563; margin-bottom: 10px; }
+    .learn-card .go { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #7c3aed; }
+    .learn-card .go i { font-size: 14px; transition: transform .15s; }
+    .learn-card:hover .go i { transform: translateX(3px); }
+
+    .panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.25); backdrop-filter: blur(4px); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; }
+    .panel-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .slide-panel { position: fixed; top: 0; bottom: 0; right: 0; background: linear-gradient(160deg, #f5f3ff, #ede9fe); overflow-y: auto; padding: 2rem 1.5rem; transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+    .slide-panel.open { transform: translateX(0); }
+    .slide-panel.dimmed::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,.15); pointer-events: none; transition: background .3s; z-index: 1; }
+
+    #panel-1 { z-index: 210; width: 520px; max-width: 100%; }
+    #panel-2 { z-index: 220; width: 460px; max-width: 100%; }
+    #panel-3 { z-index: 230; width: 420px; max-width: 100%; }
+
+    @media(min-width: 1200px) { #panel-2.open { right: 520px; } #panel-3.open { right: 980px; } }
+    @media(min-width: 901px) and (max-width: 1199px) { #panel-2.open { right: 520px; } }
+    @media(max-width: 900px) { #panel-1, #panel-2, #panel-3 { width: 100%; } }
+
+    .panel-close { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; cursor: pointer; margin-bottom: 1.5rem; border: none; background: none; font-family: inherit; position: relative; z-index: 5; }
+    .panel-close:hover { color: #4338ca; }
+    .panel-close i { font-size: 18px; }
+
+    .detail-header { background: rgba(255,255,255,.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.5); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; }
+    .detail-header .top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .detail-header .icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .detail-header .icon-wrap i { font-size: 22px; }
+    .detail-header .name { font-size: 20px; font-weight: 700; color: #1e1b4b; }
+    .detail-header .sub { font-size: 12px; color: #4b5563; }
+    .detail-header .desc { font-size: 13px; color: #4b5563; line-height: 1.6; border-top: 1px solid rgba(0,0,0,.06); padding-top: 12px; }
+
+    .task-item { background: rgba(255,255,255,.5); backdrop-filter: blur(8px); border: 1.5px solid rgba(255,255,255,.4); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: all .2s; }
+    .task-item:hover { background: rgba(255,255,255,.75); border-color: #c7d2fe; }
+    .task-item .task-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .task-item .task-name { font-size: 14px; font-weight: 700; color: #1e1b4b; }
+    .task-item .task-time { font-size: 11px; font-weight: 600; color: #7c3aed; background: rgba(238,242,255,.7); padding: 3px 10px; border-radius: 99px; }
+    .task-item .task-desc { font-size: 12px; color: #4b5563; line-height: 1.5; }
+    .task-item .task-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: #6b7280; }
+    .task-item .task-go { font-size: 11px; font-weight: 600; color: #7c3aed; display: flex; align-items: center; gap: 3px; }
+
+    .td-header { background: rgba(255,255,255,.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.5); border-radius: 14px; padding: 1.25rem; margin-bottom: 1rem; }
+    .td-header .td-name { font-size: 18px; font-weight: 700; color: #1e1b4b; margin-bottom: 4px; }
+    .td-header .td-sub { font-size: 12px; color: #4b5563; }
+    .td-header .td-desc { font-size: 13px; color: #4b5563; line-height: 1.6; border-top: 1px solid rgba(0,0,0,.06); padding-top: 10px; margin-top: 10px; }
+
+    .task-item.active { background: rgba(124,58,237,.1); border-color: #7c3aed; }
+
+    .example-btn { background: #7c3aed; border: none; border-radius: 12px; padding: 16px; margin-bottom: 14px; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 12px; width: 100%; font-family: inherit; }
+    .example-btn:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(124,58,237,.25); }
+    .example-btn.active { background: #4338ca; }
+    .example-btn .eb-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .example-btn .eb-icon i { font-size: 20px; color: #fff; }
+    .example-btn .eb-label { font-size: 15px; font-weight: 700; color: #fff; }
+    .example-btn .eb-sub { font-size: 11px; color: rgba(255,255,255,.7); margin-top: 2px; }
+
+    .accordion { margin-bottom: 10px; border-radius: 12px; overflow: hidden; border: 1.5px solid rgba(255,255,255,.4); }
+    .accordion-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(255,255,255,.5); backdrop-filter: blur(8px); border: none; cursor: pointer; font-family: inherit; transition: background .2s; }
+    .accordion-btn:hover { background: rgba(255,255,255,.75); }
+    .accordion-btn .acc-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1e1b4b; }
+    .accordion-btn .acc-label i { font-size: 18px; color: #7c3aed; }
+    .accordion-btn .acc-chevron { font-size: 16px; color: #7c3aed; transition: transform .25s; }
+    .accordion-btn.active .acc-chevron { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); background: rgba(255,255,255,.3); }
+    .accordion-body.open { max-height: 600px; }
+    .accordion-inner { padding: 16px; font-size: 13px; color: #4b5563; line-height: 1.7; }
+
+    .content-title { font-size: 16px; font-weight: 700; color: #1e1b4b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .content-title i { font-size: 20px; color: #7c3aed; }
+
+    .demo-box { background: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.5); border-radius: 10px; padding: 16px; }
+    .demo-label { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+    .demo-question { font-size: 14px; font-weight: 600; color: #1e1b4b; font-style: italic; margin-bottom: 12px; line-height: 1.5; }
+    .demo-passage { font-size: 13px; color: #1e1b4b; line-height: 1.8; margin-bottom: 12px; background: rgba(248,249,251,.7); border-radius: 8px; padding: 12px 14px; }
+    .demo-option { display: flex; align-items: flex-start; gap: 8px; background: rgba(255,255,255,.5); border: 1.5px solid rgba(255,255,255,.5); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; cursor: pointer; font-size: 13px; color: #1e1b4b; line-height: 1.4; transition: all .15s; }
+    .demo-option:hover { border-color: #c7d2fe; background: rgba(238,242,255,.5); }
+    .demo-option.correct { border-color: #22c55e; background: rgba(240,253,244,.7); color: #15803d; }
+    .demo-option.wrong { border-color: #ef4444; background: rgba(254,242,242,.7); color: #b91c1c; }
+    .demo-option .letter { font-weight: 700; min-width: 18px; color: #7c3aed; }
+    .demo-option.correct .letter { color: #15803d; }
+    .demo-option.wrong .letter { color: #b91c1c; }
+    .demo-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid #7c3aed; background: #7c3aed; color: #fff; font-family: inherit; margin-top: 8px; transition: background .15s; }
+    .demo-btn:hover { background: #6d28d9; }
+    .demo-btn-outline { background: transparent; color: #7c3aed; }
+    .demo-btn-outline:hover { background: rgba(124,58,237,.06); }
+    .demo-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .demo-chip { padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1.5px solid rgba(255,255,255,.5); background: rgba(255,255,255,.5); color: #1e1b4b; font-family: inherit; transition: all .12s; }
+    .demo-chip:hover { border-color: #c7d2fe; background: rgba(238,242,255,.5); }
+    .demo-chip.used { opacity: .2; pointer-events: none; }
+    .demo-blanks { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 12px; min-height: 36px; }
+    .demo-blank { min-width: 40px; height: 30px; border-bottom: 2px solid #c7d2fe; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #7c3aed; padding: 0 6px; cursor: pointer; }
+    .demo-blank.empty { color: transparent; }
+    .demo-prompt { font-size: 14px; font-weight: 700; color: #7c3aed; }
+    .demo-textarea { width: 100%; min-height: 100px; border: 1.5px solid rgba(255,255,255,.5); border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.6; font-family: inherit; color: #1e1b4b; resize: vertical; background: rgba(255,255,255,.4); outline: none; }
+    .demo-textarea:focus { border-color: #7c3aed; background: rgba(255,255,255,.7); }
+    .demo-textarea::placeholder { color: #9ca3af; }
+    .demo-word-count { font-size: 11px; color: #6b7280; margin-top: 4px; }
+    .demo-letter-input { display: inline-block; width: 18px; height: 22px; border: none; border-bottom: 2px solid #c7d2fe; background: transparent; text-align: center; font-size: 13px; font-weight: 600; color: #7c3aed; font-family: inherit; outline: none; margin: 0 1px; }
+    .demo-letter-input:focus { border-bottom-color: #7c3aed; }
+    .demo-letter-input.correct { color: #15803d; border-bottom-color: #15803d; }
+    .demo-letter-input.wrong { color: #b91c1c; border-bottom-color: #b91c1c; }
+    .demo-sentence-target { font-size: 15px; font-weight: 600; color: #1e1b4b; line-height: 1.6; margin-bottom: 12px; text-align: center; padding: 12px; background: rgba(248,249,251,.7); border-radius: 8px; }
+    .demo-interview-q { font-size: 15px; font-weight: 500; color: #1e1b4b; line-height: 1.6; margin-bottom: 12px; font-style: italic; text-align: center; padding: 16px; background: rgba(248,249,251,.7); border-radius: 8px; }
+    .demo-mic-area { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 1rem 0; }
+    .demo-mic-btn { width: 56px; height: 56px; border-radius: 50%; background: #7c3aed; border: none; cursor: default; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 16px rgba(124,58,237,.3); }
+    .demo-mic-btn i { font-size: 24px; }
+    .demo-mic-label { font-size: 12px; color: #6b7280; }
+    .demo-disc-box { background: rgba(238,242,255,.5); border: 1px solid #c7d2fe; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+    .demo-disc-prof { font-size: 11px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+    .demo-disc-q { font-size: 13px; color: #1e1b4b; line-height: 1.5; font-weight: 500; }
+    .demo-student { background: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.4); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; }
+    .demo-student-name { font-size: 11px; font-weight: 700; color: #6b7280; margin-bottom: 3px; }
+    .demo-student-text { font-size: 12px; color: #1e1b4b; line-height: 1.5; }
+    .demo-transcript { font-size: 12px; color: #1e1b4b; line-height: 1.7; background: rgba(248,249,251,.7); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; white-space: pre-line; max-height: 150px; overflow-y: auto; }
+    .demo-note { margin-top: 8px; font-size: 11px; color: #6b7280; font-style: italic; }
+    .placeholder-content { font-size: 13px; color: #6b7280; line-height: 1.7; }
+    .lang-toggle { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="app-wide" style="padding-top: 2rem;">
+  <a href="../index.html" class="learn-back"><i class="ti ti-arrow-left" aria-hidden="true"></i> <span data-i18n="back_home">Home</span></a>
+  <div class="learn-header">
+    <div class="tag" data-i18n="learn_the_exam">Learn the exam</div>
+    <h1>TOEFL 2026</h1>
+    <div class="meta">4 <span data-i18n="sections">Sections</span> · 12 <span data-i18n="task_types">Task Types</span> · ~90 min · <span data-i18n="band_scale">Band</span> 1–6</div>
+  </div>
+  <div class="learn-grid">
+    <div class="learn-card" onclick="openSection('listening')"><div class="icon-wrap" style="background:rgba(236,253,245,.7)"><i class="ti ti-headphones" style="color:#059669" aria-hidden="true"></i></div><div class="name" data-i18n="listening">Listening</div><div class="info">3 task types · ~27 min</div><div class="go">Learn more <i class="ti ti-arrow-right" aria-hidden="true"></i></div></div>
+    <div class="learn-card" onclick="openSection('reading')"><div class="icon-wrap" style="background:rgba(238,242,255,.7)"><i class="ti ti-book" style="color:#4f46e5" aria-hidden="true"></i></div><div class="name" data-i18n="reading">Reading</div><div class="info">3 task types · ~30 min</div><div class="go">Learn more <i class="ti ti-arrow-right" aria-hidden="true"></i></div></div>
+    <div class="learn-card" onclick="openSection('writing')"><div class="icon-wrap" style="background:rgba(254,249,236,.7)"><i class="ti ti-pencil" style="color:#d97706" aria-hidden="true"></i></div><div class="name" data-i18n="writing">Writing</div><div class="info">3 task types · ~23 min</div><div class="go">Learn more <i class="ti ti-arrow-right" aria-hidden="true"></i></div></div>
+    <div class="learn-card" onclick="openSection('speaking')"><div class="icon-wrap" style="background:rgba(253,244,255,.7)"><i class="ti ti-microphone" style="color:#9333ea" aria-hidden="true"></i></div><div class="name" data-i18n="speaking">Speaking</div><div class="info">2 task types · ~15 min</div><div class="go">Learn more <i class="ti ti-arrow-right" aria-hidden="true"></i></div></div>
+  </div>
+</div>
+
+<div class="panel-overlay" id="panel-overlay" onclick="closeAll()"></div>
+<div class="slide-panel" id="panel-1"><button class="panel-close" onclick="closePanel(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button><div id="panel-1-content"></div></div>
+<div class="slide-panel" id="panel-2"><button class="panel-close" onclick="closePanel(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button><div id="panel-2-content"></div></div>
+<div class="slide-panel" id="panel-3"><button class="panel-close" onclick="closePanel(3)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button><div id="panel-3-content"></div></div>
+
+<script>
+var D={listening:{icon:'ti-headphones',color:'#059669',bg:'rgba(236,253,245,.7)',name:{en:'Listening',tr:'Dinleme'},time:'~27 min',desc:{en:'Tests your ability to understand spoken English in academic and everyday settings.',tr:'Akademik ve günlük ortamlarda konuşulan İngilizceyi anlama becerinizi test eder.'},tasks:[
+{id:'l1',name:{en:'Choose a Response',tr:'Bir Yanıt Seç'},time:'~5 min',count:{en:'10 questions',tr:'10 soru'},desc:{en:'Hear a short statement and choose the best response.',tr:'Kısa bir ifade duyun ve en uygun yanıtı seçin.'},demo:'chooseResponse',tips:{en:'Listen for the function — is it a request, suggestion, or question? Eliminate answers that repeat words but miss the meaning.',tr:'İfadenin işlevini dinleyin. Kelimeleri tekrarlayan ama anlamı kaçıran cevapları eleyin.'},scoring:{en:'Each correct answer = 1 point. No penalty for wrong answers. Total: 10 points.',tr:'Her doğru cevap = 1 puan. Yanlış cevap için ceza yok. Toplam: 10 puan.'}},
+{id:'l2',name:{en:'Conversation',tr:'Konuşma'},time:'~10 min',count:{en:'3 passages',tr:'3 metin'},desc:{en:'Listen to a conversation and answer comprehension questions.',tr:'Bir konuşmayı dinleyin ve anlama sorularını cevaplayın.'},demo:'conversation',tips:{en:'Pay attention to tone and attitude. Note the main reason for the conversation.',tr:'Ses tonu ve tutuma dikkat edin. Konuşmanın ana nedenini not edin.'},scoring:{en:'Multiple choice, each worth 1 point. 3-4 questions per conversation.',tr:'Çoktan seçmeli, her biri 1 puan. Konuşma başına 3-4 soru.'}},
+{id:'l3',name:{en:'Academic Talk',tr:'Akademik Sunum'},time:'~12 min',count:{en:'3 passages',tr:'3 metin'},desc:{en:'Listen to a short lecture and answer questions.',tr:'Kısa bir dersi dinleyin ve soruları cevaplayın.'},demo:'academicTalk',tips:{en:'Focus on the topic sentence at the beginning. Note transitions like "however" or "for instance".',tr:'Baştaki konu cümlesine odaklanın. "Ancak" veya "örneğin" gibi geçişlere dikkat edin.'},scoring:{en:'Multiple choice, each worth 1 point. 4-5 questions per lecture.',tr:'Çoktan seçmeli, her biri 1 puan. Ders başına 4-5 soru.'}}
+]},reading:{icon:'ti-book',color:'#4f46e5',bg:'rgba(238,242,255,.7)',name:{en:'Reading',tr:'Okuma'},time:'~30 min',desc:{en:'Tests your ability to understand academic and everyday written texts.',tr:'Akademik ve günlük yazılı metinleri anlama becerinizi test eder.'},tasks:[
+{id:'r1',name:{en:'Complete the Words',tr:'Kelimeleri Tamamla'},time:'~5 min',count:{en:'10 paragraphs',tr:'10 paragraf'},desc:{en:'Fill in missing letters in academic paragraphs.',tr:'Akademik paragraftaki eksik harfleri doldurun.'},demo:'completeWords',tips:{en:'Read the full sentence first. Think about word families and common academic vocabulary.',tr:'Önce tüm cümleyi okuyun. Kelime aileleri ve akademik kelime bilgisini düşünün.'},scoring:{en:'Each correctly completed word = 1 point. Spelling must be exact.',tr:'Her doğru tamamlanan kelime = 1 puan. Yazım doğru olmalıdır.'}},
+{id:'r2',name:{en:'Read in Daily Life',tr:'Günlük Hayatta Oku'},time:'~10 min',count:{en:'8 passages',tr:'8 metin'},desc:{en:'Read short real-world texts and answer questions.',tr:'Kısa gerçek hayat metinlerini okuyun ve soruları cevaplayın.'},demo:'dailyLife',tips:{en:'Skim the text type first. Focus on who, what, when, where. Answers are directly in the text.',tr:'Önce metin türünü gözden geçirin. Kim, ne, ne zaman, nereye odaklanın.'},scoring:{en:'1 point per correct answer. 2-3 questions per passage, 8 passages total.',tr:'Her doğru cevap için 1 puan. Metin başına 2-3 soru, toplam 8 metin.'}},
+{id:'r3',name:{en:'Academic Passage',tr:'Akademik Metin'},time:'~15 min',count:{en:'5 passages',tr:'5 metin'},desc:{en:'Read a ~200-word passage and answer 5 questions.',tr:'~200 kelimelik bir metni okuyun ve 5 soruyu cevaplayın.'},demo:'academicPassage',tips:{en:'Read first and last sentences for main ideas. For vocabulary, use context clues.',tr:'Ana fikirler için ilk ve son cümleleri okuyun. Kelime soruları için bağlam ipuçlarını kullanın.'},scoring:{en:'1 point per answer. 5 questions × 5 passages = 25 points.',tr:'Her cevap için 1 puan. 5 soru × 5 metin = 25 puan.'}}
+]},writing:{icon:'ti-pencil',color:'#d97706',bg:'rgba(254,249,236,.7)',name:{en:'Writing',tr:'Yazma'},time:'~23 min',desc:{en:'Tests grammar, practical writing, and academic argumentation.',tr:'Dilbilgisi, pratik yazma ve akademik argümantasyon becerilerinizi test eder.'},tasks:[
+{id:'w1',name:{en:'Build a Sentence',tr:'Cümle Kur'},time:'~6 min',count:{en:'16 questions',tr:'16 soru'},desc:{en:'Arrange word chips into a correct sentence.',tr:'Kelime parçalarını doğru sırayla dizin.'},demo:'buildSentence',tips:{en:'Start with subject, then verb, then object. The distractor word usually breaks grammar if used.',tr:'Önce özne, sonra fiil, sonra nesne. Dikkat dağıtıcı kelime kullanıldığında dilbilgisini bozar.'},scoring:{en:'Each sentence is fully correct or incorrect. No partial credit. 16 total.',tr:'Her cümle ya tamamen doğru ya da yanlış. Kısmi puan yok. Toplam 16.'}},
+{id:'w2',name:{en:'Write an Email',tr:'E-posta Yaz'},time:'7 min',count:{en:'1 prompt',tr:'1 konu'},desc:{en:'Read a situation and write a functional email.',tr:'Bir durumu okuyun ve işlevsel bir e-posta yazın.'},demo:'writeEmail',tips:{en:'Use a clear subject line. Open with purpose, details in middle, close politely. Under 150 words.',tr:'Net bir konu satırı kullanın. Amacı belirterek açın, kibarca kapatın. 150 kelimenin altında.'},scoring:{en:'Band 1-6. Criteria: task completion, tone, clarity, grammar, vocabulary.',tr:'Bant 1-6. Kriterler: görev tamamlama, ton, netlik, dilbilgisi, kelime çeşitliliği.'}},
+{id:'w3',name:{en:'Academic Discussion',tr:'Akademik Tartışma'},time:'10 min',count:{en:'1 prompt',tr:'1 konu'},desc:{en:'Read a professor\'s question and write your contribution.',tr:'Profesörün sorusunu okuyun ve kendi katkınızı yazın.'},demo:'academicDiscussion',tips:{en:'Take a clear position. Reference other students but add your own reasoning. Give examples.',tr:'Net bir pozisyon alın. Diğer öğrencilere atıfta bulunun ama kendi gerekçenizi ekleyin.'},scoring:{en:'Band 1-6. Criteria: relevance, argument quality, examples, grammar, academic register.',tr:'Bant 1-6. Kriterler: ilgililik, argüman kalitesi, örnekler, dilbilgisi, akademik kayıt.'}}
+]},speaking:{icon:'ti-microphone',color:'#9333ea',bg:'rgba(253,244,255,.7)',name:{en:'Speaking',tr:'Konuşma'},time:'~15 min',desc:{en:'Tests real-time verbal communication.',tr:'Gerçek zamanlı sözlü iletişim becerinizi test eder.'},tasks:[
+{id:'s1',name:{en:'Listen and Repeat',tr:'Dinle ve Tekrarla'},time:'~5 min',count:{en:'10 sentences',tr:'10 cümle'},desc:{en:'Read a sentence, record yourself, compare pronunciation.',tr:'Bir cümleyi okuyun, kaydedin, telaffuzunuzu karşılaştırın.'},demo:'listenRepeat',tips:{en:'Focus on word stress and natural rhythm, not perfect accent. Record multiple times.',tr:'Mükemmel aksan yerine kelime vurgusu ve doğal ritme odaklanın.'},scoring:{en:'Self-evaluated. Compare recording for pronunciation accuracy and fluency.',tr:'Kendi kendine değerlendirme. Telaffuz doğruluğu ve akıcılık için karşılaştırın.'}},
+{id:'s2',name:{en:'Take an Interview',tr:'Mülakata Katıl'},time:'~10 min',count:{en:'5 questions',tr:'5 soru'},desc:{en:'Answer interview-style questions about experiences.',tr:'Deneyimler hakkında mülakat sorularını cevaplayın.'},demo:'interview',tips:{en:'Use the STAR method: Situation, Task, Action, Result. Fluency matters more than accuracy.',tr:'STAR yöntemini kullanın: Durum, Görev, Eylem, Sonuç. Akıcılık doğruluktan önemlidir.'},scoring:{en:'Band 1-6. Criteria: fluency, pronunciation, vocabulary, grammar, coherence.',tr:'Bant 1-6. Kriterler: akıcılık, telaffuz, kelime çeşitliliği, dilbilgisi, tutarlılık.'}}
+]}};
+
+function getLang(){try{return window.i18n?window.i18n.getLang():(localStorage.getItem('toefl_lang')||(navigator.language.startsWith('tr')?'tr':'en'));}catch(e){return 'en';}}
+function t(o){return o[getLang()]||o.en;}
+function shuffle(a){var b=[...a];for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=b[i];b[i]=b[j];b[j]=tmp;}return b;}
+
+function openPanel(n,html){
+  for(var i=1;i<n;i++) document.getElementById('panel-'+i).classList.add('dimmed');
+  document.getElementById('panel-'+n+'-content').innerHTML=html;
+  document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('panel-'+n).classList.add('open');
+  document.getElementById('panel-'+n).scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function closePanel(n){
+  for(var i=n;i<=3;i++){document.getElementById('panel-'+i).classList.remove('open');document.getElementById('panel-'+i).classList.remove('dimmed');}
+  if(n>1) document.getElementById('panel-'+(n-1)).classList.remove('dimmed');
+  if(n===1){document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';document.querySelectorAll('.task-item').forEach(function(el){el.classList.remove('active');});}
+  if(n<=2){document.querySelectorAll('.task-item').forEach(function(el){el.classList.remove('active');});}
+  if(n<=3){var eb=document.getElementById('example-btn');if(eb)eb.classList.remove('active');}
+}
+function closeAll(){for(var i=1;i<=3;i++){document.getElementById('panel-'+i).classList.remove('open','dimmed');}document.getElementById('panel-overlay').classList.remove('open');document.body.style.overflow='';}
+
+function openSection(key){
+  var s=D[key],lang=getLang();
+  var h='<div class="detail-header"><div class="top"><div class="icon-wrap" style="background:'+s.bg+'"><i class="ti '+s.icon+'" style="color:'+s.color+'" aria-hidden="true"></i></div><div><div class="name">'+t(s.name)+'</div><div class="sub">'+s.time+' · '+s.tasks.length+' '+(lang==='tr'?'görev türü':'task types')+'</div></div></div><div class="desc">'+t(s.desc)+'</div></div>';
+  for(var i=0;i<s.tasks.length;i++){var tk=s.tasks[i];h+='<div class="task-item" onclick="openTaskPanel(\''+key+'\','+i+')"><div class="task-top"><div class="task-name">'+t(tk.name)+'</div><div class="task-time">'+tk.time+'</div></div><div class="task-desc">'+t(tk.desc)+'</div><div class="task-meta"><span>'+t(tk.count)+'</span><span class="task-go">'+(lang==='tr'?'Detaylar':'Details')+' <i class="ti ti-arrow-right" aria-hidden="true"></i></span></div></div>';}
+  openPanel(1,h);
+}
+
+var _curSection=null,_curTask=null;
+function openTaskPanel(sKey,tIdx){
+  _curSection=sKey;_curTask=tIdx;
+  var tk=D[sKey].tasks[tIdx],lang=getLang();
+  document.querySelectorAll('.task-item').forEach(function(el){el.classList.remove('active');});
+  var items=document.querySelectorAll('.task-item');
+  if(items[tIdx]) items[tIdx].classList.add('active');
+
+  var h='<div class="td-header"><div class="td-name">'+t(tk.name)+'</div><div class="td-sub">'+tk.time+' · '+t(tk.count)+'</div><div class="td-desc">'+t(tk.desc)+'</div></div>';
+
+  h+='<button class="example-btn" id="example-btn" onclick="openExample()"><div class="eb-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div><div><div class="eb-label">'+(lang==='tr'?'Örnek soru':'Example question')+'</div><div class="eb-sub">'+(lang==='tr'?'Görevi deneyin':'Try the task')+'</div></div></button>';
+
+  var accData=[
+    {icon:'ti-bulb',label:{en:'Tips & strategy',tr:'İpuçları ve strateji'},content:'<div class="placeholder-content">'+t(tk.tips)+'</div>'},
+    {icon:'ti-chart-bar',label:{en:'Scoring',tr:'Puanlama'},content:'<div class="placeholder-content">'+t(tk.scoring)+'</div>'}
+  ];
+  for(var i=0;i<accData.length;i++){
+    var a=accData[i];
+    h+='<div class="accordion"><button class="accordion-btn" onclick="toggleAcc(this)"><span class="acc-label"><i class="ti '+a.icon+'" aria-hidden="true"></i> '+t(a.label)+'</span><i class="ti ti-chevron-down acc-chevron" aria-hidden="true"></i></button><div class="accordion-body"><div class="accordion-inner">'+a.content+'</div></div></div>';
+  }
+  openPanel(2,h);
+}
+
+function openExample(){
+  var tk=D[_curSection].tasks[_curTask],lang=getLang();
+  var btn=document.getElementById('example-btn');
+  if(btn) btn.classList.add('active');
+  var h='<div class="content-title"><i class="ti ti-file-text" aria-hidden="true"></i> '+(lang==='tr'?'Örnek soru':'Example question')+'</div>';
+  h+=demoFns[tk.demo]();
+  openPanel(3,h);
+}
+
+function toggleAcc(btn){btn.classList.toggle('active');btn.nextElementSibling.classList.toggle('open');}
+
+function mcqOpts(opts,answer){
+  var letters=['A','B','C','D'],id='m'+Math.random().toString(36).substr(2,5),h='<div id="'+id+'">';
+  for(var i=0;i<opts.length;i++) h+='<div class="demo-option" onclick="pickMCQ(this,'+answer+','+i+',\''+id+'\')"><span class="letter">'+letters[i]+'</span><span>'+opts[i]+'</span></div>';
+  return h+'</div>';
+}
+function pickMCQ(el,correct,chosen,cid){var c=document.getElementById(cid);if(c.dataset.done)return;c.dataset.done='1';c.querySelectorAll('.demo-option')[correct].classList.add('correct');if(chosen!==correct)c.querySelectorAll('.demo-option')[chosen].classList.add('wrong');}
+
+var demoFns={
+  chooseResponse:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-question">"Do you know if the library has extended hours during finals week?"</div>'+mcqOpts(["The library has a great collection of science books.","I'm not sure, but you could check their website for the schedule.","Finals week is usually in December.","I prefer studying at the student centre."],1)+'</div>';},
+  conversation:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-transcript">Student: Professor Chen, do you have a few minutes?\nProfessor Chen: Of course, come in.\nStudent: I\'m having trouble narrowing down my topic about social media.\nProfessor Chen: What aspect interests you most?\nStudent: How it affects mental health in teenagers.</div><div class="demo-question">What is the student\'s problem?</div>'+mcqOpts(["The student needs help with research methods.","The student's topic is too broad.","The student can't find sources.","The student missed a deadline."],1)+'</div>';},
+  academicTalk:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-transcript">Today I want to discuss the urban heat island effect. Cities are significantly warmer than rural areas, sometimes by five degrees Celsius. The main reason is that urban surfaces — roads, buildings, parking lots — absorb solar energy and release it slowly as heat.</div><div class="demo-question">What is the main topic of this lecture?</div>'+mcqOpts(["Why cities attract more storms","The urban heat island effect","How concrete is manufactured","Benefits of green architecture"],1)+'</div>';},
+  completeWords:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-passage">Climate change is one of the most pre<input class="demo-letter-input" maxlength="5" data-answer="ssing" id="cw1" style="width:50px">ing challenges facing humanity today. Rising temperatures are causing po<input class="demo-letter-input" maxlength="3" data-answer="lar" id="cw2" style="width:30px"> ice caps to melt.</div><button class="demo-btn" onclick="checkCW()">Check</button></div>';},
+  dailyLife:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-passage"><strong>From:</strong> Westfield University Bookstore<br><strong>Subject:</strong> Book Return Deadline – December 18<br><br>Dear Students,<br>All rented textbooks must be returned by December 18th. Late returns will incur a $5/day fee. Please bring your student ID.</div><div class="demo-question">What is the main purpose of this email?</div>'+mcqOpts(["To announce new textbooks","To remind students about the return deadline","To explain how to rent textbooks","To advertise a bookstore sale"],1)+'</div>';},
+  academicPassage:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-passage">Very young children cannot recognize themselves in a mirror; they usually achieve this around 18 months. Scientists assumed only humans had this ability. However, experiments showed great apes could also recognize their reflections. Dolphins and elephants have also passed this test.</div><div class="demo-question">What is the main idea of this passage?</div>'+mcqOpts(["Young children are more self-aware than animals.","The mirror test has revealed self-recognition in several species.","Only great apes can pass the mirror test.","The mirror test is not reliable."],1)+'</div>';},
+  buildSentence:function(){var q={question:"Did the dining hall managers add more vegetarian meals?",prompt:"No,",correct:["they","have","not","changed","the menu"],distractor:"tomorrow"},words=shuffle([...q.correct,q.distractor]);var h='<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-question">"'+q.question+'"</div><div class="demo-blanks" id="bs-blanks"><span class="demo-prompt">'+q.prompt+'</span>';for(var i=0;i<q.correct.length;i++)h+='<div class="demo-blank empty" id="bs-b'+i+'">—</div>';h+='</div><div class="demo-chips" id="bs-chips">';for(var i=0;i<words.length;i++)h+='<button class="demo-chip" onclick="bsPlace(this)">'+words[i]+'</button>';h+='</div><button class="demo-btn" onclick="bsCheck()">Check</button> <button class="demo-btn demo-btn-outline" onclick="bsReset()">Reset</button><div id="bs-feedback" style="margin-top:8px"></div></div>';window._bsC=q.correct;window._bsP=[];return h;},
+  writeEmail:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-passage"><strong>Situation:</strong> Your professor changed the exam date. Write an email asking about the new schedule and whether the study materials will change.</div><textarea class="demo-textarea" placeholder="Dear Professor..." oninput="updateDemoWC(this)"></textarea><div class="demo-word-count">0 words</div><div class="demo-note">Demo mode — no AI feedback</div></div>';},
+  academicDiscussion:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-disc-box"><div class="demo-disc-prof">Professor Williams asks:</div><div class="demo-disc-q">Should universities require students to attend all classes?</div></div><div class="demo-student"><div class="demo-student-name">Marcus</div><div class="demo-student-text">Attendance should be mandatory. Students miss key discussions when they skip.</div></div><div class="demo-student"><div class="demo-student-name">Aisha</div><div class="demo-student-text">University students are adults and should manage their own learning.</div></div><textarea class="demo-textarea" placeholder="I believe that..." oninput="updateDemoWC(this)"></textarea><div class="demo-word-count">0 words</div><div class="demo-note">Demo mode — no AI feedback</div></div>';},
+  listenRepeat:function(){var s="The university library offers extended hours during the examination period.";return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-sentence-target">'+s+'</div><button class="demo-btn" onclick="speakDemo(\''+s.replace(/'/g,"\\'")+'\')" style="margin-bottom:12px"><i class="ti ti-player-play" style="font-size:14px" aria-hidden="true"></i> Listen</button><div class="demo-mic-area"><div class="demo-mic-btn"><i class="ti ti-microphone" aria-hidden="true"></i></div><div class="demo-mic-label">Recording disabled in demo</div></div></div>';},
+  interview:function(){return '<div class="demo-box"><div class="demo-label">Try it</div><div class="demo-interview-q">"Describe a skill you have learned outside of school. How did you learn it and how has it been useful?"</div><div style="display:flex;gap:12px;justify-content:center;margin-bottom:8px;font-size:12px;color:#6b7280"><span>Think: 15 sec</span><span>·</span><span>Speak: 45 sec</span></div><div class="demo-mic-area"><div class="demo-mic-btn"><i class="ti ti-microphone" aria-hidden="true"></i></div><div class="demo-mic-label">Recording disabled in demo</div></div></div>';}
+};
+
+function checkCW(){['cw1','cw2'].forEach(function(id){var inp=document.getElementById(id);if(!inp)return;inp.className='demo-letter-input '+(inp.value.trim().toLowerCase()===inp.dataset.answer?'correct':'wrong');inp.disabled=true;});}
+function bsPlace(chip){if(window._bsP.length>=window._bsC.length)return;window._bsP.push(chip.textContent);chip.classList.add('used');var b=document.getElementById('bs-b'+(window._bsP.length-1));if(b){b.textContent=chip.textContent;b.classList.remove('empty');b.classList.add('filled');}}
+function bsCheck(){var ok=window._bsP.join(' ')===window._bsC.join(' ');document.getElementById('bs-feedback').innerHTML=ok?'<span style="color:#15803d;font-size:13px;font-weight:600">Correct!</span>':'<span style="color:#b91c1c;font-size:13px;font-weight:600">Not quite.</span> <span style="font-size:12px;color:#4b5563">Correct: No, '+window._bsC.join(' ')+'</span>';}
+function bsReset(){window._bsP=[];for(var i=0;i<window._bsC.length;i++){var b=document.getElementById('bs-b'+i);if(b){b.textContent='—';b.className='demo-blank empty';}}document.querySelectorAll('#bs-chips .demo-chip').forEach(function(c){c.classList.remove('used');});document.getElementById('bs-feedback').innerHTML='';}
+function updateDemoWC(ta){var wc=ta.value.trim().split(/\s+/).filter(function(w){return w.length>0;}).length;ta.parentElement.querySelector('.demo-word-count').textContent=wc+' words';}
+function speakDemo(text){if('speechSynthesis' in window){var u=new SpeechSynthesisUtterance(text);u.rate=0.9;speechSynthesis.speak(u);}}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll();});
+</script>
+<script src="../lang/translations.js"></script>
+<script src="../lang/i18n.js"></script>
+</body>
+</html>
