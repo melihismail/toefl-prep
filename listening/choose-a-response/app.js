@@ -1,19 +1,20 @@
-const EXAM_SIZE=10;
+const EXAM_SIZE=8;
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
 let exam=[],currentIdx=0,qState=[];
 function initState(){exam=shuffle(chooseResponseQuestions).slice(0,EXAM_SIZE);currentIdx=0;qState=exam.map(()=>({selected:-1,checked:false,revealed:false,played:false}));}
-function goTo(idx){if(idx<0||idx>=EXAM_SIZE)return;speechSynthesis.cancel();currentIdx=idx;render();}
-function handleNext(){speechSynthesis.cancel();if(currentIdx<EXAM_SIZE-1)goTo(currentIdx+1);else showScore();}
+function stopAudio(){if(currentAudio){currentAudio.pause();currentAudio=null;}}
+function goTo(idx){if(idx<0||idx>=EXAM_SIZE)return;stopAudio();currentIdx=idx;render();}
+function handleNext(){stopAudio();if(currentIdx<EXAM_SIZE-1)goTo(currentIdx+1);else showScore();}
 
+var currentAudio=null;
 function speakHeard(){
-  speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(exam[currentIdx].heard);
-  utt.lang='en-US'; utt.rate=0.9;
-  utt.onend=()=>{ qState[currentIdx].played=true; render(); };
-  speechSynthesis.speak(utt);
-  // animate button
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  const q=exam[currentIdx];
   const btn=document.getElementById('tts-btn');
-  if(btn){btn.textContent='⏹'; btn.disabled=true;}
+  if(btn){btn.textContent='⏹';btn.disabled=true;}
+  currentAudio=new Audio(q.audioFile);
+  currentAudio.onended=function(){qState[currentIdx].played=true;currentAudio=null;render();};
+  currentAudio.play();
 }
 
 function render(){
