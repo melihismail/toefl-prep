@@ -1,3 +1,6 @@
+// Migrated verbatim from public/reading/academic-passage/questions.js — content unchanged, typing added.
+import type { ReadingPassage } from './types.ts';
+
 // ── Format ────────────────────────────────────────────────────────────────────
 // Each passage has:
 //   title     — passage heading
@@ -10,7 +13,7 @@
 //       options — 4 answer strings
 //       answer  — index 0–3 of correct option
 
-const academicPassages = [
+export const academicPassages: ReadingPassage[] = [
 
   // ── 1 ────────────────────────────────────────────────────────────────────────
   {

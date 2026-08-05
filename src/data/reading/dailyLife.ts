@@ -1,3 +1,6 @@
+// Migrated verbatim from public/reading/daily-life/questions.js — content unchanged, typing added.
+import type { ReadingPassage } from './types.ts';
+
 // ── Question format ───────────────────────────────────────────────────────────
 //
 // Each passage has:
@@ -17,7 +20,7 @@
 //   - Negative fact ("Which of the following is NOT mentioned?")
 //   - Inference     ("What can be inferred about...?")
 
-const dailyLifePassages = [
+export const dailyLifePassages: ReadingPassage[] = [
 
   // ── 1. Email ────────────────────────────────────────────────────────────────
   {

@@ -37,21 +37,24 @@ export const sections: Section[] = [
     totalMinutes: 30,
     tasks: [
       {
-        href: '/reading/complete-the-words/index.html',
+        href: '/reading/complete-the-words',
+        ported: true,
         icon: 'ti-abc',
         titleKey: 'complete_the_words',
         countKey: 'ctw_short',
         minutes: 5,
       },
       {
-        href: '/reading/daily-life/index.html',
+        href: '/reading/daily-life',
+        ported: true,
         icon: 'ti-mail',
         titleKey: 'read_in_daily_life',
         countKey: 'rdl_short',
         minutes: 10,
       },
       {
-        href: '/reading/academic-passage/index.html',
+        href: '/reading/academic-passage',
+        ported: true,
         icon: 'ti-school',
         titleKey: 'read_academic_passage',
         countKey: 'rap_short',

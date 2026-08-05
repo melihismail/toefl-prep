@@ -1,3 +1,6 @@
+// Migrated verbatim from public/reading/complete-the-words/questions.js — content unchanged, typing added.
+import type { MissingWordsQuestion } from './types.ts';
+
 // splitWord rule:
 // ≤3 letters → show 0 (fully blank)
 // 4–5 letters → show first 2
@@ -7,7 +10,7 @@
 // The visible prefix is written directly into the paragraph text.
 // __BLANK__ is replaced by inputs for the hidden suffix only.
 
-const missingQuestions = [
+export const missingQuestions: MissingWordsQuestion[] = [
   {
     title: "Topic: Prehistoric Dance",
     paragraph: "We know from drawings that have been preserved in caves for over 10,000 years that early humans performed dances as a group activity. We mi__BLANK__ think that pre__BLANK__ people concentrated only on ba__BLANK__ survival. However, it is cl__BLANK__ from the records that dance was important to them.",

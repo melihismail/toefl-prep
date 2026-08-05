@@ -6,6 +6,10 @@ import { sectionBySlug, type Section } from './data/sections.ts';
 import { ListeningExam } from './exercises/listening/ListeningExam.tsx';
 import { conversationPassages } from './data/listening/conversation.ts';
 import { academicTalkPassages } from './data/listening/academicTalk.ts';
+import { PassageExam } from './exercises/reading/PassageExam.tsx';
+import { CompleteTheWords } from './exercises/reading/CompleteTheWords.tsx';
+import { dailyLifePassages } from './data/reading/dailyLife.ts';
+import { academicPassages } from './data/reading/academicPassage.ts';
 
 function SectionRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -42,6 +46,36 @@ export function App() {
             titleKey="academic_talk"
             backTo="/sections/listening"
             backLabelKey="back_listening"
+          />
+        }
+      />
+
+      <Route path="/reading/complete-the-words" element={<CompleteTheWords />} />
+      <Route
+        path="/reading/daily-life"
+        element={
+          <PassageExam
+            data={dailyLifePassages}
+            examSize={8}
+            titleKey="read_in_daily_life"
+            backTo="/sections/reading"
+            backLabelKey="back_reading"
+            expandedMaxHeight="600px"
+            variant="daily-life"
+          />
+        }
+      />
+      <Route
+        path="/reading/academic-passage"
+        element={
+          <PassageExam
+            data={academicPassages}
+            examSize={5}
+            titleKey="read_academic_passage"
+            backTo="/sections/reading"
+            backLabelKey="back_reading"
+            expandedMaxHeight="1000px"
+            variant="academic"
           />
         }
       />

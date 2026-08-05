@@ -1,0 +1,13 @@
+/* Ported from the <style> block both reading passage pages carried.
+   style.css already defines .sticky-passage's glass fill; this is the
+   positioning that made it stick to the top while scrolling questions. */
+.sticky-passage {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--card);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 1rem 1.25rem 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+  margin-bottom: 1rem;
+}
