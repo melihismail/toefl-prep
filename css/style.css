@@ -29,7 +29,7 @@
 
 /* ── Section Colour Themes ── */
 body.section-reading  { --accent:#4f46e5; --accent-light:rgba(238,242,255,.6); --accent-mid:#c7d2fe; --accent-dark:#4338ca; --hero-from:#4f46e5; --hero-to:#6366f1; }
-body.section-writing  { --accent:#d97706; --accent-light:rgba(254,249,236,.6); --accent-mid:#fde68a; --accent-dark:#b45309; --hero-from:#d97706; --hero-to:#f59e0b; }
+body.section-writing  { --accent:#b45309; --accent-light:rgba(254,249,236,.6); --accent-mid:#fde68a; --accent-dark:#92400e; --hero-from:#d97706; --hero-to:#f59e0b; }
 body.section-listening{ --accent:#059669; --accent-light:rgba(236,253,245,.6); --accent-mid:#a7f3d0; --accent-dark:#047857; --hero-from:#059669; --hero-to:#10b981; }
 body.section-speaking { --accent:#9333ea; --accent-light:rgba(253,244,255,.6); --accent-mid:#e9d5ff; --accent-dark:#7e22ce; --hero-from:#9333ea; --hero-to:#a855f7; }
 
@@ -413,6 +413,15 @@ footer { text-align:center; font-size:12px; color:var(--muted); padding:1rem; ma
 /* ── Section pages: numbered task flow ───────────────────────────────────── */
 .task-flow { display:flex; flex-direction:column; gap:12px; }
 .task-row { display:flex; align-items:stretch; gap:14px; }
+
+/* Steps fade in one after another on load — short enough not to delay use. */
+@keyframes task-row-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+/* backwards, not both: a forwards fill would pin transform/opacity after the run. */
+.task-row { animation:task-row-in .26s cubic-bezier(.22,.61,.36,1) backwards; }
+.task-row:nth-child(1) { animation-delay:.02s; }
+.task-row:nth-child(2) { animation-delay:.09s; }
+.task-row:nth-child(3) { animation-delay:.16s; }
+@media (prefers-reduced-motion: reduce) { .task-row { animation:none; } }
 
 .task-rail { position:relative; width:28px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; }
 .task-rail .line { width:2px; flex:1; background:var(--accent-mid); }
