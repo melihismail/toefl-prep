@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="../../css/style.css" />
 </head>
 <body class="section-listening">
+<div id="quiz-view">
 <div class="app">
   <div class="topbar">
     <a href="../../pages/listening.html" class="back-btn" data-i18n="back_listening">← Listening</a>
@@ -21,6 +22,7 @@
     <button class="btn btn-primary" id="btn-next" onclick="handleNext()" data-i18n="next">Next →</button>
   </div>
 </div>
+</div>
 <div class="app score-screen" id="score-screen">
   <div class="score-hero">
     <div class="score-circle"><span class="big" id="score-num"></span><span class="small" data-i18n="correct">correct</span></div>
@@ -33,6 +35,7 @@
 <script src="questions.js"></script>
 <script src="../../lang/translations.js"></script>
 <script src="../../lang/i18n.js"></script>
-<script src="app.js"></script>
+<script>window.LISTENING_PASSAGES=conversationPassages;</script>
+<script src="../engine.js"></script>
 </body>
 </html>

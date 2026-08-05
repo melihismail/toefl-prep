@@ -1,5 +1,9 @@
-const EXAM_SIZE=3;
-const DATA=typeof conversationPassages!=='undefined'?conversationPassages:academicTalkPassages;
+// Shared exam engine for the transcript-based listening tasks
+// (Academic Talk, Conversation). Each page sets window.LISTENING_PASSAGES
+// from its own questions.js before loading this file.
+const DATA=window.LISTENING_PASSAGES;
+if(!DATA){throw new Error('listening/engine.js: set window.LISTENING_PASSAGES before loading this script.');}
+const EXAM_SIZE=window.LISTENING_EXAM_SIZE||3;
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b;}
 let exam=[],currentIdx=0,qState=[];
 function initState(){exam=shuffle(DATA).slice(0,EXAM_SIZE);currentIdx=0;qState=exam.map(p=>({transcriptOpen:false,qSelected:p.questions.map(()=>-1),qChecked:p.questions.map(()=>false),qRevealed:p.questions.map(()=>false),played:false}));}
