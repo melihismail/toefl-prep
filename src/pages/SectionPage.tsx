@@ -36,15 +36,9 @@ export function SectionPage({ section }: { section: Section }) {
 
       <div className="app-wide">
         <div className="task-flow">
-          {section.tasks.map((task, i) => (
-            <div className="task-row" key={task.href}>
-              <div className="task-rail" aria-hidden="true">
-                <span className="line line-top" />
-                <span className="task-step">{i + 1}</span>
-                <span className="line line-bot" />
-              </div>
-              {/* Legacy exercise pages, so a plain anchor rather than a router Link. */}
-              <a className="task-card" href={task.href}>
+          {section.tasks.map((task, i) => {
+            const body = (
+              <>
                 <div className="task-icon">
                   <i className={`ti ${task.icon}`} aria-hidden="true" />
                 </div>
@@ -64,9 +58,28 @@ export function SectionPage({ section }: { section: Section }) {
                   <span className="num">{task.minutes}</span>
                   <span className="unit">{t('unit_min')}</span>
                 </div>
-              </a>
-            </div>
-          ))}
+              </>
+            );
+            return (
+              <div className="task-row" key={task.href}>
+                <div className="task-rail" aria-hidden="true">
+                  <span className="line line-top" />
+                  <span className="task-step">{i + 1}</span>
+                  <span className="line line-bot" />
+                </div>
+                {/* Ported exercises route in-app; the rest are still legacy pages. */}
+                {task.ported ? (
+                  <Link className="task-card" to={task.href}>
+                    {body}
+                  </Link>
+                ) : (
+                  <a className="task-card" href={task.href}>
+                    {body}
+                  </a>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {section.noteKey && (

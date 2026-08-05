@@ -1,4 +1,7 @@
-const conversationPassages = [
+// Migrated verbatim from public/listening/conversation/questions.js — content unchanged, typing added.
+import type { ListeningPassage } from './types.ts';
+
+export const conversationPassages: ListeningPassage[] = [
   {
     id: 1,
     title: "Narrowing a Research Topic",

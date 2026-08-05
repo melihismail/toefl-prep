@@ -1,8 +1,10 @@
 import type { TranslationKey } from '../i18n/translations.ts';
 
 export type Task = {
-  /** Path to the legacy exercise, served from public/. */
+  /** Router path once ported; otherwise the legacy page served from public/. */
   href: string;
+  /** True once the exercise is a React route, so the card uses a router link. */
+  ported?: boolean;
   icon: string;
   titleKey: TranslationKey;
   countKey: TranslationKey;
@@ -112,14 +114,16 @@ export const sections: Section[] = [
         minutes: 5,
       },
       {
-        href: '/listening/conversation/index.html',
+        href: '/listening/conversation',
+        ported: true,
         icon: 'ti-users',
         titleKey: 'conversation',
         countKey: 'conv_short',
         minutes: 10,
       },
       {
-        href: '/listening/academic-talk/index.html',
+        href: '/listening/academic-talk',
+        ported: true,
         icon: 'ti-speakerphone',
         titleKey: 'academic_talk',
         countKey: 'at_short',

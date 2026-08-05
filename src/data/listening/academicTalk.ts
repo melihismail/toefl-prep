@@ -1,4 +1,7 @@
-const academicTalkPassages = [
+// Migrated verbatim from public/listening/academic-talk/questions.js — content unchanged, typing added.
+import type { ListeningPassage } from './types.ts';
+
+export const academicTalkPassages: ListeningPassage[] = [
   {
     id: 1,
     title: "The Urban Heat Island Effect",
