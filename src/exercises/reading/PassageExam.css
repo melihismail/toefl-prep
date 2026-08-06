@@ -1,13 +1,74 @@
-/* Ported from the <style> block both reading passage pages carried.
-   style.css already defines .sticky-passage's glass fill; this is the
-   positioning that made it stick to the top while scrolling questions. */
-.sticky-passage {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+/* Split view: passage and questions side by side, each scrolling on its own,
+   so the text stays on screen while answering — as in the real exam. */
+.rx-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh; /* phones: excludes the browser chrome */
+}
+
+.rx-top {
+  flex-shrink: 0;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1rem 0;
+}
+
+.rx-split {
+  flex: 1;
+  min-height: 0; /* lets the children scroll instead of stretching the page */
+  display: flex;
+  gap: 14px;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: .75rem 1rem 0;
+}
+
+.rx-passage,
+.rx-questions {
   background: var(--card);
-  border-radius: 0 0 var(--radius) var(--radius);
-  padding: 1rem 1.25rem 0.75rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
-  margin-bottom: 1rem;
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .06);
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* A wider passage column means fewer lines, so it is likelier to fit whole. */
+.rx-passage { flex: 0 0 55%; }
+.rx-questions { flex: 1; overflow-y: auto; }
+
+.rx-passage-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.rx-passage-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  line-height: 1.85;
+  color: var(--text);
+  font-size: 15px; /* the auto-fit pass may step this down to 13px */
+}
+
+.rx-nav {
+  flex-shrink: 0;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: .75rem 1rem 1rem;
+}
+.rx-nav .nav-row { margin-top: 0; }
+
+/* Stacked on narrow screens: the passage keeps the top of the screen with its
+   own scroll, questions take the rest. */
+@media (max-width: 900px) {
+  .rx-split { flex-direction: column; gap: 10px; }
+  .rx-passage { flex: 0 0 38%; }
+  .rx-questions { flex: 1; }
+  .rx-passage,
+  .rx-questions { padding: 1rem 1.1rem; }
 }

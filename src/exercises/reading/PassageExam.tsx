@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
@@ -13,7 +13,6 @@ type PassageState = {
   selected: number[];
   checked: boolean;
   revealed: boolean;
-  passageOpen: boolean;
 };
 
 function freshState(exam: ReadingPassage[]): PassageState[] {
@@ -21,9 +20,12 @@ function freshState(exam: ReadingPassage[]): PassageState[] {
     selected: p.questions.map(() => -1),
     checked: false,
     revealed: false,
-    passageOpen: false,
   }));
 }
+
+/** Step the passage down a size at a time rather than let it scroll. */
+const MAX_PASSAGE_PX = 15;
+const MIN_PASSAGE_PX = 13;
 
 type Props = {
   data: ReadingPassage[];
@@ -31,21 +33,11 @@ type Props = {
   titleKey: TranslationKey;
   backTo: string;
   backLabelKey: TranslationKey;
-  /** Academic Passage expands further than the shorter Daily Life texts. */
-  expandedMaxHeight: string;
   /** Academic Passage shows the title above the text and a type badge per question. */
   variant: 'daily-life' | 'academic';
 };
 
-export function PassageExam({
-  data,
-  examSize,
-  titleKey,
-  backTo,
-  backLabelKey,
-  expandedMaxHeight,
-  variant,
-}: Props) {
+export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, variant }: Props) {
   const { t } = useLanguage();
   const [exam, setExam] = useState<ReadingPassage[]>(() => shuffle(data).slice(0, examSize));
   const [state, setState] = useState<PassageState[]>(() => freshState(exam));
@@ -55,6 +47,49 @@ export function PassageExam({
   const size = exam.length;
   const p = exam[currentIdx];
   const s = state[currentIdx];
+  const passageRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Shrink the passage a step at a time until it fits its pane, so the whole
+   * text is visible without scrolling. Stops at MIN_PASSAGE_PX and lets it
+   * scroll rather than becoming unreadable — which is what happens on phones,
+   * where a 220-word passage is simply taller than the screen.
+   */
+  useLayoutEffect(() => {
+    const el = passageRef.current;
+    if (!el) return;
+    let fitting = false;
+    const fit = () => {
+      // The pane is flex-sized, so changing the font never resizes its box —
+      // but guard anyway so the observer cannot feed itself.
+      if (fitting || el.clientHeight === 0) return;
+      fitting = true;
+      // Leading tightens along with the size; emails carry hard line breaks
+      // and run taller than their word count suggests.
+      const apply = (px: number) => {
+        el.style.fontSize = `${px}px`;
+        el.style.lineHeight = px >= 15 ? '1.85' : px === 14 ? '1.75' : '1.65';
+      };
+      let px = MAX_PASSAGE_PX;
+      apply(px);
+      while (px > MIN_PASSAGE_PX && el.scrollHeight > el.clientHeight) {
+        px -= 1;
+        apply(px);
+      }
+      // Shrinking only earns its keep if it removes the scroll. Where the text
+      // cannot fit at any size — a 220-word passage on a phone — go back to the
+      // largest, since it scrolls either way and should at least read well.
+      if (el.scrollHeight > el.clientHeight) apply(MAX_PASSAGE_PX);
+      fitting = false;
+    };
+    fit();
+    // Observing the pane catches the viewport changing and, in dev, the
+    // stylesheet arriving after mount — measuring before either leaves the
+    // text stuck at the smallest size.
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [currentIdx, p]);
 
   const patch = useCallback((idx: number, change: Partial<PassageState>) => {
     setState((prev) => prev.map((v, i) => (i === idx ? { ...v, ...change } : v)));
@@ -186,12 +221,11 @@ export function PassageExam({
 
   const locked = s.checked || s.revealed;
   const allAnswered = s.selected.every((v) => v !== -1);
-  const maskImage = s.passageOpen ? 'none' : 'linear-gradient(to bottom, black 60%, transparent 100%)';
 
   return (
-    <div className="section-reading">
+    <div className="section-reading rx-page">
       <LanguageToggle />
-      <div className="app" style={{ paddingBottom: 0, paddingTop: '1rem' }}>
+      <div className="rx-top">
         <div className="topbar">
           <Link to={backTo} className="back-btn">
             {t(backLabelKey)}
@@ -206,28 +240,15 @@ export function PassageExam({
         </div>
       </div>
 
-      <div className="app">
-        <div className="card sticky-passage" style={{ marginBottom: '1rem' }}>
+      <div className="rx-split">
+        <section className="rx-passage" aria-label="Passage">
           <div className="topic-tag" style={{ marginBottom: 6 }}>
             {variant === 'academic' ? p.topic || 'Academic' : p.textType}
           </div>
 
-          {variant === 'academic' && p.title && (
-            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>{p.title}</div>
-          )}
+          {variant === 'academic' && p.title && <div className="rx-passage-title">{p.title}</div>}
 
-          <div
-            style={{
-              overflow: 'hidden',
-              transition: 'max-height .3s ease',
-              maxHeight: s.passageOpen ? expandedMaxHeight : '4.5em',
-              lineHeight: 1.85,
-              fontSize: 14,
-              color: 'var(--text)',
-              WebkitMaskImage: maskImage,
-              maskImage,
-            }}
-          >
+          <div className="rx-passage-body" ref={passageRef}>
             {variant === 'daily-life' && p.textType === 'Email' && (
               <>
                 {p.subject && <div className="email-subject">Subject: {p.subject}</div>}
@@ -236,26 +257,9 @@ export function PassageExam({
             )}
             <div style={{ whiteSpace: 'pre-wrap' }}>{p.passage}</div>
           </div>
+        </section>
 
-          <button
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--accent)',
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: 'pointer',
-              padding: '6px 0 0',
-              fontFamily: 'inherit',
-              display: 'block',
-            }}
-            onClick={() => patch(currentIdx, { passageOpen: !s.passageOpen })}
-          >
-            {s.passageOpen ? '▲ Collapse' : '▼ Expand passage'}
-          </button>
-        </div>
-
-        <div className="card">
+        <section className="rx-questions" aria-label="Questions">
           {p.questions.map((q, qi) => (
             <div key={qi}>
               {qi > 0 && <hr className="divider" />}
@@ -335,8 +339,10 @@ export function PassageExam({
               )}
             </div>
           )}
-        </div>
+        </section>
+      </div>
 
+      <div className="rx-nav">
         <div className="nav-row">
           <button className="btn" disabled={currentIdx === 0} onClick={() => setCurrentIdx(currentIdx - 1)}>
             ← Previous

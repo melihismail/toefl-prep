@@ -67,7 +67,6 @@ export function App() {
             titleKey="read_in_daily_life"
             backTo="/sections/reading"
             backLabelKey="back_reading"
-            expandedMaxHeight="600px"
             variant="daily-life"
           />
         }
@@ -81,7 +80,6 @@ export function App() {
             titleKey="read_academic_passage"
             backTo="/sections/reading"
             backLabelKey="back_reading"
-            expandedMaxHeight="1000px"
             variant="academic"
           />
         }
