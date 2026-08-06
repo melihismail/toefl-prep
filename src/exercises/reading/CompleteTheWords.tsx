@@ -5,6 +5,7 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { missingQuestions } from '../../data/reading/completeTheWords.ts';
 import type { MissingWordsQuestion } from '../../data/reading/types.ts';
+import './CompleteTheWords.css';
 
 const EXAM_SIZE = 10;
 
@@ -75,6 +76,16 @@ export function CompleteTheWords() {
     const correct = state.filter((v) => v.isCorrect === true).length;
     return { correct, pct: Math.round((correct / size) * 100) };
   }, [state, size]);
+
+  /** A blank counts as done once every letter cell in it holds a character. */
+  const filledCount = useMemo(
+    () =>
+      q.blanks.filter((b, bi) => {
+        const typed = s.inputs[bi] || '';
+        return typed.length === b.answer.length && !typed.includes(' ');
+      }).length,
+    [q, s],
+  );
 
   function finish() {
     // Grade anything the learner never checked, same as the original.
@@ -184,30 +195,44 @@ export function CompleteTheWords() {
         </div>
 
         <div className="card">
-          <div className="q-number">Fill in the missing letters in the paragraph.</div>
+          <div className="ctw-head">
+            <div className="q-number" style={{ marginBottom: 0 }}>
+              Fill in the missing letters in the paragraph.
+            </div>
+            <div className="ctw-progress">
+              {filledCount} of {q.blanks.length} done
+            </div>
+          </div>
 
           <p className="para">
             {parts.map((part, pi) => {
               const isLast = pi === parts.length - 1;
-              let lead: React.ReactNode = part;
+              const blank = isLast ? null : q.blanks[pi];
+
+              // The fragment right before a marker is the visible prefix; it
+              // belongs inside the chip so the word never splits across lines.
+              let before = part;
+              let prefix = '';
               if (!isLast && part) {
                 const lastSpace = part.lastIndexOf(' ');
-                const before = part.substring(0, lastSpace + 1);
-                const prefix = part.substring(lastSpace + 1);
-                lead = (
-                  <>
-                    {before}
-                    {prefix && <strong className="word-shown">{prefix}</strong>}
-                  </>
-                );
+                before = part.substring(0, lastSpace + 1);
+                prefix = part.substring(lastSpace + 1);
               }
-              const blank = isLast ? null : q.blanks[pi];
+
+              if (!blank) return <span key={pi}>{before}</span>;
+
+              const typed = s.inputs[pi] || '';
+              const blankCorrect = typed.toLowerCase() === blank.answer.toLowerCase();
+              const chipCls = ['word-chip'];
+              if (s.revealed) chipCls.push('is-correct');
+              else if (s.checked) chipCls.push(blankCorrect ? 'is-correct' : 'is-wrong');
+
               return (
                 <span key={pi}>
-                  {lead}
-                  {blank &&
-                    Array.from({ length: blank.answer.length }).map((_, li) => {
-                      const typed = s.inputs[pi] || '';
+                  {before}
+                  <span className={chipCls.join(' ')}>
+                    {prefix && <strong className="chip-prefix">{prefix}</strong>}
+                    {Array.from({ length: blank.answer.length }).map((_, li) => {
                       let cls = 'letter-input';
                       let value = typed[li] || '';
                       if (s.revealed) {
@@ -226,6 +251,7 @@ export function CompleteTheWords() {
                           maxLength={1}
                           className={cls}
                           disabled={locked}
+                          aria-label={`${prefix || 'Blank'} — letter ${li + 1} of ${blank.answer.length}`}
                           value={value.trim()}
                           onChange={(e) => {
                             const v = e.target.value.slice(-1);
@@ -238,6 +264,7 @@ export function CompleteTheWords() {
                         />
                       );
                     })}
+                  </span>
                 </span>
               );
             })}

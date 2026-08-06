@@ -251,13 +251,6 @@ a { text-decoration:none; color:inherit; }
 .playback-area.visible { display:block; }
 
 /* ── Letter inputs (complete the words) ── */
-.para { font-size:15px; line-height:2.4; color:var(--text); margin-bottom:1.5rem; }
-.letter-input { display:inline-block; width:22px; height:26px; border:none; border-bottom:2px solid var(--accent-mid); background:transparent; text-align:center; font-size:14px; font-weight:600; font-family:inherit; color:var(--accent); padding:0; margin:0 1px; outline:none; vertical-align:middle; transition:border-color .15s; }
-.letter-input:focus { border-bottom-color:var(--accent); }
-.letter-input.correct { color:var(--success-text); border-bottom-color:var(--success-text); }
-.letter-input.wrong   { color:var(--error-text);   border-bottom-color:var(--error-text); }
-.letter-input:disabled { opacity:1; cursor:default; }
-.word-shown { font-weight:600; color:var(--text); vertical-align:middle; }
 
 /* ── Blank indicators ── */
 .blank-indicators { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1.25rem; align-items:center; }
