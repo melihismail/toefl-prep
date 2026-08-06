@@ -27,6 +27,7 @@
   padding: 2px 7px;
   white-space: nowrap;
   vertical-align: middle;
+  cursor: text;
   transition: border-color .15s, box-shadow .15s, background .15s;
 }
 /* The active chip is obvious — with 40+ inputs on a question, losing your
@@ -59,6 +60,8 @@
   margin-left: 2px;
   outline: none;
   vertical-align: middle;
+  /* Clicks belong to the chip, which decides which cell to focus. */
+  pointer-events: none;
   transition: border-color .15s;
 }
 .letter-input:first-of-type { margin-left: 3px; }

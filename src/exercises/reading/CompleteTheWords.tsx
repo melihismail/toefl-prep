@@ -72,6 +72,26 @@ export function CompleteTheWords() {
     inputRefs.current[target]?.focus();
   }
 
+  /**
+   * Clicking a chip always lands on its leftmost unfilled letter, never on
+   * whichever cell happened to be under the cursor — typing mid-word and
+   * leaving earlier gaps empty is not something the exercise should allow.
+   */
+  function focusFirstGap(blankIdx: number) {
+    const typed = s.inputs[blankIdx] || '';
+    const width = q.blanks[blankIdx].answer.length;
+    let letterIdx = 0;
+    for (let i = 0; i < width; i++) {
+      if (!typed[i] || typed[i] === ' ') {
+        letterIdx = i;
+        break;
+      }
+      // Every cell is filled — go back to the start so a retype overwrites.
+      if (i === width - 1) letterIdx = 0;
+    }
+    inputRefs.current[flatIndex[`${blankIdx}-${letterIdx}`]]?.focus();
+  }
+
   const score = useMemo(() => {
     const correct = state.filter((v) => v.isCorrect === true).length;
     return { correct, pct: Math.round((correct / size) * 100) };
@@ -230,7 +250,19 @@ export function CompleteTheWords() {
               return (
                 <span key={pi}>
                   {before}
-                  <span className={chipCls.join(' ')}>
+                  <span
+                    className={chipCls.join(' ')}
+                    onMouseDown={
+                      locked
+                        ? undefined
+                        : (e) => {
+                            // Cancels the browser's own focus/caret placement,
+                            // then we choose the cell.
+                            e.preventDefault();
+                            focusFirstGap(pi);
+                          }
+                    }
+                  >
                     {prefix && <strong className="chip-prefix">{prefix}</strong>}
                     {Array.from({ length: blank.answer.length }).map((_, li) => {
                       let cls = 'letter-input';
@@ -251,6 +283,9 @@ export function CompleteTheWords() {
                           maxLength={1}
                           className={cls}
                           disabled={locked}
+                          // Tab moves between words; letters are reached by
+                          // typing, which advances on its own.
+                          tabIndex={li === 0 ? 0 : -1}
                           aria-label={`${prefix || 'Blank'} — letter ${li + 1} of ${blank.answer.length}`}
                           value={value.trim()}
                           onChange={(e) => {
