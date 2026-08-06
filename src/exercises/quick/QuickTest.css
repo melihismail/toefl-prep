@@ -1,0 +1,55 @@
+.qt-source { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.qt-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Passage or transcript. Bounded so a long talk cannot push the question
+   off screen — this is meant to be quick. */
+.qt-context {
+  background: rgba(255,255,255,.5);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem;
+  margin-bottom: 1rem;
+  max-height: 230px;
+  overflow-y: auto;
+}
+.qt-context-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.qt-context-body { font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+
+.qt-quote {
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text);
+}
+.qt-slots { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+.qt-prompt { font-size: 15px; font-weight: 700; color: var(--accent); margin-right: 2px; }
+
+/* ── Results ── */
+.qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
+.qt-cat:first-of-type { border-top: none; padding-top: 2px; }
+.qt-cat-head { display: flex; align-items: center; gap: 9px; }
+.qt-cat-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+.qt-cat-score { font-size: 13px; color: var(--muted); }
+.qt-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.qt-dot.ok { background: var(--success-text); }
+.qt-dot.bad { background: var(--error-text); }
+.qt-practise {
+  display: inline-block;
+  margin: 6px 0 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.qt-practise:hover { color: var(--accent-dark); }

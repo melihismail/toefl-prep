@@ -5,6 +5,7 @@ import { SectionPage } from './pages/SectionPage.tsx';
 import { sectionBySlug, type Section } from './data/sections.ts';
 import { ListeningExam } from './exercises/listening/ListeningExam.tsx';
 import { ChooseAResponse } from './exercises/listening/ChooseAResponse.tsx';
+import { QuickTest } from './exercises/quick/QuickTest.tsx';
 import { conversationPassages } from './data/listening/conversation.ts';
 import { academicTalkPassages } from './data/listening/academicTalk.ts';
 import { PassageExam } from './exercises/reading/PassageExam.tsx';
@@ -28,6 +29,7 @@ export function App() {
       <Route path="/" element={<Home />} />
       <Route path="/sections" element={<Sections />} />
       <Route path="/sections/:slug" element={<SectionRoute />} />
+      <Route path="/quick-test" element={<QuickTest />} />
 
       {/* Ported exercises. Their public/ directories are gone, so these paths
           are free and the original URLs keep working. */}

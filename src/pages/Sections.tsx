@@ -16,6 +16,15 @@ export function Sections() {
         <h1>{t('practice_by_section')}</h1>
       </div>
 
+      <Link className="quick-test-card" to="/quick-test">
+        <i className="ti ti-bolt quick-test-icon" aria-hidden="true" />
+        <div className="quick-test-text">
+          <div className="quick-test-title">{t('quick_test')}</div>
+          <div className="quick-test-sub">{t('quick_test_sub')}</div>
+        </div>
+        <i className="ti ti-arrow-right quick-test-arrow" aria-hidden="true" />
+      </Link>
+
       <div className="sec-grid">
         {sections.map((section) => (
           <Link

@@ -5,6 +5,33 @@
 .sections-header { background: rgba(255,255,255,.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.5); border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
 .sections-header h1 { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1.25; letter-spacing: -.01em; }
 
+/* Sits above the section grid: one entry point rather than choosing a section. */
+.quick-test-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #1e1b4b;
+  border-radius: 16px;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 14px;
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s, background .2s;
+}
+.quick-test-card:hover { background: #2a2560; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,27,75,.22); }
+.quick-test-card:focus-visible { outline: 2px solid #7c3aed; outline-offset: 3px; }
+
+.quick-test-icon { font-size: 26px; color: #fbbf24; flex-shrink: 0; }
+.quick-test-text { flex: 1; min-width: 0; }
+.quick-test-title { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -.01em; }
+.quick-test-sub { font-size: 12.5px; color: rgba(255,255,255,.72); margin-top: 2px; }
+.quick-test-arrow { font-size: 18px; color: rgba(255,255,255,.6); flex-shrink: 0; }
+.quick-test-card:hover .quick-test-arrow { color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-test-card { transition: none; }
+  .quick-test-card:hover { transform: none; }
+}
+
 .sec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media(max-width:540px){ .sec-grid { grid-template-columns: 1fr; } }
 
