@@ -111,7 +111,8 @@ export const sections: Section[] = [
     noteIcon: 'ti-headphones',
     tasks: [
       {
-        href: '/listening/choose-a-response/index.html',
+        href: '/listening/choose-a-response',
+        ported: true,
         icon: 'ti-message-2',
         titleKey: 'choose_a_response',
         countKey: 'car_short',
