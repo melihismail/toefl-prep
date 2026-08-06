@@ -69,6 +69,20 @@
 .letter-input.wrong { color: var(--error-text); border-bottom-color: var(--error-text); }
 .letter-input:disabled { opacity: 1; cursor: default; }
 
+/* ── Score screen ── */
+.ctw-review-item { padding: 12px 0; border-top: 1px solid var(--border-solid); }
+.ctw-review-item:first-of-type { border-top: none; padding-top: 4px; }
+
+/* One bar per blank, so a paragraph's failures are visible without reading. */
+.blank-map { display: flex; gap: 4px; flex-wrap: wrap; margin: 7px 0 8px; }
+.blank-mark { width: 22px; height: 6px; border-radius: 99px; }
+.blank-mark.ok { background: var(--success-text); }
+.blank-mark.bad { background: var(--error-text); }
+
+.ctw-fix { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.ctw-fix .given { color: var(--error-text); }
+.ctw-fix .correct { color: var(--success-text); }
+
 @media (prefers-reduced-motion: reduce) {
   .word-chip, .letter-input { transition: none; }
 }

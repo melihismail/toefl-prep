@@ -92,10 +92,21 @@ export function CompleteTheWords() {
     inputRefs.current[flatIndex[`${blankIdx}-${letterIdx}`]]?.focus();
   }
 
+  /**
+   * Scored per blank, not per paragraph. Counting only flawless paragraphs
+   * meant one wrong letter threw away credit for every other word in it.
+   */
   const score = useMemo(() => {
-    const correct = state.filter((v) => v.isCorrect === true).length;
-    return { correct, pct: Math.round((correct / size) * 100) };
-  }, [state, size]);
+    let total = 0;
+    let correct = 0;
+    exam.forEach((qq, i) => {
+      qq.blanks.forEach((b, bi) => {
+        total++;
+        if ((state[i]?.inputs[bi] || '').toLowerCase() === b.answer.toLowerCase()) correct++;
+      });
+    });
+    return { correct, total, pct: total ? Math.round((correct / total) * 100) : 0 };
+  }, [exam, state]);
 
   /** A blank counts as done once every letter cell in it holds a character. */
   const filledCount = useMemo(
@@ -131,9 +142,9 @@ export function CompleteTheWords() {
           <div className="score-hero">
             <div className="score-circle">
               <span className="big">
-                {score.correct}/{size}
+                {score.correct}/{score.total}
               </span>
-              <span className="small">correct</span>
+              <span className="small">words</span>
             </div>
             <p className="score-msg">
               {score.pct === 100
@@ -152,31 +163,35 @@ export function CompleteTheWords() {
           <div className="card">
             <div className="review-title">Your answers</div>
             {exam.map((qq, i) => {
-              const ok = state[i].isCorrect === true;
+              const marks = qq.blanks.map(
+                (b, bi) => (state[i].inputs[bi] || '').toLowerCase() === b.answer.toLowerCase(),
+              );
               return (
-                <div key={i} className={`review-item ${ok ? 'correct-item' : 'wrong-item'}`}>
-                  <div className={`tag ${ok ? 'tag-correct' : 'tag-wrong'}`} style={{ marginBottom: 6 }}>
-                    {ok ? '✓ Correct' : '✗ Incorrect'}
-                  </div>
+                <div key={i} className="ctw-review-item">
                   <div className="review-q-text">
                     Q{i + 1}: {qq.title}
                   </div>
-                  {qq.blanks.map((b, bi) => {
-                    const given = state[i].inputs[bi] || '(empty)';
-                    const match = given.toLowerCase() === b.answer.toLowerCase();
-                    return (
-                      <div className="review-row" key={bi}>
-                        <span className="label">Blank {bi + 1}:</span>{' '}
-                        {match ? (
-                          <span className="ok">{given} ✓</span>
-                        ) : (
-                          <>
-                            <span className="given">{given}</span> → <span className="correct">{b.answer}</span>
-                          </>
-                        )}
+
+                  <div className="blank-map">
+                    {marks.map((ok, bi) => (
+                      <span
+                        key={bi}
+                        className={`blank-mark ${ok ? 'ok' : 'bad'}`}
+                        title={`Blank ${bi + 1}: ${ok ? 'correct' : 'incorrect'}`}
+                        aria-label={`Blank ${bi + 1}: ${ok ? 'correct' : 'incorrect'}`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Only the blanks that failed — the map already covers the rest. */}
+                  {qq.blanks.map((b, bi) =>
+                    marks[bi] ? null : (
+                      <div className="ctw-fix" key={bi}>
+                        Blank {bi + 1}: <span className="given">{state[i].inputs[bi] || '(empty)'}</span> →{' '}
+                        <span className="correct">{b.answer}</span>
                       </div>
-                    );
-                  })}
+                    ),
+                  )}
                 </div>
               );
             })}
