@@ -10,6 +10,9 @@ import { PassageExam } from './exercises/reading/PassageExam.tsx';
 import { CompleteTheWords } from './exercises/reading/CompleteTheWords.tsx';
 import { dailyLifePassages } from './data/reading/dailyLife.ts';
 import { academicPassages } from './data/reading/academicPassage.ts';
+import { BuildASentence } from './exercises/writing/BuildASentence.tsx';
+import { WriteAnEmail } from './exercises/writing/WriteAnEmail.tsx';
+import { AcademicDiscussion } from './exercises/writing/AcademicDiscussion.tsx';
 
 function SectionRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -79,6 +82,10 @@ export function App() {
           />
         }
       />
+
+      <Route path="/writing/build-a-sentence" element={<BuildASentence />} />
+      <Route path="/writing/write-an-email" element={<WriteAnEmail />} />
+      <Route path="/writing/academic-discussion" element={<AcademicDiscussion />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

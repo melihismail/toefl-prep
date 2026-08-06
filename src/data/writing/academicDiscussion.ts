@@ -1,4 +1,7 @@
-const discussionPrompts = [
+// Migrated verbatim from public/writing/academic-discussion/questions.js — content unchanged, typing added.
+import type { DiscussionPrompt } from './types.ts';
+
+export const discussionPrompts: DiscussionPrompt[] = [
   {
     id: 1,
     professorName: "Professor Williams asks:",

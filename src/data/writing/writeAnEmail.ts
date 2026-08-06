@@ -1,4 +1,7 @@
-const emailPrompts = [
+// Migrated verbatim from public/writing/write-an-email/questions.js — content unchanged, typing added.
+import type { EmailPrompt } from './types.ts';
+
+export const emailPrompts: EmailPrompt[] = [
   {
     id: 1,
     situation: "You are a student at a university. Your professor sent an email saying the deadline for your term paper has been extended by one week due to a scheduling conflict on her end. You have already finished most of your paper and could easily complete it before the original deadline.",

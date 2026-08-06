@@ -13,6 +13,7 @@ export const translations = {
     back_home: '← Home',
     back_listening: '← Listening',
     back_reading: '← Reading',
+    back_writing: '← Writing',
     practice_by_section: 'Practice by section',
     task_types: 'Task Types',
     total: 'Total',
@@ -41,7 +42,6 @@ export const translations = {
     bas_short: '16 questions',
     wae_short: '1 prompt',
     ad_short: '1 prompt',
-    ai_feedback: 'AI Feedback',
 
     choose_a_response: 'Choose a Response',
     conversation: 'Conversation',
@@ -55,7 +55,7 @@ export const translations = {
     lar_short: '10 sentences',
     tai_short: '5 questions',
 
-    writing_api_short: 'AI feedback needs an Anthropic API key. Stored locally, never shared.',
+    writing_practice_short: 'Practice mode — writing tasks are not scored or saved. Compare with the model answer.',
     listening_info_short: 'Choose a Response has audio. The other two use transcripts — click “Show Transcript”.',
     speaking_info_short: 'Microphone required. Record your answer, then listen back to self-evaluate.',
   },
@@ -68,6 +68,7 @@ export const translations = {
     back_home: '← Ana Sayfa',
     back_listening: '← Dinleme',
     back_reading: '← Okuma',
+    back_writing: '← Yazma',
     practice_by_section: 'Bölüme göre pratik yap',
     task_types: 'Görev Türü',
     total: 'Toplam',
@@ -96,7 +97,6 @@ export const translations = {
     bas_short: '16 soru',
     wae_short: '1 görev',
     ad_short: '1 görev',
-    ai_feedback: 'AI Geri Bildirimi',
 
     choose_a_response: 'Bir Yanıt Seç',
     conversation: 'Konuşma',
@@ -110,8 +110,8 @@ export const translations = {
     lar_short: '10 cümle',
     tai_short: '5 soru',
 
-    writing_api_short:
-      'Yapay zekâ geri bildirimi için Anthropic API anahtarı gerekir. Cihazınızda saklanır, paylaşılmaz.',
+    writing_practice_short:
+      'Alıştırma modu — yazma görevleri puanlanmaz ve kaydedilmez. Örnek cevapla karşılaştırın.',
     listening_info_short: 'Bir Yanıt Seç sesli. Diğer ikisi metin tabanlı — “Metni Göster”e tıklayın.',
     speaking_info_short: 'Mikrofon gerekli. Cevabınızı kaydedin, sonra dinleyip kendinizi değerlendirin.',
   },
