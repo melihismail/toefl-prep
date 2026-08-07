@@ -16,7 +16,7 @@ export const cTestTexts: CTestText[] = [
   },
   {
     title: 'Education',
-    text: 'Research has shown that children who read regularly from an early age develop stronger cognitive skills. Schools are therefore encouraged to implement reading programs and provide students with access to a wide variety of books.',
+    text: 'Research has shown that children who read regularly from an early age develop stronger cognitive skills. Schools are therefore encouraged to implement reading programs and provide students with access to a wide variety of books. Teachers often report that pupils who borrow books from the school library go on to become more confident writers as well.',
   },
   {
     title: 'Technology',
@@ -28,7 +28,7 @@ export const cTestTexts: CTestText[] = [
   },
   {
     title: 'Health and Exercise',
-    text: 'Regular physical exercise is widely recognized as one of the most effective ways to maintain good health. Even moderate activity, such as a daily walk, can significantly reduce the risk of chronic diseases.',
+    text: 'Regular physical exercise is widely recognized as one of the most effective ways to maintain good health. Even moderate activity, such as a daily walk, can significantly reduce the risk of chronic diseases. Doctors also point out that people who exercise with a friend are far more likely to keep the habit for years.',
   },
   {
     title: 'Renewable Energy',
@@ -36,7 +36,7 @@ export const cTestTexts: CTestText[] = [
   },
   {
     title: 'Language Learning',
-    text: 'Learning a second language at an early age has been linked to a range of cognitive benefits. Children who are exposed to multiple languages tend to be better at problem-solving and critical thinking.',
+    text: 'Learning a second language at an early age has been linked to a range of cognitive benefits. Children who are exposed to multiple languages tend to be better at problem-solving and critical thinking. Regular conversation with fluent speakers seems to matter more than the number of hours spent studying grammar rules alone.',
   },
   {
     title: 'Biodiversity',
@@ -48,7 +48,7 @@ export const cTestTexts: CTestText[] = [
   },
   {
     title: 'Space Exploration',
-    text: 'Space exploration has expanded our understanding of the universe and led to many technological advances. Missions to the Moon and Mars have provided valuable data about the origins of our solar system.',
+    text: 'Space exploration has expanded our understanding of the universe and led to many technological advances. Missions to the Moon and Mars have provided valuable data about the origins of our solar system. Many everyday inventions, including lightweight materials and more accurate weather forecasts, began as research for those early flights.',
   },
   {
     title: 'Ocean Pollution',
@@ -60,7 +60,7 @@ export const cTestTexts: CTestText[] = [
   },
   {
     title: 'Food Security',
-    text: 'Food security is a growing concern as the global population continues to rise. Droughts are reducing crop yields in many regions. Experts recommend investing in sustainable farming techniques to address this challenge.',
+    text: 'Food security is a growing concern as the global population continues to rise. Droughts are reducing crop yields in many regions. Experts recommend investing in sustainable farming techniques to address this challenge. Storing harvests properly and cutting waste during transport could also feed millions of people every year.',
   },
   {
     title: 'Mental Health',
