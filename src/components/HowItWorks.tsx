@@ -44,19 +44,19 @@ const Card = ({
   actionLabel,
 }: CardProps) => {
   const defaultBgColors = {
-    orange: 'bg-orange-50 dark:bg-orange-500/10',
-    blue: 'bg-blue-50 dark:bg-blue-500/10',
-    purple: 'bg-purple-50 dark:bg-purple-500/10',
+    orange: 'bg-orange-50',
+    blue: 'bg-blue-50',
+    purple: 'bg-purple-50',
   };
   const defaultTextColors = {
-    orange: 'text-orange-500 dark:text-orange-400',
-    blue: 'text-blue-600 dark:text-blue-400',
-    purple: 'text-purple-600 dark:text-purple-400',
+    orange: 'text-orange-500',
+    blue: 'text-blue-600',
+    purple: 'text-purple-600',
   };
   const defaultBorderColors = {
-    orange: 'border-orange-100 dark:border-orange-500/20',
-    blue: 'border-blue-100 dark:border-blue-500/20',
-    purple: 'border-purple-100 dark:border-purple-500/20',
+    orange: 'border-orange-100',
+    blue: 'border-blue-100',
+    purple: 'border-purple-100',
   };
 
   const bgColor = customColors?.bg || defaultBgColors[colorTheme];
@@ -68,7 +68,7 @@ const Card = ({
       className={`relative w-full md:w-[280px] transition-transform duration-300 hover:z-30 hover:scale-105 ${rotate} ${className}`}
     >
       <div
-        className="bg-white dark:bg-neutral-900 p-2 rounded-[25px] shadow-[0px_10px_20px_0px_#D3D3D3] dark:shadow-none border border-neutral-100 dark:border-neutral-800"
+        className="bg-white p-2 rounded-[25px] shadow-[0px_10px_20px_0px_#D3D3D3] border border-neutral-100"
         role={onClick ? 'button' : undefined}
         tabIndex={onClick ? 0 : undefined}
         aria-label={onClick ? `${title} — ${actionLabel ?? ''}`.trim() : undefined}
@@ -85,22 +85,22 @@ const Card = ({
         }
         style={onClick ? { cursor: 'pointer' } : undefined}
       >
-        <Pin className={`w-8 h-8 ${textColor} z-20 mb-6 mx-auto`} />
+        <Pin className={`w-8 h-8 ${textColor} z-20 mb-4 mx-auto`} />
         <div
           className={`${bgColor} border ${borderColor} rounded-[15px] p-[15px] h-full flex flex-col relative overflow-hidden`}
         >
           <span
-            className={`${textColor} text-4xl font-handwriting mb-5`}
+            className={`${textColor} text-4xl font-handwriting mb-3`}
             style={{
               fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif',
             }}
           >
             {number}
           </span>
-          <h3 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-100 leading-none mb-[10px]">
+          <h3 className="text-2xl font-semibold text-neutral-800 leading-none mb-[10px]">
             {title}
           </h3>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm/5 tracking-tight">{description}</p>
+          <p className="text-neutral-500 text-sm/5 tracking-tight">{description}</p>
           {actionLabel && (
             <span className={`${textColor} text-xs font-semibold mt-3 tracking-tight`}>{actionLabel} →</span>
           )}
@@ -132,6 +132,11 @@ export interface HowItWorksProps {
   features?: Step[];
   className?: string;
   stepPositions?: StepPosition[];
+  /** Overrides the height picked from the step count, for a tighter layout. */
+  height?: number;
+  /** Connector path to match custom stepPositions; the built-in one is tuned
+      to the default offsets and will not line up with your own. */
+  pathD?: string;
 }
 
 const DEFAULT_CARD_POSITIONS: StepPosition[] = [
@@ -148,7 +153,13 @@ const DEFAULT_CARD_POSITIONS: StepPosition[] = [
   { className: 'md:absolute md:top-[850px] md:left-[15%]', rotate: 'rotate-8' },
 ];
 
-export default function HowItWorks({ features, className, stepPositions }: HowItWorksProps) {
+export default function HowItWorks({
+  features,
+  className,
+  stepPositions,
+  height: heightOverride,
+  pathD: pathOverride,
+}: HowItWorksProps) {
   const defaultFeatures: Step[] = [
     {
       title: 'Create Account',
@@ -186,22 +197,15 @@ export default function HowItWorks({ features, className, stepPositions }: HowIt
   else if (data.length === 3) height = 800;
   else if (data.length === 4) height = 900;
   else height = 1130;
+  if (heightOverride) height = heightOverride;
 
   return (
     <LazyMotion features={domAnimation}>
       <div className={`max-md:pt-10 max-md:pb-25 md:py-20 px-8 relative ${className}`}>
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.08] dark:opacity-[0.15]"
+          className="absolute inset-0 pointer-events-none opacity-[0.08]"
           style={{
             backgroundImage: 'linear-gradient(#000 1px, transparent 1px)',
-            backgroundSize: '100% 32px',
-            marginTop: '4px',
-          }}
-        ></div>
-        <div
-          className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-[0.1]"
-          style={{
-            backgroundImage: 'linear-gradient(#fff 1px, transparent 1px)',
             backgroundSize: '100% 32px',
             marginTop: '4px',
           }}
@@ -219,7 +223,7 @@ export default function HowItWorks({ features, className, stepPositions }: HowIt
                 preserveAspectRatio="none"
               >
                 {(() => {
-                  const pathD = data.reduce((acc, _, index) => {
+                  const pathD = pathOverride ?? data.reduce((acc, _, index) => {
                     if (index >= data.length - 1) return acc;
                     if (index === 0) return 'M 290 150 C 500 150, 550 270, 710 270'; // 1 -> 2
                     if (index === 1) return acc + ' C 850 270, 500 350, 290 450'; // 2 -> 3
@@ -231,7 +235,7 @@ export default function HowItWorks({ features, className, stepPositions }: HowIt
                     <m.path
                       d={pathD}
                       stroke="currentColor"
-                      className="text-neutral-300 dark:text-neutral-700"
+                      className="text-neutral-300"
                       strokeWidth="2"
                       strokeDasharray="8 6"
                       fill="none"

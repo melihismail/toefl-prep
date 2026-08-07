@@ -14,6 +14,25 @@ const CARD_COLOURS: Record<LearnSection['slug'], { bg: string; text: string; bor
   speaking: { bg: 'bg-[#faf5ff]', text: 'text-[#9333ea]', border: 'border-[#e9d5ff]' },
 };
 
+/**
+ * Tighter than the component's 900px default for four steps, so the whole
+ * walkthrough fits a laptop screen without scrolling. Cards are ~290px tall,
+ * and same-side neighbours (1&3, 2&4) are kept 300px apart so they never
+ * overlap.
+ */
+const TRACK_HEIGHT = 740;
+const STEP_POSITIONS = [
+  { className: 'md:absolute md:top-0 md:left-[15%]', rotate: 'rotate-8' },
+  { className: 'md:absolute md:top-[110px] md:right-[15%]', rotate: '-rotate-8' },
+  { className: 'md:absolute md:top-[330px] md:left-[15%]', rotate: 'rotate-8' },
+  { className: 'md:absolute md:top-[440px] md:right-[10%]', rotate: '-rotate-8' },
+];
+/** Curves through the card centres implied by STEP_POSITIONS. */
+const CONNECTOR =
+  'M 290 138 C 500 138, 550 248, 710 248' +
+  ' C 850 248, 500 330, 290 468' +
+  ' C 290 528, 550 578, 760 578';
+
 export function Learn() {
   const { lang } = useLanguage();
   const [open, setOpen] = useState<LearnSection | null>(null);
@@ -28,29 +47,24 @@ export function Learn() {
 
   return (
     <div className="learn-page">
-      <div className="mx-auto w-full max-w-3xl px-8 pt-8">
-        <Link to="/" className="learn-back">
-          ← {lang === 'tr' ? 'Ana Sayfa' : 'Home'}
+      {/* One compact row: the cards explain the rest. */}
+      <div className="learn-bar">
+        <Link to="/" className="learn-back" aria-label={lang === 'tr' ? 'Ana Sayfa' : 'Home'}>
+          ←
         </Link>
-
-        <header>
-          <div className="learn-eyebrow">{lang === 'tr' ? 'Sınavı Öğren' : 'Learn the exam'}</div>
-          <h1 className="learn-title">TOEFL 2026</h1>
-          <p className="learn-lede">
-            {lang === 'tr'
-              ? 'Sınav dört bölümden oluşur. Her karta dokunarak o bölümün görevlerini, sürelerini ve puanlamasını görün.'
-              : 'The exam has four sections. Tap a card to see that section’s tasks, timing and how it is scored.'}
-          </p>
-        </header>
-      </div>
-
-      <HowItWorks features={steps} />
-
-      <div className="mx-auto w-full max-w-3xl px-8 pb-20 text-center">
+        <h1 className="learn-title">TOEFL 2026</h1>
         <Link to="/sections" className="learn-cta">
-          {lang === 'tr' ? 'Alıştırmaya başla' : 'Start practising'} →
+          {lang === 'tr' ? 'Alıştırma' : 'Practise'} →
         </Link>
       </div>
+
+      <HowItWorks
+        features={steps}
+        stepPositions={STEP_POSITIONS}
+        height={TRACK_HEIGHT}
+        pathD={CONNECTOR}
+        className="learn-works"
+      />
 
       {open && <SectionPanel section={open} lang={lang} onClose={() => setOpen(null)} />}
     </div>

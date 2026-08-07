@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- The site is light-only. Without this, browsers with a forced dark mode
+       (Opera's especially) recolour text while our custom light card colours
+       stay put, leaving pale text on pale backgrounds. -->
+  <meta name="color-scheme" content="light" />
   <title>Birlikte İngilizce — TOEFL Prep</title>
   <!-- Served from public/. The legacy exercises load the same file, so there is
        one stylesheet, not a React copy and a static copy. -->

@@ -2,39 +2,48 @@
    which is Tailwind-styled. */
 .learn-page { min-height: 100vh; }
 
+/* One slim row so the cards get the screen. */
+.learn-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 2rem 0;
+}
 .learn-back {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 20px;
+  line-height: 1;
   color: #7c3aed;
   text-decoration: none;
-  margin-bottom: 1.5rem;
+  flex-shrink: 0;
 }
 .learn-back:hover { color: #4338ca; }
 
-.learn-eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: #7c3aed;
-  margin-bottom: 6px;
+.learn-title {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.02em;
+  line-height: 1;
 }
-.learn-title { font-size: clamp(30px, 6vw, 44px); font-weight: 800; color: var(--text); letter-spacing: -.03em; line-height: 1.05; }
-.learn-lede { font-size: 15px; line-height: 1.7; color: var(--muted); margin-top: 10px; max-width: 46ch; }
 
 .learn-cta {
-  display: inline-block;
+  flex-shrink: 0;
   background: #1e1b4b;
   color: #fff;
   border-radius: 99px;
-  padding: 12px 26px;
-  font-size: 15px;
+  padding: 8px 18px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   transition: background .15s;
 }
 .learn-cta:hover { background: #2a2560; }
+
+/* The component's own vertical padding is sized for a full-page section. */
+.learn-works { padding-top: .5rem !important; padding-bottom: .5rem !important; }
 
 /* ── Section detail panel ── */
 .learn-overlay { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
