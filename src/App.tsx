@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Home } from './pages/Home.tsx';
 import { Sections } from './pages/Sections.tsx';
+import { Learn } from './pages/Learn.tsx';
 import { SectionPage } from './pages/SectionPage.tsx';
 import { sectionBySlug, type Section } from './data/sections.ts';
 import { ListeningExam } from './exercises/listening/ListeningExam.tsx';
@@ -29,6 +30,7 @@ export function App() {
       <Route path="/" element={<Home />} />
       <Route path="/sections" element={<Sections />} />
       <Route path="/sections/:slug" element={<SectionRoute />} />
+      <Route path="/learn" element={<Learn />} />
       <Route path="/quick-test" element={<QuickTest />} />
 
       {/* Ported exercises. Their public/ directories are gone, so these paths

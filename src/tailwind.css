@@ -1,0 +1,13 @@
+/* Tailwind v4, deliberately without preflight.
+   The rest of the site is hand-written CSS in public/css/style.css; pulling in
+   Tailwind's base reset would restyle every existing page.
+
+   Utilities are imported UNLAYERED on purpose. style.css opens with
+   `*, *::before, *::after { margin: 0; padding: 0 }` and is loaded unlayered
+   from index.html — and unlayered CSS beats every cascade layer no matter the
+   specificity. Put the utilities in a layer and every margin/padding utility
+   silently loses to that reset. Unlayered, `.mx-auto` (0,1,0) simply outranks
+   `*` (0,0,0) as you would expect. */
+@layer theme;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css';

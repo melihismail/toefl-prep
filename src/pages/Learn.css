@@ -1,0 +1,164 @@
+.learn-page { min-height: 100vh; }
+
+.learn-back {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c3aed;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+.learn-back:hover { color: #4338ca; }
+
+.learn-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #7c3aed;
+  margin-bottom: 6px;
+}
+.learn-title { font-size: clamp(30px, 6vw, 44px); font-weight: 800; color: var(--text); letter-spacing: -.03em; line-height: 1.05; }
+.learn-lede { font-size: 15px; line-height: 1.7; color: var(--muted); margin-top: 10px; max-width: 46ch; }
+
+/* ── Pinned track ── */
+.learn-track { position: relative; max-width: 48rem; margin: 0 auto; padding: 0 1rem; }
+
+/* Runs the height of the track and fills as you scroll, tying the cards together. */
+.learn-spine {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(124, 58, 237, .14);
+  border-radius: 99px;
+}
+.learn-spine-fill {
+  width: 100%;
+  height: 100%;
+  transform-origin: top;
+  background: linear-gradient(180deg, #4f46e5, #9333ea);
+  border-radius: 99px;
+}
+
+/* Each step is a tall slice; the card inside pins while that slice scrolls. */
+.learn-step { height: 92vh; display: flex; align-items: center; }
+.learn-card {
+  position: sticky;
+  top: 12vh;
+  width: 100%;
+  background: var(--sec);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--sec) 60%, transparent);
+  /* Dimmed until its step is the one in play; the active step is decided from
+     scroll progress in JS and only toggles this class. */
+  opacity: .35;
+  transform: scale(.97);
+  transition: opacity .35s ease, transform .35s ease;
+  will-change: transform, opacity;
+}
+.learn-card.is-active { opacity: 1; transform: none; }
+
+.learn-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.learn-step-num { font-size: 22px; font-weight: 800; color: rgba(255,255,255,.9); line-height: 1; }
+.learn-step-of { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.55); }
+.learn-card-icon {
+  width: 44px; height: 44px; border-radius: 13px;
+  background: rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; flex-shrink: 0;
+}
+.learn-card-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+.learn-card-meta { font-size: 12.5px; color: rgba(255,255,255,.75); margin-top: 2px; }
+.learn-card-desc { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.88); margin-bottom: 1rem; }
+
+.learn-tasks { display: flex; flex-direction: column; gap: 8px; list-style: none; }
+.learn-task {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background .15s, transform .15s;
+}
+.learn-task:hover { background: rgba(255,255,255,.24); transform: translateX(2px); }
+.learn-task:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.learn-task-name { flex: 1; font-size: 14px; font-weight: 700; color: #fff; }
+.learn-task-meta { font-size: 12px; color: rgba(255,255,255,.75); }
+.learn-task-go { color: rgba(255,255,255,.7); font-size: 15px; }
+
+.learn-cta {
+  display: inline-block;
+  margin-top: 2rem;
+  background: #1e1b4b;
+  color: #fff;
+  border-radius: 99px;
+  padding: 12px 26px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s;
+}
+.learn-cta:hover { background: #2a2560; }
+
+/* ── Task detail ── */
+.learn-overlay { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
+.learn-overlay-scrim { position: absolute; inset: 0; background: rgba(30,27,75,.34); backdrop-filter: blur(3px); border: none; cursor: pointer; }
+.learn-panel {
+  position: relative;
+  width: min(460px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg-flat);
+  padding: 1.5rem 1.5rem 3rem;
+  box-shadow: -12px 0 40px rgba(30,27,75,.18);
+}
+.learn-panel-back { background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--sec-dark); cursor: pointer; padding: 0 0 1.25rem; }
+.learn-panel-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--sec); margin-bottom: 6px; }
+.learn-panel-title { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -.02em; line-height: 1.2; }
+.learn-panel-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.learn-panel-desc { font-size: 14.5px; line-height: 1.7; color: var(--text); margin: 1rem 0 1.25rem; }
+
+.learn-block { background: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.7); border-radius: 14px; padding: 1rem 1.15rem; margin-bottom: 12px; }
+.learn-block-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sec); margin-bottom: 6px; }
+.learn-block p { font-size: 13.5px; line-height: 1.7; color: var(--text); }
+
+.learn-panel-cta {
+  display: inline-block;
+  margin-top: 8px;
+  background: var(--sec);
+  color: #fff;
+  border-radius: 99px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.learn-panel-cta:hover { background: var(--sec-dark); }
+
+@media (max-width: 700px) {
+  .learn-step { height: auto; margin-bottom: 14px; }
+  .learn-card { position: static; padding: 1.35rem; }
+  .learn-spine { display: none; }
+  .learn-panel { width: 100%; }
+}
+
+@media (max-width: 700px) {
+  /* Stacked, so every card reads at full strength. */
+  .learn-card, .learn-card.is-active { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learn-step { height: auto; margin-bottom: 14px; }
+  .learn-card { position: static; transition: none; opacity: 1; transform: none; }
+  .learn-task:hover { transform: none; }
+}

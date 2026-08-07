@@ -32,14 +32,13 @@ export function Home() {
       </div>
 
       <div className="landing-cards">
-        {/* Still the legacy page, so a plain anchor rather than a router Link. */}
-        <a className="landing-card" href="/pages/learn.html">
+        <Link className="landing-card" to="/learn">
           <div className="landing-card-icon">
             <i className="ti ti-book" aria-hidden="true" />
           </div>
           <div className="landing-card-title">{t('learn_the_exam')}</div>
           <div className="landing-card-arrow">›</div>
-        </a>
+        </Link>
 
         <Link className="landing-card" to="/sections">
           <div className="landing-card-icon">
