@@ -227,12 +227,16 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
       <LanguageToggle />
       <div className="rx-top">
         <div className="topbar">
-          <Link to={backTo} className="back-btn">
-            {t(backLabelKey)}
+          <Link to={backTo} className="back-btn" aria-label={t(backLabelKey)}>
+            <span className="rx-back-full">{t(backLabelKey)}</span>
+            <span className="rx-back-short" aria-hidden="true">←</span>
           </Link>
           <div className="exam-label">{t(titleKey)}</div>
           <div className="q-counter">
-            Passage {currentIdx + 1} of {size}
+            <span className="rx-count-full">Passage {currentIdx + 1} of {size}</span>
+            <span className="rx-count-short" aria-hidden="true">
+              {currentIdx + 1} / {size}
+            </span>
           </div>
         </div>
         <div className="progress-wrap">
@@ -344,14 +348,31 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
 
       <div className="rx-nav">
         <div className="nav-row">
-          <button className="btn" disabled={currentIdx === 0} onClick={() => setCurrentIdx(currentIdx - 1)}>
-            ← Previous
-          </button>
           <button
-            className="btn btn-primary"
-            onClick={() => (currentIdx < size - 1 ? setCurrentIdx(currentIdx + 1) : finish())}
+            className="btn rx-prev"
+            disabled={currentIdx === 0}
+            onClick={() => setCurrentIdx(currentIdx - 1)}
+            aria-label="Previous passage"
           >
-            {currentIdx === size - 1 ? 'Finish exam ✓' : 'Next →'}
+            <span className="rx-label">← Previous</span>
+            <span className="rx-arrow" aria-hidden="true">
+              ←
+            </span>
+          </button>
+          {/* Muted until every question is answered, then it fills in as the
+              clear next step. Never hidden and never labelled "Skip": TOEFL has
+              no penalty for a wrong answer, so guessing always beats leaving one
+              blank and the wording should not suggest otherwise. */}
+          <button
+            className={`btn btn-primary rx-next${allAnswered ? ' is-ready' : ''}`}
+            onClick={() => (currentIdx < size - 1 ? setCurrentIdx(currentIdx + 1) : finish())}
+            aria-label={currentIdx === size - 1 ? 'Finish exam' : 'Next passage'}
+            title={allAnswered ? undefined : 'Some questions are unanswered — a guess costs nothing'}
+          >
+            <span className="rx-label">{currentIdx === size - 1 ? 'Finish exam ✓' : 'Next →'}</span>
+            <span className="rx-arrow" aria-hidden="true">
+              {currentIdx === size - 1 ? '✓' : '→'}
+            </span>
           </button>
         </div>
       </div>
