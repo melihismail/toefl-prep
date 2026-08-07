@@ -1,605 +1,699 @@
-// Migrated verbatim from public/writing/build-a-sentence/questions.js — content unchanged, typing added.
+// Build a Sentence items, organised by the six grammar patterns this task
+// tests. Sixteen per pattern, evenly spread.
+//
+// Format rules followed throughout:
+//   • the stimulus is a complete sentence — a question or a statement
+//   • the response is 6-8 draggable chips, some carrying two words
+//   • one extra word that is not needed; occasionally two
+//   • `prompt` holds words already in place, which cannot be moved
+//   • when the response is a question, `isQuestion` puts the "?" in position
+//
+// Contexts stay on campus situations, local shops and services, and exchanges
+// between friends.
 import type { SentenceQuestion } from './types.ts';
 
-// Format:
-//   question   — what someone asks in the dialogue
-//   prompt     — the opening word(s) already given to the student  
-//   correct    — the correct words in order (NOT including the prompt)
-//   distractor — exactly ONE extra wroheheng word mixed into the bank
-
 export const sentenceQuestions: SentenceQuestion[] = [
+  // ── Subject-verb-object with negation ──────────────────────────────────────
   {
-    question: "Did the dining hall managers add more vegetarian meals?",
-    prompt: "No,",
-    correct: ["they","have","not","changed","the menu"],
-    distractor: "tomorrow"
+    question: 'Did the dining hall add more vegetarian options this term?',
+    prompt: 'No,',
+    correct: ['the kitchen', 'has', 'not', 'changed', 'its', 'menu', 'at all'],
+    distractors: ['did'],
+    category: 'negation',
   },
   {
-    question: "Has the university published the new research guidelines yet?",
-    prompt: "No,",
-    correct: ["the","guidelines","have","not","been","released","yet"],
-    distractor: "has"
+    question: 'Has the library extended its opening hours?',
+    prompt: 'No,',
+    correct: ['the library', 'has', 'not', 'extended', 'its', 'hours', 'this semester'],
+    distractors: ['have'],
+    category: 'negation',
   },
   {
-    question: "Will the professor cancel tomorrow's lecture?",
-    prompt: "No,",
-    correct: ["she","is","not","going","to","cancel","the","lecture"],
-    distractor: "will"
+    question: 'Will the bookshop order that textbook for me?',
+    prompt: 'No,',
+    correct: ['they', 'will', 'not', 'order', 'it', 'until', 'next week'],
+    distractors: ['would'],
+    category: 'negation',
   },
   {
-    question: "Did the students submit their assignments on time?",
-    prompt: "No,",
-    correct: ["they","have","not","submitted","their","assignments","on","time"],
-    distractor: "did"
+    question: 'Did your partner finish the group presentation?',
+    prompt: 'No,',
+    correct: ['she', 'has', 'not', 'finished', 'her', 'section', 'yet'],
+    distractors: ['did'],
+    category: 'negation',
   },
   {
-    question: "Has the library extended its opening hours this semester?",
-    prompt: "No,",
-    correct: ["the library","has","not","extended","its","opening","hours"],
-    distractor: "have"
+    question: 'Is the printer on the second floor working again?',
+    prompt: 'No,',
+    correct: ['it', 'is', 'not', 'working', 'properly', 'this morning'],
+    distractors: ['was'],
+    category: 'negation',
   },
   {
-    question: "Are the researchers planning to publish their findings soon?",
-    prompt: "No,",
-    correct: ["they","are","not","planning","to","publish","their","findings"],
-    distractor: "were"
+    question: 'Have the exam results been posted?',
+    prompt: 'No,',
+    correct: ['the results', 'have', 'not', 'been', 'posted', 'online', 'yet'],
+    distractors: ['has'],
+    category: 'negation',
   },
   {
-    question: "Did the committee approve the budget increase?",
-    prompt: "No,",
-    correct: ["the committee","has","not","approved","the budget","increase"],
-    distractor: "did"
+    question: 'Does the café accept student cards?',
+    prompt: 'No,',
+    correct: ['they', 'do', 'not', 'accept', 'them', 'after', 'six o’clock'],
+    distractors: ['does'],
+    category: 'negation',
   },
   {
-    question: "Will the construction on campus be finished by next month?",
-    prompt: "No,",
-    correct: ["it","will","not","be","finished","by","next month"],
-    distractor: "completed"
+    question: 'Did the landlord repair the heating?',
+    prompt: 'No,',
+    correct: ['he', 'has', 'not', 'repaired', 'it', 'since', 'last month'],
+    distractors: ['did'],
+    category: 'negation',
   },
   {
-    question: "Have the students been informed about the schedule change?",
-    prompt: "No,",
-    correct: ["the students","have","not","been","informed","about","the change"],
-    distractor: "has"
+    question: 'Are the science labs open during the holiday?',
+    prompt: 'No,',
+    correct: ['they', 'are', 'not', 'open', 'to', 'students', 'next week'],
+    distractors: ['were'],
+    category: 'negation',
   },
   {
-    question: "Is the cafeteria open on weekends?",
-    prompt: "No,",
-    correct: ["it","is","not","open","on","weekends"],
-    distractor: "always"
+    question: 'Has the department announced the new deadline?',
+    prompt: 'No,',
+    correct: ['the department', 'has', 'not', 'announced', 'anything', 'so far'],
+    distractors: ['have'],
+    category: 'negation',
   },
   {
-    question: "Has the new science building been completed yet?",
-    prompt: "No,",
-    correct: ["it","has","not","been","completed","yet"],
-    distractor: "built"
+    question: 'Did you manage to return the rented bicycle?',
+    prompt: 'No,',
+    correct: ['I', 'could', 'not', 'return', 'it', 'before', 'closing time'],
+    distractors: ['can'],
+    category: 'negation',
   },
   {
-    question: "Did the dean announce the new policy at the meeting?",
-    prompt: "No,",
-    correct: ["he","did","not","announce","the policy","at","the meeting"],
-    distractor: "announced"
+    question: 'Will the tutor mark the essays this week?',
+    prompt: 'No,',
+    correct: ['she', 'will', 'not', 'mark', 'them', 'until', 'Friday'],
+    distractors: ['would', 'marks'],
+    category: 'negation',
   },
   {
-    question: "Are students allowed to bring food into the library?",
-    prompt: "No,",
-    correct: ["they","are","not","allowed","to bring","food","into the library"],
-    distractor: "permitted"
+    question: 'Does the corner shop deliver to the halls of residence?',
+    prompt: 'No,',
+    correct: ['they', 'do', 'not', 'deliver', 'that', 'far'],
+    distractors: ['does'],
+    category: 'negation',
   },
   {
-    question: "Will the exam results be posted online?",
-    prompt: "No,",
-    correct: ["they","will","not","be","posted","online"],
-    distractor: "distributed"
+    question: 'Have your housemates paid the electricity bill?',
+    prompt: 'No,',
+    correct: ['they', 'have', 'not', 'paid', 'their', 'share', 'yet'],
+    distractors: ['has'],
+    category: 'negation',
   },
   {
-    question: "Has the professor returned the marked essays yet?",
-    prompt: "No,",
-    correct: ["she","has","not","returned","the essays","yet"],
-    distractor: "given"
+    question: 'Is the student council meeting still going ahead?',
+    prompt: 'No,',
+    correct: ['it', 'is', 'not', 'taking', 'place', 'this evening'],
+    distractors: ['was'],
+    category: 'negation',
   },
   {
-    question: "Did the university cancel classes because of the storm?",
-    prompt: "No,",
-    correct: ["it","did","not","cancel","classes","because of","the storm"],
-    distractor: "postpone"
-  },
-  {
-    question: "Are the computer labs available to all students?",
-    prompt: "No,",
-    correct: ["they","are","not","available","to all students"],
-    distractor: "open"
-  },
-  {
-    question: "Has the IT department fixed the Wi-Fi problem yet?",
-    prompt: "No,",
-    correct: ["the IT department","has","not","fixed","the problem","yet"],
-    distractor: "resolved"
-  },
-  {
-    question: "Will the visiting professor give a public lecture?",
-    prompt: "No,",
-    correct: ["she","will","not","give","a public lecture"],
-    distractor: "deliver"
-  },
-  {
-    question: "Did the student council vote on the new proposal?",
-    prompt: "No,",
-    correct: ["they","did","not","vote","on","the proposal"],
-    distractor: "approved"
-  },
-  {
-    question: "Is the sports centre open during the holidays?",
-    prompt: "No,",
-    correct: ["it","is","not","open","during the holidays"],
-    distractor: "closed"
-  },
-  {
-    question: "Have the parking regulations changed this year?",
-    prompt: "No,",
-    correct: ["they","have","not","changed","this year"],
-    distractor: "updated"
-  },
-  {
-    question: "Was the seminar recorded for students who missed it?",
-    prompt: "No,",
-    correct: ["it","was","not","recorded","for students","who missed it"],
-    distractor: "filmed"
-  },
-  {
-    question: "Will the scholarship applications open next week?",
-    prompt: "No,",
-    correct: ["they","will","not","open","next week"],
-    distractor: "start"
-  },
-  {
-    question: "Has the course coordinator responded to your email?",
-    prompt: "No,",
-    correct: ["she","has","not","responded","to my email","yet"],
-    distractor: "replied"
+    question: 'Did the pharmacy have the medicine in stock?',
+    prompt: 'No,',
+    correct: ['they', 'did', 'not', 'have', 'any', 'left', 'yesterday'],
+    distractors: ['do'],
+    category: 'negation',
   },
 
-  // ── TOEFL iBT Practice Test 1 ──
+  // ── Subject-verb inversion (yes/no question order) ─────────────────────────
   {
-    question: "What was the highlight of your trip?",
-    prompt: "The",
-    correct: ["tour guides","who","showed us around","the","old city","were"],
-    distractor: "was"
+    question: 'I still have not received the reading list.',
+    correct: ['Has', 'the tutor', 'sent', 'it', 'to', 'everyone'],
+    distractors: ['did'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I heard Anna got a promotion.",
-    prompt: "",
-    correct: ["Do","you","know","if","she will be","moving to","a different department"],
-    distractor: "are"
+    question: 'The café looks completely empty today.',
+    correct: ['Are', 'they', 'closing', 'early', 'for', 'the holiday'],
+    distractors: ['is'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "We're planning a trip to the mountains next weekend.",
-    prompt: "",
-    correct: ["Can","you","tell me","whether","the cabins","will be","available"],
-    distractor: "are"
+    question: 'My laptop battery died in the middle of the lecture.',
+    correct: ['Did', 'you', 'bring', 'your', 'charger', 'with you'],
+    distractors: ['do'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm looking forward to the concert this weekend.",
-    prompt: "",
-    correct: ["What","time","does","it","start"],
-    distractor: "is"
+    question: 'There is a long queue outside the bookshop.',
+    correct: ['Is', 'the new edition', 'on', 'sale', 'from', 'today'],
+    distractors: ['are'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "The museum exhibition opens next month.",
-    prompt: "",
-    correct: ["Do","you","know","how","much","tickets","will cost"],
-    distractor: "are"
+    question: 'I have not seen your flatmate all week.',
+    correct: ['Has', 'she', 'gone', 'home', 'for', 'the holidays'],
+    distractors: ['have'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm planning to go to the beach tomorrow.",
-    prompt: "",
-    correct: ["What","is","the water","temperature","like","this","time of year"],
-    distractor: "at"
+    question: 'The seminar room was locked when I arrived.',
+    correct: ['Should', 'we', 'ask', 'the porter', 'for', 'a key'],
+    distractors: ['shall'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I need to buy groceries today.",
-    prompt: "",
-    correct: ["Do","you","have","a","shopping","list"],
-    distractor: "make"
+    question: 'This printer keeps jamming.',
+    correct: ['Would', 'you', 'like', 'me', 'to call', 'technical support'],
+    distractors: ['will'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'll be taking a cooking class this weekend.",
-    prompt: "",
-    correct: ["What","recipes","will","you","learn"],
-    distractor: "cook"
+    question: 'The gym was packed this morning.',
+    correct: ['Is', 'it', 'usually', 'quieter', 'in', 'the afternoon'],
+    distractors: ['was'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "What did Maria ask you about the book you're reading?",
-    prompt: "She",
-    correct: ["wanted","to know","where","she","could","buy","a copy"],
-    distractor: "can"
+    question: 'I need to hand this form in before Friday.',
+    correct: ['Can', 'you', 'drop', 'it', 'at the office', 'for me'],
+    distractors: ['could'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "How did you prepare for the exam?",
-    prompt: "I used",
-    correct: ["the study guide","that","was provided","by","the professor"],
-    distractor: "it"
-  },
-
-  // ── TOEFL iBT Practice Test 2 ──
-  {
-    question: "I need to buy a new laptop.",
-    prompt: "",
-    correct: ["Which","store","has","the best","deals"],
-    distractor: "have"
+    question: 'The bus timetable changed last week.',
+    correct: ['Does', 'the late service', 'still', 'run', 'on', 'Sundays'],
+    distractors: ['do'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm thinking about starting a blog.",
-    prompt: "",
-    correct: ["Have","you","decided","on","a topic"],
-    distractor: "chosen"
+    question: 'Your bike has a flat tyre.',
+    correct: ['Are', 'there', 'any', 'repair shops', 'near', 'campus'],
+    distractors: ['is'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm going to study at the library this afternoon.",
-    prompt: "",
-    correct: ["Do","you","need","to","borrow","any books"],
-    distractor: "some"
+    question: 'I have lost my student card again.',
+    correct: ['Did', 'you', 'report', 'it', 'to', 'the office'],
+    distractors: ['have'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm thinking about getting a pet.",
-    prompt: "",
-    correct: ["What","kind","of","animal","are","you","considering"],
-    distractor: "type"
+    question: 'The lecture notes are not online yet.',
+    correct: ['Will', 'the professor', 'upload', 'them', 'later', 'tonight'],
+    distractors: ['would'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I'm excited to see the new science fiction movie tonight.",
-    prompt: "",
-    correct: ["Where","is","it","showing"],
-    distractor: "playing"
+    question: 'That café has changed its opening hours.',
+    correct: ['Does', 'it', 'still', 'open', 'early', 'on weekdays'],
+    distractors: ['do', 'opens'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I have an interview for a new job next week.",
-    prompt: "",
-    correct: ["Do","you","have","your","resume","ready"],
-    distractor: "prepared"
+    question: 'I am thinking about joining the choir.',
+    correct: ['Have', 'they', 'finished', 'auditions', 'for', 'this term'],
+    distractors: ['has'],
+    category: 'inversion',
+    isQuestion: true,
   },
   {
-    question: "I need to submit my assignment by tomorrow.",
-    prompt: "",
-    correct: ["Have","you","finished","writing","it"],
-    distractor: "completing"
-  },
-  {
-    question: "I'm planning a trip to Europe this summer.",
-    prompt: "",
-    correct: ["Did","you","book","your","flight","yet"],
-    distractor: "reserve"
-  },
-  {
-    question: "I just started learning French.",
-    prompt: "",
-    correct: ["Where","are","you","taking","classes"],
-    distractor: "attending"
-  },
-  {
-    question: "Why are you asking about the project deadline?",
-    prompt: "I'm",
-    correct: ["checking","to see","if","it","has been","extended"],
-    distractor: "whether"
+    question: 'The heating in the library is broken.',
+    correct: ['Should', 'we', 'study', 'in the café', 'instead', 'today'],
+    distractors: ['shall'],
+    category: 'inversion',
+    isQuestion: true,
   },
 
-  // ── Conditionals ──
+  // ── Auxiliary verb after wh-word ───────────────────────────────────────────
   {
-    question: "Why didn't you take a different road?",
-    prompt: "If I",
-    correct: ["had","known","I","would","have","taken","a different route"],
-    distractor: "took"
+    question: 'I left my notebook somewhere in the building.',
+    correct: ['Where', 'did', 'you', 'last', 'use', 'it'],
+    distractors: ['do'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Do you think she'll pass the exam?",
-    prompt: "If she",
-    correct: ["studies","harder","she","will","pass","the exam"],
-    distractor: "passed"
+    question: 'The deadline has been moved.',
+    correct: ['When', 'do', 'we', 'have to', 'submit', 'the essay'],
+    distractors: ['did'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Why did you miss the train?",
-    prompt: "If we",
-    correct: ["had","left","earlier","we","would","not","have missed it"],
-    distractor: "leave"
+    question: 'I cannot open the online portal.',
+    correct: ['What', 'have', 'you', 'already', 'tried', 'so far'],
+    distractors: ['has'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "What happens if the weather is bad tomorrow?",
-    prompt: "If it",
-    correct: ["rains","tomorrow","we","will","cancel","the picnic"],
-    distractor: "cancelled"
+    question: 'Someone booked the study room before us.',
+    correct: ['Who', 'did', 'you', 'speak', 'to', 'about it'],
+    distractors: ['does'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Why didn't he hear the announcement?",
-    prompt: "If he",
-    correct: ["had","been","paying","attention","he","would have","heard it"],
-    distractor: "was"
-  },
-
-  // ── Passive Voice ──
-  {
-    question: "Who submitted the report?",
-    prompt: "The report",
-    correct: ["was","submitted","by","the team","leader"],
-    distractor: "is"
+    question: 'The shop refused to refund my order.',
+    correct: ['Why', 'would', 'they', 'not', 'accept', 'the receipt'],
+    distractors: ['will'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Has the board made a decision on the policy?",
-    prompt: "The new policy",
-    correct: ["has","been","approved","by","the board"],
-    distractor: "was"
+    question: 'I am meeting the tutor tomorrow.',
+    correct: ['How long', 'will', 'your meeting', 'with', 'her', 'last'],
+    distractors: ['does'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "What's happening with the old building?",
-    prompt: "The building",
-    correct: ["is","being","renovated","right","now"],
-    distractor: "was"
+    question: 'They have changed the exam venue.',
+    correct: ['Where', 'are', 'we', 'supposed to', 'go', 'now'],
+    distractors: ['is'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "When will we know the results?",
-    prompt: "The results",
-    correct: ["will","be","announced","next","week"],
-    distractor: "are"
+    question: 'My rent is going up next term.',
+    correct: ['How much', 'will', 'you', 'be', 'paying', 'then'],
+    distractors: ['would'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Did the package arrive at the right place?",
-    prompt: "No, it",
-    correct: ["was","delivered","to","the wrong","address"],
-    distractor: "is"
-  },
-
-  // ── Reported Speech ──
-  {
-    question: "What did she say about the assignment?",
-    prompt: "She said",
-    correct: ["that","she","had","already","finished","it"],
-    distractor: "has"
+    question: 'The library has sent me a fine.',
+    correct: ['When', 'did', 'you', 'actually', 'return', 'those books'],
+    distractors: ['do'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "What did he tell you about the meeting?",
-    prompt: "He told me",
-    correct: ["he","would","be","arriving","late"],
-    distractor: "will"
+    question: 'I need a part-time job this year.',
+    correct: ['What kind', 'of', 'work', 'are', 'you', 'looking for'],
+    distractors: ['is'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "What did the teacher want to know?",
-    prompt: "The teacher",
-    correct: ["asked","if","we","had","completed","the homework"],
-    distractor: "have"
+    question: 'The seminar has been cancelled twice.',
+    correct: ['Who', 'has', 'been', 'organising', 'these', 'sessions'],
+    distractors: ['have'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Did they say anything about the event?",
-    prompt: "They mentioned",
-    correct: ["the event","had","been","postponed"],
-    distractor: "has"
+    question: 'I want to change my module choices.',
+    correct: ['Who', 'do', 'you', 'need', 'to speak to', 'first'],
+    distractors: ['does'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "What did she say about her workload?",
-    prompt: "She explained",
-    correct: ["that","she","had","been","working","all week"],
-    distractor: "is"
-  },
-
-  // ── Relative Clauses ──
-  {
-    question: "Who won the scholarship?",
-    prompt: "The student",
-    correct: ["who","won","the scholarship","is","from","here"],
-    distractor: "which"
+    question: 'The delivery never arrived.',
+    correct: ['Which address', 'did', 'you', 'give', 'to', 'the driver'],
+    distractors: ['do', 'gave'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "When is the library book due?",
-    prompt: "The book",
-    correct: ["that","I","borrowed","is","due","next week"],
-    distractor: "which"
+    question: 'I have to move out of my flat.',
+    correct: ['How soon', 'must', 'you', 'find', 'somewhere', 'else'],
+    distractors: ['should'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "Did you hear about the old professor?",
-    prompt: "The professor",
-    correct: ["whose","class","I","took","retired","recently"],
-    distractor: "who"
+    question: 'The results were lower than I expected.',
+    correct: ['What', 'are', 'you', 'going to', 'do', 'about it'],
+    distractors: ['were'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
   {
-    question: "How was dinner last night?",
-    prompt: "The restaurant",
-    correct: ["where","we","ate","last night","was","great"],
-    distractor: "which"
-  },
-  {
-    question: "Why did he leave the meeting early?",
-    prompt: "The reason",
-    correct: ["why","he","left","was","never","explained"],
-    distractor: "that"
+    question: 'Our study group keeps changing rooms.',
+    correct: ['Where', 'will', 'you', 'be', 'meeting', 'next week'],
+    distractors: ['would'],
+    category: 'wh-auxiliary',
+    isQuestion: true,
   },
 
-  // ── Present Perfect ──
+  // ── Embedded questions with cancelled inversion (question frame) ───────────
   {
-    question: "How long have you been in this city?",
-    prompt: "I have",
-    correct: ["lived","here","since","I","was","a child"],
-    distractor: "am"
+    question: 'I cannot find the exam timetable.',
+    correct: ['Do', 'you', 'know', 'where', 'it', 'is posted'],
+    distractors: ['is it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Does she talk to him anymore?",
-    prompt: "She has",
-    correct: ["not","spoken","to","him","since","last year"],
-    distractor: "from"
+    question: 'The office closes at some point this afternoon.',
+    correct: ['Could', 'you', 'tell me', 'when', 'it', 'closes'],
+    distractors: ['does it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "What have you done on this trip so far?",
-    prompt: "We have",
-    correct: ["already","visited","three","museums","this trip"],
-    distractor: "went"
+    question: 'Someone has taken my usual seat.',
+    correct: ['Do', 'you', 'know', 'who', 'that student', 'is'],
+    distractors: ['is that'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "How long has he been studying English?",
-    prompt: "He has been",
-    correct: ["studying","English","for","five","years"],
-    distractor: "since"
+    question: 'The bus was very late again.',
+    correct: ['Can', 'you', 'tell me', 'why', 'it', 'was delayed'],
+    distractors: ['was it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Have they made vacation plans?",
-    prompt: "They have",
-    correct: ["not","decided","where","to","go","yet"],
-    distractor: "still"
-  },
-
-  // ── Modals ──
-  {
-    question: "Why didn't you tell me about the schedule change?",
-    prompt: "You should",
-    correct: ["have","told","me","about","it","earlier"],
-    distractor: "must"
+    question: 'There is a form I have to sign.',
+    correct: ['Do', 'you', 'remember', 'where', 'they', 'keep it'],
+    distractors: ['do they'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Why wasn't she at the appointment?",
-    prompt: "She must",
-    correct: ["have","forgotten","about","the","appointment"],
-    distractor: "should"
+    question: 'The café serves breakfast early.',
+    correct: ['Do', 'you', 'know', 'how early', 'they', 'open'],
+    distractors: ['do they'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Why didn't you take the earlier flight?",
-    prompt: "We could",
-    correct: ["have","taken","the","earlier","flight","instead"],
-    distractor: "would"
+    question: 'My tutor has moved office.',
+    correct: ['Could', 'you', 'tell me', 'which floor', 'she', 'is on'],
+    distractors: ['is she'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Will he come to the conference?",
-    prompt: "He might",
-    correct: ["not","be","able","to","attend","next week"],
-    distractor: "can"
+    question: 'The printer needs a code.',
+    correct: ['Do', 'you', 'know', 'what', 'the code', 'is'],
+    distractors: ['is it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "That email looked suspicious. Why did you click it?",
-    prompt: "You should",
-    correct: ["not","have","opened","that","email"],
-    distractor: "must"
-  },
-
-  // ── Comparatives & Superlatives ──
-  {
-    question: "What did you think of the documentary?",
-    prompt: "This is the",
-    correct: ["most","interesting","film","I","have","ever","seen"],
-    distractor: "more"
+    question: 'They are hiring at the bookshop.',
+    correct: ['Can', 'you', 'find out', 'when', 'they', 'interview'],
+    distractors: ['do they'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "How is the new library compared to the old one?",
-    prompt: "The new library",
-    correct: ["is","much","bigger","than","the old","one"],
-    distractor: "more"
+    question: 'The gym membership went up again.',
+    correct: ['Do', 'you', 'know', 'how much', 'it', 'costs now'],
+    distractors: ['does it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Is she good at English?",
-    prompt: "She speaks",
-    correct: ["English","more","fluently","than","anyone","else"],
-    distractor: "most"
+    question: 'There was an announcement this morning.',
+    correct: ['Could', 'you', 'explain', 'what', 'the change', 'means'],
+    distractors: ['does it mean'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "How bad was the storm?",
-    prompt: "That was the",
-    correct: ["worst","storm","we","have","ever","experienced"],
-    distractor: "worse"
+    question: 'The seminar room number keeps changing.',
+    correct: ['Do', 'you', 'know', 'which room', 'we', 'are in'],
+    distractors: ['are we'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Any tips for improving my pronunciation?",
-    prompt: "The more",
-    correct: ["you","practice","the","better","you","will","become"],
-    distractor: "good"
-  },
-
-  // ── Gerunds & Infinitives ──
-  {
-    question: "What does she do in her free time?",
-    prompt: "She enjoys",
-    correct: ["reading","books","about","history"],
-    distractor: "to read"
+    question: 'My parcel has not arrived.',
+    correct: ['Can', 'you', 'check', 'where', 'the driver', 'left it'],
+    distractors: ['did he'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Why did he apply for the job?",
-    prompt: "He decided",
-    correct: ["to","apply","after","seeing","the advertisement"],
-    distractor: "applying"
+    question: 'The deadline was mentioned in the email.',
+    correct: ['Do', 'you', 'remember', 'what date', 'they', 'gave us'],
+    distractors: ['did they'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "How do they stay focused in class?",
-    prompt: "They avoid",
-    correct: ["using","their","phones","during","class"],
-    distractor: "to use"
+    question: 'She is presenting at the conference.',
+    correct: ['Do', 'you', 'know', 'how long', 'she', 'is speaking'],
+    distractors: ['is she', 'speaks'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
   {
-    question: "Are you interested in the writing course?",
-    prompt: "I would like",
-    correct: ["to","sign","up","for","that","course"],
-    distractor: "signing"
-  },
-  {
-    question: "Where should we meet?",
-    prompt: "She suggested",
-    correct: ["meeting","at","the café","instead"],
-    distractor: "to meet"
+    question: 'The shop moved to a new unit.',
+    correct: ['Could', 'you', 'tell me', 'where', 'it', 'is now'],
+    distractors: ['is it'],
+    category: 'embedded-question',
+    isQuestion: true,
   },
 
-  // ── Subject-Verb Agreement ──
+  // ── Interrogative indirect questions (statement frame) ─────────────────────
   {
-    question: "Did anyone know about the schedule change?",
-    prompt: "Neither the students",
-    correct: ["nor","the teacher","was","aware"],
-    distractor: "were"
+    question: 'Did you speak to the tutor about the deadline?',
+    prompt: 'I',
+    correct: ['asked her', 'whether', 'we', 'could have', 'more', 'time'],
+    distractors: ['could we'],
+    category: 'indirect-question',
   },
   {
-    question: "Did everyone get a certificate?",
-    prompt: "Each participant",
-    correct: ["has","received","a","certificate"],
-    distractor: "have"
+    question: 'What did the receptionist say?',
+    prompt: 'She',
+    correct: ['explained', 'exactly', 'where', 'the forms', 'are', 'kept'],
+    distractors: ['are they'],
+    category: 'indirect-question',
   },
   {
-    question: "Are there more applicants this year?",
-    prompt: "The number of",
-    correct: ["applicants","has","increased","this","year"],
-    distractor: "have"
+    question: 'Have you heard back from the landlord?',
+    prompt: 'He',
+    correct: ['told me', 'exactly', 'when', 'the repairs', 'would', 'begin'],
+    distractors: ['would they'],
+    category: 'indirect-question',
   },
   {
-    question: "What are the researchers doing?",
-    prompt: "A group of",
-    correct: ["researchers","is","working","on","it","now"],
-    distractor: "are"
+    question: 'Why were you late to the seminar?',
+    prompt: 'I',
+    correct: ['could not', 'remember', 'which room', 'we', 'were', 'in'],
+    distractors: ['were we'],
+    category: 'indirect-question',
   },
   {
-    question: "When is the paper due?",
-    prompt: "Every student",
-    correct: ["has","to","submit","the paper","by Friday"],
-    distractor: "have"
+    question: 'Did the shop assistant help you?',
+    prompt: 'She',
+    correct: ['showed me', 'exactly', 'where', 'the stationery', 'was', 'kept'],
+    distractors: ['was it'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'How did your interview go?',
+    prompt: 'They',
+    correct: ['wanted to know', 'why', 'I', 'had applied', 'so', 'late'],
+    distractors: ['had I'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'What happened at the housing office?',
+    prompt: 'Nobody',
+    correct: ['could tell me', 'when', 'the contracts', 'would', 'be', 'ready'],
+    distractors: ['would they'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Did you find out about the trip?',
+    prompt: 'I',
+    correct: ['asked', 'how much', 'the coach', 'was', 'going to', 'cost'],
+    distractors: ['was it'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Has the doctor called you back?',
+    prompt: 'The receptionist',
+    correct: ['explained', 'why', 'the appointment', 'had', 'been', 'moved'],
+    distractors: ['had it'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Do you know about the new library rules?',
+    prompt: 'A member of staff',
+    correct: ['told me', 'which floors', 'were', 'open', 'in', 'the evening'],
+    distractors: ['were they'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'What did your supervisor advise?',
+    prompt: 'She',
+    correct: ['asked', 'whether', 'I', 'had considered', 'a different', 'topic'],
+    distractors: ['had I'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Were you able to change your flight?',
+    prompt: 'The agent',
+    correct: ['explained', 'how much', 'the change', 'would', 'cost', 'me'],
+    distractors: ['would it', 'costs'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Did anyone explain the marking scheme?',
+    prompt: 'The lecturer',
+    correct: ['described', 'how', 'the grades', 'were', 'going to', 'be calculated'],
+    distractors: ['were they'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Have you sorted out your timetable?',
+    prompt: 'I',
+    correct: ['still', 'do not know', 'which seminars', 'I', 'have', 'been given'],
+    distractors: ['have I'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'What did the neighbour want?',
+    prompt: 'He',
+    correct: ['asked', 'whether', 'we', 'had heard', 'the alarm', 'last night'],
+    distractors: ['had we'],
+    category: 'indirect-question',
+  },
+  {
+    question: 'Did the bank help with your account?',
+    prompt: 'They',
+    correct: ['explained', 'why', 'the transfer', 'had', 'not', 'arrived'],
+    distractors: ['had it'],
+    category: 'indirect-question',
   },
 
-  // ── Conjunctions & Complex Sentences ──
+  // ── Relative clauses ───────────────────────────────────────────────────────
   {
-    question: "Did he pass the final exam?",
-    prompt: "Although he",
-    correct: ["studied","all night","he","did","not","pass"],
-    distractor: "passed"
+    question: 'Which student returned the missing book?',
+    prompt: 'The student',
+    correct: ['who', 'borrowed', 'it', 'last term', 'returned', 'it yesterday'],
+    distractors: ['which'],
+    category: 'relative-clause',
   },
   {
-    question: "Why did she go to the store?",
-    prompt: "She went",
-    correct: ["to","the store","because","she","needed","groceries"],
-    distractor: "buying"
+    question: 'Which café do you recommend?',
+    prompt: 'The one',
+    correct: ['that', 'opened', 'near', 'the station', 'is', 'much cheaper'],
+    distractors: ['who'],
+    category: 'relative-clause',
   },
   {
-    question: "Did she help anyone after finishing her work?",
-    prompt: "Not only did",
-    correct: ["she","finish","early","but","she","also","helped"],
-    distractor: "too"
+    question: 'Which lecture did you enjoy most?',
+    prompt: 'The lecture',
+    correct: ['that', 'the visiting professor', 'gave', 'was', 'by far', 'the best'],
+    distractors: ['who'],
+    category: 'relative-clause',
   },
   {
-    question: "Did the bad weather stop them from hiking?",
-    prompt: "Even though",
-    correct: ["the weather","was","bad","they","went","hiking"],
-    distractor: "good"
+    question: 'Whose bicycle was taken?',
+    prompt: 'The person',
+    correct: ['whose', 'bicycle', 'was stolen', 'has', 'reported', 'it already'],
+    distractors: ['who'],
+    category: 'relative-clause',
   },
   {
-    question: "What does he need to do to graduate?",
-    prompt: "He will not",
-    correct: ["graduate","unless","he","completes","the courses"],
-    distractor: "if"
-  }
+    question: 'Where did you buy that jacket?',
+    prompt: 'The shop',
+    correct: ['where', 'I', 'bought', 'it', 'closed', 'last month'],
+    distractors: ['which'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which flat did you choose?',
+    prompt: 'The flat',
+    correct: ['that', 'we', 'looked at', 'on Tuesday', 'was', 'the cheapest'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Who is presenting first?',
+    prompt: 'The group',
+    correct: ['that', 'submitted', 'its outline', 'early', 'will', 'go first'],
+    distractors: ['whose'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which module should I take?',
+    prompt: 'The module',
+    correct: ['which', 'has', 'no', 'final exam', 'suits', 'most students'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Who fixed the boiler in the end?',
+    prompt: 'The engineer',
+    correct: ['who', 'came', 'on Friday', 'repaired', 'it', 'in an hour'],
+    distractors: ['which', 'whose'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which bus should I take to town?',
+    prompt: 'The bus',
+    correct: ['that', 'stops', 'outside', 'the library', 'goes', 'straight there'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Who told you about the vacancy?',
+    prompt: 'A friend',
+    correct: ['whose', 'sister', 'works', 'there', 'mentioned', 'it to me'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which essay did you find hardest?',
+    prompt: 'The essay',
+    correct: ['that', 'we', 'had to write', 'over', 'the holiday', 'was hardest'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Where is the room for the workshop?',
+    prompt: 'The room',
+    correct: ['where', 'the workshop', 'takes place', 'is', 'on', 'the top floor'],
+    distractors: ['which'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which supermarket is open latest?',
+    prompt: 'The supermarket',
+    correct: ['that', 'you', 'passed', 'this morning', 'stays open', 'until midnight'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Who marked your assignment?',
+    prompt: 'The tutor',
+    correct: ['who', 'runs', 'our seminar', 'marked', 'it', 'last week'],
+    distractors: ['which'],
+    category: 'relative-clause',
+  },
+  {
+    question: 'Which laptop did you end up buying?',
+    prompt: 'The laptop',
+    correct: ['that', 'the shop', 'had', 'on offer', 'was', 'the best value'],
+    distractors: ['who'],
+    category: 'relative-clause',
+  },
 ];

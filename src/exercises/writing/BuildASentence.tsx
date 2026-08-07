@@ -19,7 +19,7 @@ type QState = {
 
 function freshState(exam: SentenceQuestion[]): QState[] {
   return exam.map((q) => ({
-    bank: shuffle([...q.correct, q.distractor]),
+    bank: shuffle([...q.correct, ...q.distractors]),
     placed: [],
     checked: false,
     revealed: false,
@@ -28,7 +28,9 @@ function freshState(exam: SentenceQuestion[]): QState[] {
 }
 
 function fullAnswer(q: SentenceQuestion) {
-  return q.prompt ? `${q.prompt} ${q.correct.join(' ')}` : q.correct.join(' ');
+  const body = q.prompt ? `${q.prompt} ${q.correct.join(' ')}` : q.correct.join(' ');
+  // The mark is never a chip — it sits in place, as the task describes.
+  return q.isQuestion ? `${body}?` : `${body}.`;
 }
 
 export function BuildASentence() {
@@ -228,6 +230,10 @@ export function BuildASentence() {
                 </div>
               );
             })}
+            {/* Already positioned, exactly as the task presents it. */}
+            <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--accent)', marginLeft: 2 }}>
+              {q.isQuestion ? '?' : '.'}
+            </span>
           </div>
 
           <div className="word-bank">
@@ -263,7 +269,7 @@ export function BuildASentence() {
               disabled={locked}
               onClick={() =>
                 patch({
-                  bank: shuffle([...q.correct, q.distractor]),
+                  bank: shuffle([...q.correct, ...q.distractors]),
                   placed: [],
                   checked: false,
                   revealed: false,
@@ -297,7 +303,7 @@ export function BuildASentence() {
           {s.revealed && (
             <div className="feedback reveal" style={{ display: 'block' }}>
               <strong>Answer:</strong> <em>{fullAnswer(q)}</em> &nbsp;|&nbsp; <strong>Distractor:</strong>{' '}
-              <span style={{ color: 'var(--error-text)' }}>{q.distractor}</span>
+              <span style={{ color: 'var(--error-text)' }}>{q.distractors.join(', ')}</span>
             </div>
           )}
         </div>

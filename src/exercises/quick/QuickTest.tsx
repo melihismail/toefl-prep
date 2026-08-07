@@ -29,7 +29,7 @@ function blankAnswer(item: QuickItem): Answer {
     case 'letters':
       return { kind: 'letters', inputs: item.blanks.map(() => '') };
     case 'order':
-      return { kind: 'order', placed: [], bank: shuffle([...item.correct, item.distractor]) };
+      return { kind: 'order', placed: [], bank: shuffle([...item.correct, ...item.distractors]) };
     case 'write':
       return { kind: 'write', text: '' };
     case 'speak':

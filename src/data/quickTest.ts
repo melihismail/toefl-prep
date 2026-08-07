@@ -7,6 +7,7 @@ import { conversationPassages } from './listening/conversation.ts';
 import { academicTalkPassages } from './listening/academicTalk.ts';
 import { chooseResponseQuestions } from './listening/chooseAResponse.ts';
 import { sentenceQuestions } from './writing/buildASentence.ts';
+import { SENTENCE_CATEGORY_LABEL } from './writing/types.ts';
 import { emailPrompts } from './writing/writeAnEmail.ts';
 import { discussionPrompts } from './writing/academicDiscussion.ts';
 import { repeatSentences, interviewQuestions } from './speaking/prompts.ts';
@@ -34,7 +35,14 @@ export type QuickItem = Base &
         audioFile?: string;
       }
     | { kind: 'letters'; title: string; paragraph: string; blanks: { answer: string }[] }
-    | { kind: 'order'; question: string; prompt?: string; correct: string[]; distractor: string }
+    | {
+        kind: 'order';
+        question: string;
+        prompt?: string;
+        correct: string[];
+        distractors: string[];
+        isQuestion?: boolean;
+      }
     /** Free writing — no answer key, so a teacher marks it. */
     | { kind: 'write'; brief: string; task: string; minWords: number; modelAnswer: string }
     /** Spoken aloud — nothing is recorded, so a teacher marks it. */
@@ -156,11 +164,14 @@ export function buildQuickTest(): QuickItem[] {
       kind: 'order',
       skill: 'Sentence structure',
       section: 'writing',
+      // The grammar pattern is the useful grouping on the results screen.
+      type: SENTENCE_CATEGORY_LABEL[q.category],
       practiceHref: '/writing/build-a-sentence',
       question: q.question,
       prompt: q.prompt,
       correct: q.correct,
-      distractor: q.distractor,
+      distractors: q.distractors,
+      isQuestion: q.isQuestion,
     }),
   );
 
