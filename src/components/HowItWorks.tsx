@@ -16,6 +16,11 @@ interface CardProps {
   /** Added for this project: the whole card opens the section's tasks. */
   onClick?: () => void;
   actionLabel?: string;
+  /** Sits on the title line, right-aligned — used for the section's duration. */
+  titleMeta?: React.ReactNode;
+  /** Rendered below the title; used for the section's task list. */
+  content?: React.ReactNode;
+  showNumber?: boolean;
 }
 
 const Pin = ({ className }: { className?: string }) => (
@@ -42,6 +47,9 @@ const Card = ({
   colors: customColors,
   onClick,
   actionLabel,
+  titleMeta,
+  content,
+  showNumber = true,
 }: CardProps) => {
   const defaultBgColors = {
     orange: 'bg-orange-50',
@@ -89,18 +97,22 @@ const Card = ({
         <div
           className={`${bgColor} border ${borderColor} rounded-[15px] p-[15px] h-full flex flex-col relative overflow-hidden`}
         >
-          <span
-            className={`${textColor} text-4xl font-handwriting mb-3`}
-            style={{
-              fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif',
-            }}
-          >
-            {number}
-          </span>
-          <h3 className="text-2xl font-semibold text-neutral-800 leading-none mb-[10px]">
-            {title}
-          </h3>
-          <p className="text-neutral-500 text-sm/5 tracking-tight">{description}</p>
+          {showNumber && (
+            <span
+              className={`${textColor} text-4xl font-handwriting mb-3`}
+              style={{
+                fontFamily: '"Comic Sans MS", "Chalkboard SE", sans-serif',
+              }}
+            >
+              {number}
+            </span>
+          )}
+          <div className="flex items-baseline justify-between gap-2 mb-[10px]">
+            <h3 className="text-2xl font-semibold text-neutral-800 leading-none">{title}</h3>
+            {titleMeta}
+          </div>
+          {description && <p className="text-neutral-500 text-sm/5 tracking-tight">{description}</p>}
+          {content}
           {actionLabel && (
             <span className={`${textColor} text-xs font-semibold mt-3 tracking-tight`}>{actionLabel} →</span>
           )}
@@ -121,6 +133,8 @@ export interface Step {
   };
   onClick?: () => void;
   actionLabel?: string;
+  titleMeta?: React.ReactNode;
+  content?: React.ReactNode;
 }
 
 export interface StepPosition {
@@ -137,6 +151,8 @@ export interface HowItWorksProps {
   /** Connector path to match custom stepPositions; the built-in one is tuned
       to the default offsets and will not line up with your own. */
   pathD?: string;
+  /** The big 01/02 numerals. Off when the cards carry their own content. */
+  showNumbers?: boolean;
 }
 
 const DEFAULT_CARD_POSITIONS: StepPosition[] = [
@@ -159,6 +175,7 @@ export default function HowItWorks({
   stepPositions,
   height: heightOverride,
   pathD: pathOverride,
+  showNumbers = true,
 }: HowItWorksProps) {
   const defaultFeatures: Step[] = [
     {
@@ -271,6 +288,9 @@ export default function HowItWorks({
                   className={position.className}
                   onClick={step.onClick}
                   actionLabel={step.actionLabel}
+                  titleMeta={step.titleMeta}
+                  content={step.content}
+                  showNumber={showNumbers}
                 />
               );
             })}

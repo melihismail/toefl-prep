@@ -20,18 +20,24 @@ const CARD_COLOURS: Record<LearnSection['slug'], { bg: string; text: string; bor
  * and same-side neighbours (1&3, 2&4) are kept 300px apart so they never
  * overlap.
  */
-const TRACK_HEIGHT = 740;
+const TRACK_HEIGHT = 600;
 const STEP_POSITIONS = [
   { className: 'md:absolute md:top-0 md:left-[15%]', rotate: 'rotate-8' },
-  { className: 'md:absolute md:top-[110px] md:right-[15%]', rotate: '-rotate-8' },
-  { className: 'md:absolute md:top-[330px] md:left-[15%]', rotate: 'rotate-8' },
-  { className: 'md:absolute md:top-[440px] md:right-[10%]', rotate: '-rotate-8' },
+  { className: 'md:absolute md:top-[90px] md:right-[15%]', rotate: '-rotate-8' },
+  { className: 'md:absolute md:top-[260px] md:left-[15%]', rotate: 'rotate-8' },
+  { className: 'md:absolute md:top-[350px] md:right-[10%]', rotate: '-rotate-8' },
 ];
 /** Curves through the card centres implied by STEP_POSITIONS. */
 const CONNECTOR =
-  'M 290 138 C 500 138, 550 248, 710 248' +
-  ' C 850 248, 500 330, 290 468' +
-  ' C 290 528, 550 578, 760 578';
+  'M 290 118 C 500 118, 550 208, 710 208' +
+  ' C 850 208, 500 280, 290 378' +
+  ' C 290 430, 550 468, 760 468';
+
+/** '~5 min' / '7 min' → '5m', so the rows stay narrow. */
+function minutesOf(time: string): string {
+  const n = time.match(/\d+/);
+  return n ? `${n[0]}m` : time;
+}
 
 export function Learn() {
   const { lang } = useLanguage();
@@ -39,10 +45,47 @@ export function Learn() {
 
   const steps: Step[] = learnSections.map((section) => ({
     title: section.name[lang],
-    description: section.desc[lang],
+    // The task rows say what the section is; a paragraph on top of them was
+    // just making the cards tall.
+    description: '',
     colors: CARD_COLOURS[section.slug],
-    actionLabel: `${section.tasks.length} ${lang === 'tr' ? 'görev' : 'tasks'} · ${section.time}`,
     onClick: () => setOpen(section),
+    titleMeta: (
+      <span style={{ color: section.color, fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+        {section.time}
+      </span>
+    ),
+    content: (
+      <ul style={{ display: 'flex', flexDirection: 'column', gap: 6, listStyle: 'none', marginTop: 2 }}>
+        {section.tasks.map((task, i) => (
+          <li key={task.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span
+              style={{
+                width: 17,
+                height: 17,
+                borderRadius: '50%',
+                background: section.color,
+                color: '#fff',
+                fontSize: 10,
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              {i + 1}
+            </span>
+            <span style={{ flex: 1, fontSize: 12.5, lineHeight: 1.3, color: section.colorDark }}>
+              {task.name[lang]}
+            </span>
+            <span style={{ fontSize: 11.5, fontWeight: 700, color: section.color, whiteSpace: 'nowrap' }}>
+              {minutesOf(task.time)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    ),
   }));
 
   return (
@@ -63,6 +106,7 @@ export function Learn() {
         stepPositions={STEP_POSITIONS}
         height={TRACK_HEIGHT}
         pathD={CONNECTOR}
+        showNumbers={false}
         className="learn-works"
       />
 
