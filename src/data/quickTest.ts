@@ -67,7 +67,8 @@ export function buildQuickTest(): QuickItem[] {
   const items: QuickItem[] = [];
 
   // ── Reading ────────────────────────────────────────────────────────────────
-  take(cTestTexts, 3).forEach((t) => {
+  // One text only: each now yields ten blanks, so three was thirty fields.
+  take(cTestTexts, 1).forEach((t) => {
     const { paragraph, blanks } = buildCTest(t.text);
     items.push({
       kind: 'letters',
