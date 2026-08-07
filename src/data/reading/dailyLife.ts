@@ -507,6 +507,756 @@ Students who do not renew by August 31st will have their vehicles towed at the o
         answer: 1
       }
     ]
+  },
+
+  // ── 11. Notice ──────────────────────────────────────────────────────────────
+  {
+    title: "Laundry Room Closure",
+    textType: "Notice",
+    passage: `NOTICE TO ALL RESIDENTS
+
+The laundry room on the ground floor of Blackwood Hall will be closed from Monday 4 March to Thursday 7 March while the machines are replaced.
+
+During this period, residents may use the laundry facilities in Preston Hall, which is a five-minute walk away. Your building key card will grant access automatically; no separate registration is required.
+
+The new machines will accept card payment only. The coin slots currently in use will be removed, so please spend any remaining laundry tokens before 4 March. Unused tokens cannot be refunded after that date.`,
+    questions: [
+      {
+        stem: "What is the main purpose of this notice?",
+        options: [
+          "To announce an increase in laundry prices",
+          "To inform residents of a temporary closure and the alternative arrangements",
+          "To ask residents to report faulty washing machines",
+          "To advertise a newly opened laundry facility"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What must residents do before 4 March?",
+        options: [
+          "Register for access to Preston Hall",
+          "Return their building key card to reception",
+          "Use up any laundry tokens they still hold",
+          "Collect a refund for unused tokens"
+        ],
+        answer: 2
+      },
+      {
+        stem: "What can be inferred about the new machines?",
+        options: [
+          "They will be slower than the current ones",
+          "They will not accept cash payment",
+          "They will be available only to Preston Hall residents",
+          "They will require a separate registration"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 12. Email ───────────────────────────────────────────────────────────────
+  {
+    title: "Internship Interview Invitation",
+    textType: "Email",
+    subject: "Interview invitation – Summer Research Internship",
+    from: "Careers Office <careers@westfield.edu>",
+    passage: `Dear Applicant,
+
+Thank you for applying to the Summer Research Internship. We are pleased to invite you to an interview on Wednesday 12 April.
+
+Interviews will be held in Room 214 of the Science Building and will last approximately thirty minutes. Please arrive fifteen minutes early to complete a short registration form.
+
+Bring a printed copy of your transcript. You do not need to prepare a presentation, but you should be ready to discuss the research proposal you submitted with your application.
+
+If this date is not possible, reply to this message by 5 April and we will try to arrange an alternative. We cannot guarantee that later requests can be accommodated.`,
+    questions: [
+      {
+        stem: "What should applicants bring to the interview?",
+        options: [
+          "A printed copy of their transcript",
+          "A short presentation about their research",
+          "Two letters of reference",
+          "A completed registration form"
+        ],
+        answer: 0
+      },
+      {
+        stem: "Which of the following is NOT mentioned in the email?",
+        options: [
+          "The location of the interview",
+          "How long the interview will last",
+          "The name of the interviewer",
+          "The deadline for requesting a different date"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 13. Announcement ────────────────────────────────────────────────────────
+  {
+    title: "Campus Shuttle Timetable Change",
+    textType: "Announcement",
+    passage: `From Monday 15 January, the campus shuttle will run on a revised timetable.
+
+Services between the main campus and the railway station will depart every twenty minutes rather than every fifteen. The first departure remains at 07:10 and the last at 23:30.
+
+A new stop has been added outside the sports centre. Passengers travelling to the sports centre no longer need to change at the library stop.
+
+Fares are unchanged. Students travelling with a valid card continue to ride free of charge; visitors pay two pounds per journey.`,
+    questions: [
+      {
+        stem: "What is the main change described in this announcement?",
+        options: [
+          "The shuttle will stop running at weekends",
+          "Services will run less frequently and a new stop has been added",
+          "Fares will increase for all passengers",
+          "The route to the railway station has been cancelled"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What is true of passengers going to the sports centre?",
+        options: [
+          "They must change at the library stop",
+          "They now pay an additional fare",
+          "They can travel there without changing",
+          "They must book a seat in advance"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 14. Message ─────────────────────────────────────────────────────────────
+  {
+    title: "Study Group Rescheduled",
+    textType: "Message",
+    passage: `Hey — quick change of plan for tomorrow.
+
+The seminar room we booked has been taken for a staff meeting, so I have moved us to the group study area on the third floor of the library. Same time, half past two.
+
+Bring your notes from week six if you have them. I still cannot make sense of the second case study and I am hoping someone else has.
+
+Also, the café downstairs closes at four now, so grab a coffee on the way in if you want one.`,
+    questions: [
+      {
+        stem: "Why has the meeting place changed?",
+        options: [
+          "The library is closing early",
+          "The original room was needed for a staff meeting",
+          "More people are joining the group",
+          "The café downstairs is now closed"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What does the writer ask the others to bring?",
+        options: [
+          "Coffee for the group",
+          "A copy of the second case study",
+          "Their notes from week six",
+          "The room booking confirmation"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 15. Social Post ─────────────────────────────────────────────────────────
+  {
+    title: "Lost Keys Post",
+    textType: "Social Post",
+    passage: `Has anyone handed in a set of keys today? Three keys on a blue cord, one of them a small locker key.
+
+I think I dropped them somewhere between the north entrance and the lecture theatre this morning, but I have already checked both and found nothing.
+
+I have asked at the security desk and they said nothing has been brought in yet. If you find them, message me here rather than leaving them anywhere — I would rather collect them in person.
+
+Thanks, and sorry for cluttering the feed.`,
+    questions: [
+      {
+        stem: "What has the writer already done?",
+        options: [
+          "Requested a replacement locker key",
+          "Asked at the security desk",
+          "Reported the loss to the police",
+          "Left a note at the north entrance"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What does the writer ask people to do if they find the keys?",
+        options: [
+          "Hand them in at the security desk",
+          "Leave them at the lecture theatre",
+          "Send a message rather than leaving them somewhere",
+          "Post a photograph of them online"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 16. Notice ──────────────────────────────────────────────────────────────
+  {
+    title: "Pharmacy Opening Hours",
+    textType: "Notice",
+    passage: `PHARMACY — REVISED OPENING HOURS
+
+From 1 September the pharmacy will open at 8:30 on weekdays and close at 18:00. On Saturdays we will open from 9:00 until 13:00. We will no longer open on Sundays.
+
+Repeat prescriptions ordered before 15:00 will normally be ready the same working day. Orders placed after that time will be ready the following morning.
+
+If you need medicine urgently when we are closed, the hospital pharmacy on Grange Road is open at all times.`,
+    questions: [
+      {
+        stem: "What change is announced in this notice?",
+        options: [
+          "The pharmacy will close permanently in September",
+          "The pharmacy will no longer open on Sundays",
+          "Repeat prescriptions will no longer be available",
+          "The pharmacy is moving to Grange Road"
+        ],
+        answer: 1
+      },
+      {
+        stem: "When will a prescription ordered at 16:00 be ready?",
+        options: [
+          "Within one hour",
+          "The same working day",
+          "The following morning",
+          "After three working days"
+        ],
+        answer: 2
+      },
+      {
+        stem: "What can be inferred about the hospital pharmacy?",
+        options: [
+          "It is cheaper than the campus pharmacy",
+          "It can be used outside the campus pharmacy's hours",
+          "It only serves hospital patients",
+          "It requires an appointment"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 17. Email ───────────────────────────────────────────────────────────────
+  {
+    title: "Room Inspection Notice",
+    textType: "Email",
+    subject: "Room inspections – week beginning 22 May",
+    from: "Accommodation Office <housing@westfield.edu>",
+    passage: `Dear Resident,
+
+Routine room inspections will take place during the week beginning 22 May. Staff will visit each room between 10:00 and 16:00 and will knock before entering.
+
+You do not need to be present. Please make sure that floors are clear, that windows can be opened, and that no cooking equipment is being stored in bedrooms.
+
+Inspections usually take under five minutes. If a problem is found, you will receive a written note and a follow-up visit will be arranged for the following week.
+
+Requests to change the day of your inspection cannot be accepted, as staff work through the building floor by floor.`,
+    questions: [
+      {
+        stem: "What are residents asked to do before the inspection?",
+        options: [
+          "Remain in their rooms between 10:00 and 16:00",
+          "Clear the floor and remove cooking equipment from bedrooms",
+          "Confirm their preferred inspection day",
+          "Report any damage in writing"
+        ],
+        answer: 1
+      },
+      {
+        stem: "Why can residents not choose a different inspection day?",
+        options: [
+          "Because inspections are carried out floor by floor",
+          "Because there are too few staff available",
+          "Because the dates are set by the university council",
+          "Because residents were asked to choose earlier in the year"
+        ],
+        answer: 0
+      }
+    ]
+  },
+
+  // ── 18. Announcement ────────────────────────────────────────────────────────
+  {
+    title: "Volunteer Fair",
+    textType: "Announcement",
+    passage: `The annual Volunteer Fair will be held in the Great Hall on Thursday 9 November from 11:00 to 15:00.
+
+More than forty local organisations will attend, including animal shelters, community gardens, tutoring schemes and a hospital visiting service. Most are looking for volunteers who can give two or three hours a week.
+
+No booking is needed and you may arrive at any point during the afternoon. Bring a pen; several organisations ask you to sign up on paper rather than online.
+
+Free refreshments will be served until 14:00.`,
+    questions: [
+      {
+        stem: "What are attendees advised to bring?",
+        options: [
+          "A printed copy of their timetable",
+          "A pen for signing up on paper",
+          "Proof of previous volunteering",
+          "A booking confirmation"
+        ],
+        answer: 1
+      },
+      {
+        stem: "Which of the following is NOT stated about the fair?",
+        options: [
+          "Booking in advance is unnecessary",
+          "Refreshments are available for part of the event",
+          "Most organisations want a few hours a week",
+          "Attendance counts towards course credit"
+        ],
+        answer: 3
+      }
+    ]
+  },
+
+  // ── 19. Message ─────────────────────────────────────────────────────────────
+  {
+    title: "Borrowed Charger",
+    textType: "Message",
+    passage: `Sorry, I only just realised I still have your laptop charger in my bag from Friday.
+
+I am on campus all day tomorrow, so I can leave it at the porters' lodge if that is easier than trying to meet. They keep things behind the desk and you just give your name.
+
+If you need it before then, I finish work at six tonight and could drop it round on my way home. Let me know which suits you.`,
+    questions: [
+      {
+        stem: "Why is the writer sending this message?",
+        options: [
+          "To ask to borrow a laptop charger",
+          "To return something they took by mistake",
+          "To arrange a meeting on campus tomorrow",
+          "To report a lost item to the porters"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What does the writer offer to do if the charger is needed tonight?",
+        options: [
+          "Leave it at the porters' lodge",
+          "Post it the following morning",
+          "Bring it round after finishing work",
+          "Meet at the writer's workplace"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 20. Notice ──────────────────────────────────────────────────────────────
+  {
+    title: "Bicycle Storage Rules",
+    textType: "Notice",
+    passage: `BICYCLE STORAGE
+
+Bicycles must be left in the covered racks beside the east car park. Bicycles chained to railings, stairways or lamp posts obstruct access and will be removed without notice.
+
+Each resident may register one bicycle. Registration is free and is completed at the accommodation office; you will be given a numbered tag to attach to the frame.
+
+Untagged bicycles left in the racks for more than fourteen days will be treated as abandoned and donated to a local repair charity.`,
+    questions: [
+      {
+        stem: "What happens to bicycles chained to railings?",
+        options: [
+          "They are tagged by staff",
+          "They are removed without warning",
+          "Their owners are fined",
+          "They are moved to the east car park"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What is required in order to keep a bicycle in the racks?",
+        options: [
+          "Payment of a small annual fee",
+          "A numbered tag obtained by registering",
+          "Permission from the east car park attendant",
+          "A lock supplied by the accommodation office"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 21. Email ───────────────────────────────────────────────────────────────
+  {
+    title: "Delivery Attempt Failed",
+    textType: "Email",
+    subject: "We missed you – parcel WX-4471",
+    from: "Northgate Deliveries <noreply@northgate-delivery.com>",
+    passage: `Hello,
+
+Our driver attempted to deliver parcel WX-4471 today at 14:20 but was unable to gain access to the building.
+
+The parcel has been returned to the Northgate depot on Mill Street. You may collect it in person between 08:00 and 19:00 on weekdays, bringing photographic identification and this reference number.
+
+Alternatively, you can arrange a second delivery attempt through the link below. Second attempts are free; a third attempt is charged at £3.
+
+Parcels not collected or redelivered within ten days are returned to the sender.`,
+    questions: [
+      {
+        stem: "Why was the parcel not delivered?",
+        options: [
+          "Nobody was at home",
+          "The driver could not get into the building",
+          "The address was incorrect",
+          "The parcel was damaged in transit"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What must a customer bring in order to collect the parcel?",
+        options: [
+          "Payment of a £3 fee",
+          "A printed copy of the email only",
+          "Photographic identification and the reference number",
+          "A signed authorisation form"
+        ],
+        answer: 2
+      },
+      {
+        stem: "What can be inferred about a third delivery attempt?",
+        options: [
+          "It is not offered",
+          "It costs the customer money",
+          "It must be arranged at the depot",
+          "It is made within ten days automatically"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 22. Social Post ─────────────────────────────────────────────────────────
+  {
+    title: "Flatmate Wanted",
+    textType: "Social Post",
+    passage: `We are looking for someone to take the spare room in our flat from the start of next term.
+
+It is a ten-minute walk from the science campus, above a bakery, so it smells extremely good in the mornings and is a little noisy from about six. Rent is £430 a month including bills.
+
+There are three of us already: two postgraduates and one very sleepy cat. We are quiet during the week but do cook together most Sundays.
+
+Message me if you want to come and see it.`,
+    questions: [
+      {
+        stem: "What does the writer suggest is a drawback of the flat?",
+        options: [
+          "The rent does not include bills",
+          "It is far from the science campus",
+          "There is noise early in the morning",
+          "There is no kitchen to share"
+        ],
+        answer: 2
+      },
+      {
+        stem: "What can be inferred about the current residents?",
+        options: [
+          "They rarely spend time together",
+          "They are all undergraduates",
+          "They eat together at weekends",
+          "They are moving out at the end of term"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 23. Notice ──────────────────────────────────────────────────────────────
+  {
+    title: "Swimming Pool Maintenance",
+    textType: "Notice",
+    passage: `The swimming pool will be drained for annual maintenance from 2 to 16 August.
+
+The gym, squash courts and changing rooms remain open throughout. Members who use the pool exclusively may pause their membership for the fortnight by speaking to reception before 1 August; the two weeks will then be added to the end of the membership.
+
+Swimming lessons booked for August will be rescheduled to September at no extra cost. Those unable to attend in September will be refunded in full.`,
+    questions: [
+      {
+        stem: "What is the main purpose of this notice?",
+        options: [
+          "To announce a rise in membership fees",
+          "To explain a temporary pool closure and the options available",
+          "To advertise new swimming lessons in September",
+          "To announce the opening of a second pool"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What must a member do to pause their membership?",
+        options: [
+          "Apply online during August",
+          "Speak to reception before 1 August",
+          "Cancel their swimming lessons first",
+          "Request a full refund"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 24. Announcement ────────────────────────────────────────────────────────
+  {
+    title: "Exam Hall Regulations",
+    textType: "Announcement",
+    passage: `Candidates sitting examinations in the Sports Hall should note the following.
+
+Doors open thirty minutes before each paper. Candidates arriving more than thirty minutes after the start will not be admitted and must apply to sit the paper at the next opportunity.
+
+Bags, coats and electronic devices must be left in the racks at the entrance. Water is permitted in a clear bottle with the label removed.
+
+Candidates may not leave during the first hour or the final fifteen minutes of any paper.`,
+    questions: [
+      {
+        stem: "What happens to a candidate who arrives forty minutes late?",
+        options: [
+          "They are admitted but given less time",
+          "They are refused entry and must sit the paper later",
+          "They must sit at the back of the hall",
+          "They are given a written warning"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What are candidates allowed to take to their desk?",
+        options: [
+          "A mobile phone switched off",
+          "A coat, if the hall is cold",
+          "Water in a clear bottle without a label",
+          "A bag containing stationery"
+        ],
+        answer: 2
+      },
+      {
+        stem: "Which of the following is NOT stated in the announcement?",
+        options: [
+          "When the doors open",
+          "Where bags must be left",
+          "How long each paper lasts",
+          "When candidates may not leave"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 25. Email ───────────────────────────────────────────────────────────────
+  {
+    title: "Refund Request Reply",
+    textType: "Email",
+    subject: "Re: Refund for damaged headphones",
+    from: "Riverside Electronics <support@riverside-electronics.co.uk>",
+    passage: `Dear Customer,
+
+Thank you for contacting us about the headphones that arrived damaged.
+
+We are able to offer either a replacement or a full refund. If you would prefer a replacement, we can dispatch it today and it should arrive within two working days. A refund takes rather longer, usually five to seven working days once we receive the returned item.
+
+Either way, please return the damaged headphones in their original packaging using the prepaid label attached to this email. There is no need to include the manual or cables.
+
+Let us know which option you would prefer and we will arrange it immediately.`,
+    questions: [
+      {
+        stem: "What does the company offer the customer?",
+        options: [
+          "A discount on a future purchase",
+          "A replacement or a full refund",
+          "A repair carried out free of charge",
+          "A partial refund and a voucher"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What does the customer NOT need to return?",
+        options: [
+          "The headphones themselves",
+          "The original packaging",
+          "The manual and cables",
+          "The prepaid label"
+        ],
+        answer: 2
+      }
+    ]
+  },
+
+  // ── 26. Message ─────────────────────────────────────────────────────────────
+  {
+    title: "Dentist Appointment Reminder",
+    textType: "Message",
+    passage: `Reminder: you have a dental check-up at Parkview Dental on Tuesday 14 May at 09:40.
+
+Please arrive ten minutes early. If you have changed address or telephone number since your last visit, let reception know when you arrive.
+
+To cancel or move the appointment, reply CHANGE to this message or call us during opening hours. Appointments cancelled with less than twenty-four hours' notice may be charged.`,
+    questions: [
+      {
+        stem: "What is the patient asked to do on arrival?",
+        options: [
+          "Pay for the appointment in advance",
+          "Report any change of address or telephone number",
+          "Complete a medical history form",
+          "Reply CHANGE to the message"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What can be inferred about cancelling on the same day?",
+        options: [
+          "It is not permitted",
+          "It may result in a charge",
+          "It requires a written letter",
+          "It is free of charge"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 27. Notice ──────────────────────────────────────────────────────────────
+  {
+    title: "Quiet Study Floor",
+    textType: "Notice",
+    passage: `THIRD FLOOR — SILENT STUDY
+
+This floor is reserved for silent individual study. Conversation, group work and telephone calls are not permitted at any time.
+
+Group study rooms are available on the first floor and may be booked for up to two hours through the library website. Discussion is welcome in the ground floor commons.
+
+Headphones may be used provided that no sound is audible to others. Food is not allowed on this floor; drinks are permitted in containers with lids.
+
+Staff will ask anyone disturbing others to move to another floor.`,
+    questions: [
+      {
+        stem: "Where should students go if they want to work together?",
+        options: [
+          "The third floor, using headphones",
+          "The first floor group study rooms",
+          "The library entrance hall",
+          "Anywhere, provided they speak quietly"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What is permitted on the third floor?",
+        options: [
+          "Drinks in containers with lids",
+          "Short telephone calls",
+          "Snacks that make no noise",
+          "Quiet discussion between two people"
+        ],
+        answer: 0
+      }
+    ]
+  },
+
+  // ── 28. Social Post ─────────────────────────────────────────────────────────
+  {
+    title: "Free Furniture",
+    textType: "Social Post",
+    passage: `Moving out on Saturday and giving away a desk, a bookshelf and a floor lamp. All free, all in decent condition apart from a scratch on the desk that you will only notice if you look for it.
+
+The catch is that you have to collect from the fourth floor and there is no lift in the building. The bookshelf comes apart, but the desk does not.
+
+First to reply gets first choice. I would rather someone used them than see them go in a skip.`,
+    questions: [
+      {
+        stem: "What difficulty does the writer mention?",
+        options: [
+          "The furniture is in poor condition",
+          "The items must be carried down four floors",
+          "Collection is only possible on Saturday morning",
+          "The bookshelf cannot be taken apart"
+        ],
+        answer: 1
+      },
+      {
+        stem: "What can be inferred about the writer's attitude?",
+        options: [
+          "They hope to sell the items quickly",
+          "They would prefer the items to be reused rather than thrown away",
+          "They are unwilling to help with collection",
+          "They expect nobody to reply"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 29. Announcement ────────────────────────────────────────────────────────
+  {
+    title: "Careers Talk Series",
+    textType: "Announcement",
+    passage: `The department is running a series of four careers talks this term, held on Wednesday afternoons at 16:00 in Lecture Room B.
+
+The speakers are all former students of the department who now work in publishing, environmental consultancy, teaching and data analysis. Each talk lasts about forty minutes and is followed by questions.
+
+Places are limited to sixty and must be reserved through the department office. Reservations open two weeks before each talk. Students who reserve a place and then cannot attend are asked to cancel so that the place can be offered to someone else.`,
+    questions: [
+      {
+        stem: "Who will be giving the talks?",
+        options: [
+          "Members of the department's teaching staff",
+          "Employers currently recruiting graduates",
+          "Former students of the department",
+          "Careers advisers from the university"
+        ],
+        answer: 2
+      },
+      {
+        stem: "What are students who cannot attend asked to do?",
+        options: [
+          "Send someone else in their place",
+          "Cancel their reservation",
+          "Inform the speaker directly",
+          "Reserve a place for a later talk"
+        ],
+        answer: 1
+      }
+    ]
+  },
+
+  // ── 30. Email ───────────────────────────────────────────────────────────────
+  {
+    title: "Bank Card Expiry",
+    textType: "Email",
+    subject: "Your new card is on its way",
+    from: "Meridian Bank <noreply@meridianbank.com>",
+    passage: `Dear Customer,
+
+Your current debit card expires at the end of this month. A replacement has been posted to the address we hold for you and should arrive within five working days.
+
+Your new card has the same account number but a different security code and expiry date. Any regular payments you have set up will continue as normal, but you will need to update the details for anything you pay for manually online.
+
+Please destroy your old card once the new one is active. You can activate the new card at any cash machine or in the mobile app.`,
+    questions: [
+      {
+        stem: "What does the customer need to update?",
+        options: [
+          "Their account number with the bank",
+          "Card details saved for manual online payments",
+          "The address held by the bank",
+          "Their regular payment arrangements"
+        ],
+        answer: 1
+      },
+      {
+        stem: "How can the new card be activated?",
+        options: [
+          "By visiting a branch in person",
+          "By replying to this email",
+          "At a cash machine or in the mobile app",
+          "It activates automatically on arrival"
+        ],
+        answer: 2
+      }
+    ]
   }
 
 ];
