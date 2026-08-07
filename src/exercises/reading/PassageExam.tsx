@@ -9,18 +9,14 @@ import './PassageExam.css';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
+/** Answers only — the exam gives no per-passage feedback, so there is no
+    checked/revealed state to track. Everything is graded on the results screen. */
 type PassageState = {
   selected: number[];
-  checked: boolean;
-  revealed: boolean;
 };
 
 function freshState(exam: ReadingPassage[]): PassageState[] {
-  return exam.map((p) => ({
-    selected: p.questions.map(() => -1),
-    checked: false,
-    revealed: false,
-  }));
+  return exam.map((p) => ({ selected: p.questions.map(() => -1) }));
 }
 
 /** Step the passage down a size at a time rather than let it scroll. */
@@ -91,10 +87,6 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
     return () => ro.disconnect();
   }, [currentIdx, p]);
 
-  const patch = useCallback((idx: number, change: Partial<PassageState>) => {
-    setState((prev) => prev.map((v, i) => (i === idx ? { ...v, ...change } : v)));
-  }, []);
-
   // Reads prev inside the updater: a closure snapshot would make two selections
   // in the same batch overwrite each other.
   const selectOption = useCallback((idx: number, qi: number, oi: number) => {
@@ -102,15 +94,6 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
       prev.map((v, i) => (i === idx ? { ...v, selected: v.selected.map((x, k) => (k === qi ? oi : x)) } : v)),
     );
   }, []);
-
-  const countCorrect = useCallback(
-    (idx: number) => exam[idx].questions.filter((q, qi) => state[idx].selected[qi] === q.answer).length,
-    [exam, state],
-  );
-  const isAllCorrect = useCallback(
-    (idx: number) => countCorrect(idx) === exam[idx].questions.length,
-    [countCorrect, exam],
-  );
 
   const score = useMemo(() => {
     let total = 0;
@@ -123,8 +106,6 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
   }, [exam, state]);
 
   function finish() {
-    // Matches the original: unchecked passages are marked checked on finish.
-    setState((prev) => prev.map((v) => (v.checked || v.revealed ? v : { ...v, checked: true })));
     setFinished(true);
   }
 
@@ -219,7 +200,6 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
     );
   }
 
-  const locked = s.checked || s.revealed;
   const allAnswered = s.selected.every((v) => v !== -1);
 
   return (
@@ -274,21 +254,12 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
               <div className="q-stem">{q.stem}</div>
               <div className="options">
                 {q.options.map((opt, oi) => {
+                  // Answers stay changeable until the exam is finished.
                   const isSel = s.selected[qi] === oi;
-                  const isCorr = q.answer === oi;
-                  const cls = ['option'];
-                  if (locked) {
-                    cls.push('disabled');
-                    if (isCorr) cls.push('correct-answer');
-                    else if (isSel) cls.push('wrong-answer');
-                  } else if (isSel) {
-                    cls.push('selected');
-                  }
                   return (
                     <button
                       key={oi}
-                      className={cls.join(' ')}
-                      disabled={locked}
+                      className={`option${isSel ? ' selected' : ''}`}
                       onClick={() => selectOption(currentIdx, qi, oi)}
                     >
                       <span className="option-letter">{LETTERS[oi]})</span>
@@ -300,49 +271,6 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
             </div>
           ))}
 
-          <div className="btn-row" style={{ marginTop: '1.5rem' }}>
-            <button
-              className="btn btn-primary"
-              disabled={!allAnswered || locked}
-              onClick={() => patch(currentIdx, { checked: true })}
-            >
-              {s.checked ? (isAllCorrect(currentIdx) ? 'All correct ✓' : 'Wrong ✗') : 'Check answer ↗'}
-            </button>
-            <button
-              className="btn btn-outline"
-              disabled={s.revealed}
-              onClick={() => patch(currentIdx, { selected: p.questions.map((q) => q.answer), revealed: true })}
-            >
-              {s.revealed ? 'Answer shown' : 'Show answer'}
-            </button>
-            <button
-              className="btn"
-              disabled={locked}
-              onClick={() =>
-                patch(currentIdx, { selected: p.questions.map(() => -1), checked: false, revealed: false })
-              }
-            >
-              Reset
-            </button>
-          </div>
-
-          {s.checked && (
-            <div
-              className={`feedback ${isAllCorrect(currentIdx) ? 'correct' : 'wrong'}`}
-              style={{ display: 'block' }}
-            >
-              {isAllCorrect(currentIdx) ? (
-                <strong>All correct!</strong>
-              ) : (
-                <>
-                  <strong>
-                    {countCorrect(currentIdx)} of {p.questions.length} correct.
-                  </strong>{' '}
-                  Wrong answers highlighted.
-                </>
-              )}
-            </div>
-          )}
         </section>
       </div>
 
