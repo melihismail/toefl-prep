@@ -5,10 +5,10 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import {
   buildQuickTest,
-  categoryOf,
   isScorable,
   SECTION_LABEL,
   type QuickItem,
+  type QuickSection,
 } from '../../data/quickTest.ts';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
@@ -94,27 +94,64 @@ export function QuickTest() {
     void el.play().catch(() => setPlaying(false));
   }
 
+  type TypeRow = { name: string; correct: number; total: number };
+  type ExerciseRow = { skill: string; href: string; correct: number; total: number; types: TypeRow[] };
+  type SectionRow = {
+    section: QuickSection;
+    correct: number;
+    total: number;
+    exercises: ExerciseRow[];
+    teacher: { item: QuickItem; answer: Answer }[];
+  };
+
+  /** Grouped section → exercise → question type, in the order they were sat. */
   const results = useMemo(() => {
     // Only what was actually reached counts, so quitting early is not punished.
     const seen = items.slice(0, reached + 1);
-    const byCategory = new Map<string, { correct: number; total: number; href: string }>();
+    const order: QuickSection[] = ['reading', 'listening', 'writing', 'speaking'];
+    const sections = new Map<QuickSection, SectionRow>();
     let correct = 0;
     let scored = 0;
+
     seen.forEach((it, i) => {
-      if (!isScorable(it)) return;
-      scored++;
+      const sec =
+        sections.get(it.section) ??
+        ({ section: it.section, correct: 0, total: 0, exercises: [], teacher: [] } as SectionRow);
+      sections.set(it.section, sec);
+
+      if (!isScorable(it)) {
+        sec.teacher.push({ item: it, answer: answers[i] });
+        return;
+      }
+
       const ok = isCorrect(it, answers[i]);
+      scored++;
       if (ok) correct++;
-      const key = categoryOf(it);
-      const row = byCategory.get(key) ?? { correct: 0, total: 0, href: it.practiceHref };
-      row.total++;
-      if (ok) row.correct++;
-      byCategory.set(key, row);
+      sec.total++;
+      if (ok) sec.correct++;
+
+      let ex = sec.exercises.find((e) => e.skill === it.skill);
+      if (!ex) {
+        ex = { skill: it.skill, href: it.practiceHref, correct: 0, total: 0, types: [] };
+        sec.exercises.push(ex);
+      }
+      ex.total++;
+      if (ok) ex.correct++;
+
+      // Only some sources label their questions; skip the row rather than invent one.
+      if (it.type) {
+        let ty = ex.types.find((tt) => tt.name === it.type);
+        if (!ty) {
+          ty = { name: it.type, correct: 0, total: 0 };
+          ex.types.push(ty);
+        }
+        ty.total++;
+        if (ok) ty.correct++;
+      }
     });
-    const review = seen
-      .map((it, i) => ({ it, a: answers[i] }))
-      .filter(({ it }) => !isScorable(it));
-    return { correct, scored, byCategory: [...byCategory.entries()], review, seenCount: seen.length };
+
+    const list = order.map((s) => sections.get(s)).filter((s): s is SectionRow => Boolean(s));
+    return { correct, scored, sections: list, seenCount: seen.length };
   }, [items, answers, reached]);
 
   if (finished) {
@@ -141,68 +178,93 @@ export function QuickTest() {
             </button>
           </div>
 
-          <div className="card">
-            <div className="review-title">What you missed</div>
-            {results.byCategory.length === 0 && <div className="qt-cat-score">Nothing scored yet.</div>}
-            {results.byCategory.map(([name, r]) => {
-              const ok = r.correct === r.total;
-              return (
-                <div className="qt-cat" key={name}>
-                  <div className="qt-cat-head">
-                    <span className={`qt-dot ${ok ? 'ok' : 'bad'}`} aria-hidden="true" />
-                    <span className="qt-cat-name">{name}</span>
-                    <span className="qt-cat-score">
-                      {r.correct}/{r.total}
+          {results.sections.map((sec) => {
+            const pct = sec.total ? Math.round((sec.correct / sec.total) * 100) : 0;
+            return (
+              <div className={`card qt-section section-${sec.section}`} key={sec.section}>
+                <div className="qt-sec-head">
+                  <span className="qt-sec-name">{SECTION_LABEL[sec.section]}</span>
+                  {sec.total > 0 ? (
+                    <span className="qt-sec-score">
+                      {sec.correct}<span className="qt-sec-of">/{sec.total}</span>
                     </span>
-                  </div>
-                  {!ok && (
-                    <Link className="qt-practise" to={r.href}>
-                      Practise this →
-                    </Link>
+                  ) : (
+                    <span className="qt-sec-pending">Teacher marked</span>
                   )}
                 </div>
-              );
-            })}
-          </div>
-
-          {results.review.length > 0 && (
-            <div className="card qt-teacher" style={{ marginTop: '1rem' }}>
-              <div className="review-title">Needs your teacher</div>
-              <p className="qt-teacher-note">
-                Writing and speaking cannot be marked automatically. Show these answers to your teacher for
-                feedback.
-              </p>
-              {results.review.map(({ it, a }, i) => (
-                <div className="qt-cat" key={i}>
-                  <div className="qt-cat-head">
-                    <span className="qt-dot pending" aria-hidden="true" />
-                    <span className="qt-cat-name">{it.skill}</span>
-                    <span className="qt-cat-score">{SECTION_LABEL[it.section]}</span>
+                {sec.total > 0 && (
+                  <div className="qt-sec-bar">
+                    <div className="qt-sec-bar-fill" style={{ width: `${pct}%` }} />
                   </div>
-                  {it.kind === 'write' && (
-                    <div className="qt-teacher-answer">
-                      {a.kind === 'write' && a.text.trim() ? (
-                        <>
-                          <span className="qt-teacher-count">{countWords(a.text)} words</span>
-                          <div className="qt-teacher-text">{a.text}</div>
-                        </>
-                      ) : (
-                        <span className="qt-cat-score">Not attempted</span>
+                )}
+
+                {sec.exercises.map((ex) => {
+                  const done = ex.correct === ex.total;
+                  return (
+                    <div className="qt-ex" key={ex.skill}>
+                      <div className="qt-ex-head">
+                        <span className={`qt-dot ${done ? 'ok' : 'bad'}`} aria-hidden="true" />
+                        <span className="qt-ex-name">{ex.skill}</span>
+                        <span className="qt-ex-score">
+                          {ex.correct}/{ex.total}
+                        </span>
+                      </div>
+
+                      {ex.types.length > 0 && (
+                        <div className="qt-types">
+                          {ex.types.map((ty) => (
+                            <span
+                              className={`qt-type-chip${ty.correct === ty.total ? ' ok' : ''}`}
+                              key={ty.name}
+                            >
+                              {ty.name} <strong>{ty.correct}/{ty.total}</strong>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {!done && (
+                        <Link className="qt-practise" to={ex.href}>
+                          Practise this →
+                        </Link>
                       )}
                     </div>
-                  )}
-                  {it.kind === 'speak' && (
-                    <div className="qt-teacher-answer">
-                      <div className="qt-teacher-text">"{it.prompt}"</div>
-                      <span className="qt-cat-score">
-                        {a.kind === 'speak' && a.done ? 'Marked as answered aloud' : 'Not attempted'}
+                  );
+                })}
+
+                {sec.teacher.map(({ item: it, answer: a }, i) => (
+                  <div className="qt-ex" key={`t${i}`}>
+                    <div className="qt-ex-head">
+                      <span className="qt-dot pending" aria-hidden="true" />
+                      <span className="qt-ex-name">{it.skill}</span>
+                      <span className="qt-ex-score qt-ex-pending">
+                        {(a.kind === 'write' && a.text.trim()) || (a.kind === 'speak' && a.done)
+                          ? 'Attempted'
+                          : 'Not attempted'}
                       </span>
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+                    {it.kind === 'write' && a.kind === 'write' && a.text.trim() && (
+                      <div className="qt-teacher-answer">
+                        <span className="qt-teacher-count">{countWords(a.text)} words</span>
+                        <div className="qt-teacher-text">{a.text}</div>
+                      </div>
+                    )}
+                    {it.kind === 'speak' && (
+                      <div className="qt-teacher-answer">
+                        <div className="qt-teacher-text">"{it.prompt}"</div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {sec.teacher.length > 0 && (
+                  <p className="qt-teacher-note">
+                    Writing and speaking are not marked automatically — show these to your teacher.
+                  </p>
+                )}
+              </div>
+            );
+          })}
 
           <div className="restart-row" style={{ marginTop: '1rem' }}>
             <button className="btn btn-primary" onClick={restart}>
