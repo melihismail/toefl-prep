@@ -1,7 +1,8 @@
 import { shuffle } from '../exercises/shuffle.ts';
 import { academicPassages } from './reading/academicPassage.ts';
 import { dailyLifePassages } from './reading/dailyLife.ts';
-import { missingQuestions } from './reading/completeTheWords.ts';
+import { cTestTexts } from './reading/cTestTexts.ts';
+import { buildCTest } from './reading/ctest.ts';
 import { conversationPassages } from './listening/conversation.ts';
 import { academicTalkPassages } from './listening/academicTalk.ts';
 import { chooseResponseQuestions } from './listening/chooseAResponse.ts';
@@ -58,17 +59,18 @@ export function buildQuickTest(): QuickItem[] {
   const items: QuickItem[] = [];
 
   // ── Reading ────────────────────────────────────────────────────────────────
-  take(missingQuestions, 3).forEach((q) =>
+  take(cTestTexts, 3).forEach((t) => {
+    const { paragraph, blanks } = buildCTest(t.text);
     items.push({
       kind: 'letters',
       skill: 'Word building',
       section: 'reading',
       practiceHref: '/reading/complete-the-words',
-      title: q.title,
-      paragraph: q.paragraph,
-      blanks: q.blanks,
-    }),
-  );
+      title: t.title,
+      paragraph,
+      blanks,
+    });
+  });
 
   take(dailyLifePassages, 2).forEach((p) =>
     p.questions.forEach((q) =>

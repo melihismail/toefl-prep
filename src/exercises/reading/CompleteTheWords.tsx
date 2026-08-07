@@ -3,11 +3,19 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
-import { missingQuestions } from '../../data/reading/completeTheWords.ts';
+import { cTestTexts } from '../../data/reading/cTestTexts.ts';
+import { buildCTest } from '../../data/reading/ctest.ts';
 import type { MissingWordsQuestion } from '../../data/reading/types.ts';
 import './CompleteTheWords.css';
 
 const EXAM_SIZE = 10;
+
+/** Truncation is derived from the source text, so every exam is spec-shaped. */
+function buildExam(): MissingWordsQuestion[] {
+  return shuffle(cTestTexts)
+    .slice(0, EXAM_SIZE)
+    .map((t) => ({ title: t.title, ...buildCTest(t.text) }));
+}
 
 type QState = {
   /** One typed string per blank. */
@@ -27,7 +35,7 @@ function gradeOne(q: MissingWordsQuestion, inputs: string[]) {
 
 export function CompleteTheWords() {
   const { t } = useLanguage();
-  const [exam, setExam] = useState<MissingWordsQuestion[]>(() => shuffle(missingQuestions).slice(0, EXAM_SIZE));
+  const [exam, setExam] = useState<MissingWordsQuestion[]>(buildExam);
   const [state, setState] = useState<QState[]>(() => freshState(exam));
   const [currentIdx, setCurrentIdx] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -127,7 +135,7 @@ export function CompleteTheWords() {
   }
 
   function restart() {
-    const fresh = shuffle(missingQuestions).slice(0, EXAM_SIZE);
+    const fresh = buildExam();
     setExam(fresh);
     setState(freshState(fresh));
     setCurrentIdx(0);
