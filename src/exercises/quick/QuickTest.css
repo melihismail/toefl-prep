@@ -35,6 +35,38 @@
 .qt-slots { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
 .qt-prompt { font-size: 15px; font-weight: 700; color: var(--accent); margin-right: 2px; }
 
+.qt-section-banner {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+.qt-teacher-flag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+.qt-task { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 1rem; font-weight: 500; }
+.qt-speak-prompt {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.qt-nav-right { display: flex; gap: 8px; align-items: center; }
+.qt-quit { font-size: 12px; }
+
 /* ── Results ── */
 .qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
 .qt-cat:first-of-type { border-top: none; padding-top: 2px; }
@@ -53,3 +85,19 @@
   text-decoration: none;
 }
 .qt-practise:hover { color: var(--accent-dark); }
+.qt-dot.pending { background: var(--accent-mid); }
+
+.qt-teacher-note { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+.qt-teacher-answer { margin: 6px 0 0 18px; }
+.qt-teacher-count { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.qt-teacher-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  background: rgba(255,255,255,.55);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem;
+  margin-top: 4px;
+}

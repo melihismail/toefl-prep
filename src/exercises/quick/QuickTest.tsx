@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
-import { buildQuickTest, categoryOf, QUICK_TEST_SIZE, type QuickItem } from '../../data/quickTest.ts';
+import {
+  buildQuickTest,
+  categoryOf,
+  isScorable,
+  SECTION_LABEL,
+  type QuickItem,
+} from '../../data/quickTest.ts';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
 
@@ -12,12 +18,23 @@ const LETTERS = ['A', 'B', 'C', 'D'];
 type Answer =
   | { kind: 'mc'; selected: number }
   | { kind: 'letters'; inputs: string[] }
-  | { kind: 'order'; placed: string[]; bank: string[] };
+  | { kind: 'order'; placed: string[]; bank: string[] }
+  | { kind: 'write'; text: string }
+  | { kind: 'speak'; done: boolean };
 
 function blankAnswer(item: QuickItem): Answer {
-  if (item.kind === 'mc') return { kind: 'mc', selected: -1 };
-  if (item.kind === 'letters') return { kind: 'letters', inputs: item.blanks.map(() => '') };
-  return { kind: 'order', placed: [], bank: shuffle([...item.correct, item.distractor]) };
+  switch (item.kind) {
+    case 'mc':
+      return { kind: 'mc', selected: -1 };
+    case 'letters':
+      return { kind: 'letters', inputs: item.blanks.map(() => '') };
+    case 'order':
+      return { kind: 'order', placed: [], bank: shuffle([...item.correct, item.distractor]) };
+    case 'write':
+      return { kind: 'write', text: '' };
+    case 'speak':
+      return { kind: 'speak', done: false };
+  }
 }
 
 function isCorrect(item: QuickItem, a: Answer): boolean {
@@ -28,12 +45,8 @@ function isCorrect(item: QuickItem, a: Answer): boolean {
   return false;
 }
 
-function answered(item: QuickItem, a: Answer): boolean {
-  if (a.kind === 'mc') return a.selected !== -1;
-  if (a.kind === 'letters' && item.kind === 'letters')
-    return item.blanks.every((b, i) => (a.inputs[i] || '').replace(/ /g, '').length === b.answer.length);
-  if (a.kind === 'order' && item.kind === 'order') return a.placed.length === item.correct.length;
-  return false;
+function countWords(text: string) {
+  return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
 export function QuickTest() {
@@ -42,6 +55,8 @@ export function QuickTest() {
   const [answers, setAnswers] = useState<Answer[]>(() => items.map(blankAnswer));
   const [idx, setIdx] = useState(0);
   const [finished, setFinished] = useState(false);
+  /** How far they got, so an early exit only grades what was seen. */
+  const [reached, setReached] = useState(0);
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -53,11 +68,19 @@ export function QuickTest() {
     setAnswers((prev) => prev.map((a, i) => (i === idx ? next : a)));
   }
 
+  function go(next: number) {
+    audio.current?.pause();
+    setPlaying(false);
+    setReached((r) => Math.max(r, next));
+    setIdx(next);
+  }
+
   function restart() {
     const fresh = buildQuickTest();
     setItems(fresh);
     setAnswers(fresh.map(blankAnswer));
     setIdx(0);
+    setReached(0);
     setFinished(false);
   }
 
@@ -72,22 +95,29 @@ export function QuickTest() {
   }
 
   const results = useMemo(() => {
-    const byCategory = new Map<string, { correct: number; total: number; href: string; section: string }>();
+    // Only what was actually reached counts, so quitting early is not punished.
+    const seen = items.slice(0, reached + 1);
+    const byCategory = new Map<string, { correct: number; total: number; href: string }>();
     let correct = 0;
-    items.forEach((it, i) => {
+    let scored = 0;
+    seen.forEach((it, i) => {
+      if (!isScorable(it)) return;
+      scored++;
       const ok = isCorrect(it, answers[i]);
       if (ok) correct++;
       const key = categoryOf(it);
-      const row = byCategory.get(key) ?? { correct: 0, total: 0, href: it.practiceHref, section: it.section };
+      const row = byCategory.get(key) ?? { correct: 0, total: 0, href: it.practiceHref };
       row.total++;
       if (ok) row.correct++;
       byCategory.set(key, row);
     });
-    return { correct, total: items.length, byCategory: [...byCategory.entries()] };
-  }, [items, answers]);
+    const review = seen
+      .map((it, i) => ({ it, a: answers[i] }))
+      .filter(({ it }) => !isScorable(it));
+    return { correct, scored, byCategory: [...byCategory.entries()], review, seenCount: seen.length };
+  }, [items, answers, reached]);
 
   if (finished) {
-    const weak = results.byCategory.filter(([, r]) => r.correct < r.total);
     return (
       <div className="section-reading">
         <LanguageToggle />
@@ -95,14 +125,16 @@ export function QuickTest() {
           <div className="score-hero">
             <div className="score-circle">
               <span className="big">
-                {results.correct}/{results.total}
+                {results.correct}/{results.scored}
               </span>
-              <span className="small">correct</span>
+              <span className="small">scored</span>
             </div>
             <p className="score-msg">
-              {results.correct === results.total
-                ? 'Perfect — nothing to review.'
-                : `${weak.length} area${weak.length === 1 ? '' : 's'} to work on.`}
+              {results.seenCount < items.length
+                ? `Stopped after ${results.seenCount} of ${items.length} questions.`
+                : results.correct === results.scored
+                  ? 'Perfect on everything that could be marked.'
+                  : 'Here is what to work on.'}
             </p>
             <button className="btn btn-primary" onClick={restart}>
               New quick test
@@ -111,6 +143,7 @@ export function QuickTest() {
 
           <div className="card">
             <div className="review-title">What you missed</div>
+            {results.byCategory.length === 0 && <div className="qt-cat-score">Nothing scored yet.</div>}
             {results.byCategory.map(([name, r]) => {
               const ok = r.correct === r.total;
               return (
@@ -132,44 +165,44 @@ export function QuickTest() {
             })}
           </div>
 
-          <div className="card" style={{ marginTop: '1rem' }}>
-            <div className="review-title">Answers</div>
-            {items.map((it, i) => {
-              const ok = isCorrect(it, answers[i]);
-              const a = answers[i];
-              let given = '(not answered)';
-              let correctText = '';
-              if (it.kind === 'mc' && a.kind === 'mc') {
-                given = a.selected === -1 ? given : `${LETTERS[a.selected]}) ${it.options[a.selected]}`;
-                correctText = `${LETTERS[it.answer]}) ${it.options[it.answer]}`;
-              } else if (it.kind === 'letters' && a.kind === 'letters') {
-                given = a.inputs.filter(Boolean).join(', ') || given;
-                correctText = it.blanks.map((b) => b.answer).join(', ');
-              } else if (it.kind === 'order' && a.kind === 'order') {
-                given = a.placed.join(' ') || given;
-                correctText = it.correct.join(' ');
-              }
-              return (
-                <div className={`review-item ${ok ? 'correct-item' : 'wrong-item'}`} key={i}>
-                  <div className={`tag ${ok ? 'tag-correct' : 'tag-wrong'}`} style={{ marginBottom: 6 }}>
-                    {ok ? '✓ Correct' : '✗ Incorrect'} · {categoryOf(it)}
+          {results.review.length > 0 && (
+            <div className="card qt-teacher" style={{ marginTop: '1rem' }}>
+              <div className="review-title">Needs your teacher</div>
+              <p className="qt-teacher-note">
+                Writing and speaking cannot be marked automatically. Show these answers to your teacher for
+                feedback.
+              </p>
+              {results.review.map(({ it, a }, i) => (
+                <div className="qt-cat" key={i}>
+                  <div className="qt-cat-head">
+                    <span className="qt-dot pending" aria-hidden="true" />
+                    <span className="qt-cat-name">{it.skill}</span>
+                    <span className="qt-cat-score">{SECTION_LABEL[it.section]}</span>
                   </div>
-                  <div className="review-q-text">
-                    Q{i + 1}: {it.kind === 'mc' ? it.stem : it.kind === 'order' ? `"${it.question}"` : it.title}
-                  </div>
-                  <div className="review-row">
-                    <span className="label">Your answer:</span>{' '}
-                    <span className={ok ? 'ok' : 'given'}>{given}</span>
-                  </div>
-                  {!ok && (
-                    <div className="review-row">
-                      <span className="label">Correct:</span> <span className="correct">{correctText}</span>
+                  {it.kind === 'write' && (
+                    <div className="qt-teacher-answer">
+                      {a.kind === 'write' && a.text.trim() ? (
+                        <>
+                          <span className="qt-teacher-count">{countWords(a.text)} words</span>
+                          <div className="qt-teacher-text">{a.text}</div>
+                        </>
+                      ) : (
+                        <span className="qt-cat-score">Not attempted</span>
+                      )}
+                    </div>
+                  )}
+                  {it.kind === 'speak' && (
+                    <div className="qt-teacher-answer">
+                      <div className="qt-teacher-text">"{it.prompt}"</div>
+                      <span className="qt-cat-score">
+                        {a.kind === 'speak' && a.done ? 'Marked as answered aloud' : 'Not attempted'}
+                      </span>
                     </div>
                   )}
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="restart-row" style={{ marginTop: '1rem' }}>
             <button className="btn btn-primary" onClick={restart}>
@@ -182,6 +215,7 @@ export function QuickTest() {
   }
 
   const last = idx === items.length - 1;
+  const sectionStart = idx === 0 || items[idx - 1].section !== item.section;
   inputRefs.current = [];
 
   return (
@@ -197,14 +231,17 @@ export function QuickTest() {
             {idx + 1} / {items.length}
           </div>
         </div>
-        <div className="progress-wrap" style={{ marginBottom: '1.5rem' }}>
+        <div className="progress-wrap" style={{ marginBottom: '1rem' }}>
           <div className="progress-fill" style={{ width: `${((idx + 1) / items.length) * 100}%` }} />
         </div>
+
+        {sectionStart && <div className="qt-section-banner">{SECTION_LABEL[item.section]}</div>}
 
         <div className="card">
           <div className="qt-source">
             <span className="topic-tag">{item.skill}</span>
             {item.type && <span className="qt-type">{item.type}</span>}
+            {!isScorable(item) && <span className="qt-teacher-flag">Teacher marked</span>}
           </div>
 
           {item.kind === 'mc' && (
@@ -251,19 +288,62 @@ export function QuickTest() {
           {item.kind === 'order' && answer.kind === 'order' && (
             <OrderItem item={item} answer={answer} onChange={patch} />
           )}
+
+          {item.kind === 'write' && answer.kind === 'write' && (
+            <>
+              <div className="q-number">Situation</div>
+              <div className="passage-box" style={{ marginBottom: '1rem' }}>
+                {item.brief}
+              </div>
+              <div className="q-number">Your task</div>
+              <div className="qt-task">{item.task}</div>
+              <textarea
+                className="write-area"
+                placeholder="Write your response here…"
+                value={answer.text}
+                onChange={(e) => patch({ kind: 'write', text: e.target.value })}
+              />
+              <div className="word-count-bar">
+                <span className={`word-count${countWords(answer.text) >= item.minWords ? ' met' : ''}`}>
+                  {countWords(answer.text)} words
+                </span>
+                <span className="word-min-note">Minimum: {item.minWords} words</span>
+              </div>
+            </>
+          )}
+
+          {item.kind === 'speak' && answer.kind === 'speak' && (
+            <>
+              <div className="q-number">{item.instruction}</div>
+              <div className="qt-speak-prompt">{item.prompt}</div>
+              <div className="btn-row">
+                <button
+                  className={`btn${answer.done ? ' btn-primary' : ''}`}
+                  onClick={() => patch({ kind: 'speak', done: !answer.done })}
+                >
+                  {answer.done ? 'Answered ✓' : 'I answered this aloud'}
+                </button>
+              </div>
+              <div className="info-strip" style={{ marginTop: '1rem' }}>
+                <span>🎤</span>
+                <span>Nothing is recorded. Say your answer aloud and review it with your teacher.</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="nav-row">
-          <button className="btn" disabled={idx === 0} onClick={() => setIdx(idx - 1)}>
+          <button className="btn" disabled={idx === 0} onClick={() => go(idx - 1)}>
             ← Previous
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={() => (last ? setFinished(true) : setIdx(idx + 1))}
-            title={answered(item, answer) ? undefined : 'You can skip and come back'}
-          >
-            {last ? 'See results ✓' : 'Next →'}
-          </button>
+          <div className="qt-nav-right">
+            <button className="btn qt-quit" onClick={() => setFinished(true)}>
+              Finish early
+            </button>
+            <button className="btn btn-primary" onClick={() => (last ? setFinished(true) : go(idx + 1))}>
+              {last ? 'See results ✓' : 'Next →'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -435,5 +515,3 @@ function OrderItem({
     </>
   );
 }
-
-export { QUICK_TEST_SIZE };
