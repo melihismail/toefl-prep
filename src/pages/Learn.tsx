@@ -1,162 +1,75 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useSpring, useMotionValueEvent } from 'motion/react';
+import { motion } from 'motion/react';
+import HowItWorks, { type Step } from '../components/HowItWorks.tsx';
 import { useLanguage } from '../i18n/useLanguage.ts';
-import { learnSections, type LearnSection, type LearnTask } from '../data/learn.ts';
+import { learnSections, type LearnSection } from '../data/learn.ts';
 import './Learn.css';
 
-/**
- * "How it works" walkthrough: the four exam sections as pinned, connected
- * cards. Each card sticks while its own scroll range plays out, so the reader
- * moves through the exam in order rather than scanning a grid.
- */
+/** Card palette per section, as Tailwind classes the component expects. */
+const CARD_COLOURS: Record<LearnSection['slug'], { bg: string; text: string; border: string }> = {
+  listening: { bg: 'bg-[#ecfdf5]', text: 'text-[#059669]', border: 'border-[#a7f3d0]' },
+  reading: { bg: 'bg-[#eef2ff]', text: 'text-[#4f46e5]', border: 'border-[#c7d2fe]' },
+  writing: { bg: 'bg-[#fffbeb]', text: 'text-[#b45309]', border: 'border-[#fde68a]' },
+  speaking: { bg: 'bg-[#faf5ff]', text: 'text-[#9333ea]', border: 'border-[#e9d5ff]' },
+};
+
 export function Learn() {
   const { lang } = useLanguage();
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [openTask, setOpenTask] = useState<{ section: LearnSection; task: LearnTask } | null>(null);
+  const [open, setOpen] = useState<LearnSection | null>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ['start start', 'end end'],
-  });
-  const spineScale = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 });
-
-  // Which step is in play. Derived as state rather than a per-card scroll
-  // transform: the transforms became keyframe animations whose values did not
-  // hold once scroll moved past a card's range.
-  const [active, setActive] = useState(0);
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    const next = Math.min(learnSections.length - 1, Math.max(0, Math.floor(v * learnSections.length)));
-    setActive((cur) => (cur === next ? cur : next));
-  });
+  const steps: Step[] = learnSections.map((section) => ({
+    title: section.name[lang],
+    description: section.desc[lang],
+    colors: CARD_COLOURS[section.slug],
+    actionLabel: `${section.tasks.length} ${lang === 'tr' ? 'görev' : 'tasks'} · ${section.time}`,
+    onClick: () => setOpen(section),
+  }));
 
   return (
     <div className="learn-page">
-      <div className="mx-auto w-full max-w-3xl px-4 pt-8">
+      <div className="mx-auto w-full max-w-3xl px-8 pt-8">
         <Link to="/" className="learn-back">
           ← {lang === 'tr' ? 'Ana Sayfa' : 'Home'}
         </Link>
 
-        <header className="mb-10">
+        <header>
           <div className="learn-eyebrow">{lang === 'tr' ? 'Sınavı Öğren' : 'Learn the exam'}</div>
           <h1 className="learn-title">TOEFL 2026</h1>
           <p className="learn-lede">
             {lang === 'tr'
-              ? 'Sınav dört bölümden oluşur. Sırayla ilerleyin — her bölümün görevlerini, süresini ve puanlamasını görün.'
-              : 'The exam has four sections. Scroll through them in order to see each task, its timing and how it is scored.'}
+              ? 'Sınav dört bölümden oluşur. Her karta dokunarak o bölümün görevlerini, sürelerini ve puanlamasını görün.'
+              : 'The exam has four sections. Tap a card to see that section’s tasks, timing and how it is scored.'}
           </p>
         </header>
       </div>
 
-      {/* One tall track; each card pins inside its own slice of it. */}
-      <div ref={trackRef} className="learn-track">
-        <div className="learn-spine" aria-hidden="true">
-          <motion.div className="learn-spine-fill" style={{ scaleY: spineScale }} />
-        </div>
+      <HowItWorks features={steps} />
 
-        {learnSections.map((section, i) => (
-          <StepCard
-            key={section.slug}
-            section={section}
-            index={i}
-            total={learnSections.length}
-            isActive={i === active}
-            lang={lang}
-            onOpenTask={(task) => setOpenTask({ section, task })}
-          />
-        ))}
-      </div>
-
-      <div className="mx-auto w-full max-w-3xl px-4 pb-16">
+      <div className="mx-auto w-full max-w-3xl px-8 pb-20 text-center">
         <Link to="/sections" className="learn-cta">
           {lang === 'tr' ? 'Alıştırmaya başla' : 'Start practising'} →
         </Link>
       </div>
 
-      {openTask && (
-        <TaskPanel
-          section={openTask.section}
-          task={openTask.task}
-          lang={lang}
-          onClose={() => setOpenTask(null)}
-        />
-      )}
+      {open && <SectionPanel section={open} lang={lang} onClose={() => setOpen(null)} />}
     </div>
   );
 }
 
-function StepCard({
+function SectionPanel({
   section,
-  index,
-  total,
-  isActive,
-  lang,
-  onOpenTask,
-}: {
-  section: LearnSection;
-  index: number;
-  total: number;
-  isActive: boolean;
-  lang: 'en' | 'tr';
-  onOpenTask: (task: LearnTask) => void;
-}) {
-  return (
-    <section
-      className="learn-step"
-      style={{ '--sec': section.color, '--sec-dark': section.colorDark } as React.CSSProperties}
-    >
-      <article className={`learn-card${isActive ? ' is-active' : ''}`}>
-        <div className="learn-card-head">
-          <span className="learn-step-num">
-            {index + 1}
-            <span className="learn-step-of">/{total}</span>
-          </span>
-          <span className="learn-card-icon">
-            <i className={`ti ${section.icon}`} aria-hidden="true" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="learn-card-title">{section.name[lang]}</h2>
-            <div className="learn-card-meta">
-              {section.time} · {section.tasks.length} {lang === 'tr' ? 'görev' : 'tasks'}
-            </div>
-          </div>
-        </div>
-
-        <p className="learn-card-desc">{section.desc[lang]}</p>
-
-        <ul className="learn-tasks">
-          {section.tasks.map((task) => (
-            <li key={task.id}>
-              <button className="learn-task" onClick={() => onOpenTask(task)}>
-                <span className="learn-task-name">{task.name[lang]}</span>
-                <span className="learn-task-meta">
-                  {task.count[lang]} · {task.time}
-                </span>
-                <span className="learn-task-go" aria-hidden="true">
-                  →
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </article>
-    </section>
-  );
-}
-
-function TaskPanel({
-  section,
-  task,
   lang,
   onClose,
 }: {
   section: LearnSection;
-  task: LearnTask;
   lang: 'en' | 'tr';
   onClose: () => void;
 }) {
+  const [expanded, setExpanded] = useState<string | null>(section.tasks[0]?.id ?? null);
+
   return (
-    <div className="learn-overlay" role="dialog" aria-modal="true" aria-label={task.name[lang]}>
+    <div className="learn-overlay" role="dialog" aria-modal="true" aria-label={section.name[lang]}>
       <button className="learn-overlay-scrim" onClick={onClose} aria-label={lang === 'tr' ? 'Kapat' : 'Close'} />
       <motion.div
         className="learn-panel"
@@ -169,32 +82,55 @@ function TaskPanel({
           ← {lang === 'tr' ? 'Geri' : 'Back'}
         </button>
 
-        <div className="learn-panel-tag">{section.name[lang]}</div>
-        <h3 className="learn-panel-title">{task.name[lang]}</h3>
+        <div className="learn-panel-tag">{lang === 'tr' ? 'Bölüm' : 'Section'}</div>
+        <h3 className="learn-panel-title">{section.name[lang]}</h3>
         <div className="learn-panel-meta">
-          {task.count[lang]} · {task.time}
+          {section.time} · {section.tasks.length} {lang === 'tr' ? 'görev' : 'tasks'}
         </div>
-        <p className="learn-panel-desc">{task.desc[lang]}</p>
+        <p className="learn-panel-desc">{section.desc[lang]}</p>
 
-        <div className="learn-block">
-          <div className="learn-block-label">{lang === 'tr' ? 'İpuçları' : 'Tips'}</div>
-          <p>{task.tips[lang]}</p>
-        </div>
+        {section.tasks.map((task) => {
+          const isOpen = expanded === task.id;
+          return (
+            <div className={`learn-acc${isOpen ? ' is-open' : ''}`} key={task.id}>
+              <button className="learn-acc-head" onClick={() => setExpanded(isOpen ? null : task.id)}>
+                <span className="learn-acc-name">{task.name[lang]}</span>
+                <span className="learn-acc-meta">
+                  {task.count[lang]} · {task.time}
+                </span>
+                <span className="learn-acc-chev" aria-hidden="true">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
 
-        <div className="learn-block">
-          <div className="learn-block-label">{lang === 'tr' ? 'Puanlama' : 'Scoring'}</div>
-          <p>{task.scoring[lang]}</p>
-        </div>
+              {isOpen && (
+                <div className="learn-acc-body">
+                  <p className="learn-acc-desc">{task.desc[lang]}</p>
 
-        {task.practiceHref.endsWith('.html') ? (
-          <a className="learn-panel-cta" href={task.practiceHref}>
-            {lang === 'tr' ? 'Bu görevi dene' : 'Try this task'} →
-          </a>
-        ) : (
-          <Link className="learn-panel-cta" to={task.practiceHref}>
-            {lang === 'tr' ? 'Bu görevi dene' : 'Try this task'} →
-          </Link>
-        )}
+                  <div className="learn-block">
+                    <div className="learn-block-label">{lang === 'tr' ? 'İpuçları' : 'Tips'}</div>
+                    <p>{task.tips[lang]}</p>
+                  </div>
+
+                  <div className="learn-block">
+                    <div className="learn-block-label">{lang === 'tr' ? 'Puanlama' : 'Scoring'}</div>
+                    <p>{task.scoring[lang]}</p>
+                  </div>
+
+                  {task.practiceHref.endsWith('.html') ? (
+                    <a className="learn-panel-cta" href={task.practiceHref}>
+                      {lang === 'tr' ? 'Bu görevi dene' : 'Try this task'} →
+                    </a>
+                  ) : (
+                    <Link className="learn-panel-cta" to={task.practiceHref}>
+                      {lang === 'tr' ? 'Bu görevi dene' : 'Try this task'} →
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </motion.div>
     </div>
   );
