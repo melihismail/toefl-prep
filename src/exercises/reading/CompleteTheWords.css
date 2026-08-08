@@ -73,15 +73,31 @@
 .ctw-review-item { padding: 12px 0; border-top: 1px solid var(--border-solid); }
 .ctw-review-item:first-of-type { border-top: none; padding-top: 4px; }
 
-/* One bar per blank, so a paragraph's failures are visible without reading. */
-.blank-map { display: flex; gap: 4px; flex-wrap: wrap; margin: 7px 0 8px; }
-.blank-mark { width: 22px; height: 6px; border-radius: 99px; }
-.blank-mark.ok { background: var(--success-text); }
-.blank-mark.bad { background: var(--error-text); }
-
-.ctw-fix { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.ctw-fix .given { color: var(--error-text); }
-.ctw-fix .correct { color: var(--success-text); }
+/* ── Read-only review: the whole paragraph, marked in place ── */
+.ctw-review-para { font-size: 14.5px; line-height: 2.3; }
+.review-chip {
+  display: inline-flex;
+  align-items: baseline;
+  border-radius: 6px;
+  /* Negative margin cancels the padding, so highlighting a word does not push
+     the punctuation after it away. */
+  padding: 1px 3px;
+  margin: 0 -3px;
+  white-space: nowrap;
+}
+.review-chip.is-correct { background: var(--success-bg); }
+.review-chip.is-wrong { background: var(--error-bg); }
+.review-letter { font-weight: 700; }
+.review-letter.correct { color: var(--success-text); }
+.review-letter.wrong { color: var(--error-text); text-decoration: line-through; }
+/* The right completion, tucked beside the word it belongs to. */
+.review-fix {
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--success-text);
+}
+.review-fix::before { content: '→ '; font-weight: 400; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   .word-chip, .letter-input { transition: none; }

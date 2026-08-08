@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { sentenceQuestions } from '../../data/writing/buildASentence.ts';
 import type { SentenceQuestion } from '../../data/writing/types.ts';
+import { SentenceBuilder } from './SentenceBuilder.tsx';
 
 const EXAM_SIZE = 16;
 
@@ -68,17 +69,8 @@ export function BuildASentence() {
     setState((prev) => prev.map((v, i) => (i === currentIdx ? { ...v, placed: v.placed.slice(0, -1) } : v)));
   }
 
-  /** A chip is spent once as many copies are placed as the bank holds. */
-  const usedCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    s.placed.forEach((w) => (counts[w] = (counts[w] || 0) + 1));
-    return counts;
-  }, [s.placed]);
-
-  const score = useMemo(() => {
-    const correct = state.filter((v) => v.isCorrect === true).length;
-    return { correct, pct: Math.round((correct / size) * 100) };
-  }, [state, size]);
+  const correctCount = state.filter((v) => v.isCorrect === true).length;
+  const score = { correct: correctCount, pct: Math.round((correctCount / size) * 100) };
 
   function finish() {
     setState((prev) =>
@@ -185,73 +177,19 @@ export function BuildASentence() {
         </div>
 
         <div className="card">
-          <div className="q-number">Complete the response to this question:</div>
-
-          <div
-            style={{
-              background: 'var(--accent-light)',
-              border: '1px solid var(--accent-mid)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '10px 14px',
-              marginBottom: '1rem',
-              fontSize: 15,
-              fontWeight: 500,
-              color: 'var(--text)',
-              fontStyle: 'italic',
-            }}
-          >
-            "{q.question}"
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginBottom: '1rem' }}>
-            {q.prompt && (
-              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)', marginRight: 2 }}>
-                {q.prompt}
-              </span>
-            )}
-            {Array.from({ length: totalWords }).map((_, i) => {
-              const word = s.placed[i];
-              if (word === undefined) {
-                return (
-                  <div className="blank-box empty" key={i}>
-                    —
-                  </div>
-                );
-              }
-              const ok = word === q.correct[i];
-              const colour = locked ? (ok ? 'var(--success-text)' : 'var(--error-text)') : undefined;
-              return (
-                <div
-                  className="blank-box filled"
-                  key={i}
-                  style={locked ? { color: colour, borderBottomColor: colour } : undefined}
-                >
-                  {word}
-                </div>
-              );
-            })}
-            {/* Already positioned, exactly as the task presents it. */}
-            <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--accent)', marginLeft: 2 }}>
-              {q.isQuestion ? '?' : '.'}
-            </span>
-          </div>
-
-          <div className="word-bank">
-            {s.bank.map((word, ci) => {
-              const copiesBefore = s.bank.slice(0, ci).filter((w) => w === word).length;
-              const used = copiesBefore < (usedCounts[word] || 0);
-              return (
-                <button
-                  key={ci}
-                  className={`bank-chip${used ? ' used' : ''}`}
-                  disabled={locked}
-                  onClick={() => placeWord(word)}
-                >
-                  {word}
-                </button>
-              );
-            })}
-          </div>
+          <SentenceBuilder
+            question={q.question}
+            prompt={q.prompt}
+            correct={q.correct}
+            bank={s.bank}
+            placed={s.placed}
+            isQuestion={q.isQuestion}
+            locked={locked}
+            mark={s.checked}
+            reveal={s.revealed}
+            onPlace={placeWord}
+            onUndo={undo}
+          />
 
           <div className="btn-row">
             <button
@@ -279,11 +217,6 @@ export function BuildASentence() {
             >
               Reset
             </button>
-            {!locked && s.placed.length > 0 && (
-              <button className="btn" onClick={undo}>
-                ↩ Undo
-              </button>
-            )}
           </div>
 
           {s.checked && (

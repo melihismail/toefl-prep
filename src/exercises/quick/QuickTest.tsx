@@ -10,6 +10,9 @@ import {
   type QuickItem,
   type QuickSection,
 } from '../../data/quickTest.ts';
+import { bandFor, CEFR_MIN_ATTEMPTED, CEFR_NAME, type CefrBand } from '../../data/cefr.ts';
+import { CTestParagraph, CTestReview } from '../reading/CTestParagraph.tsx';
+import { SentenceBuilder } from '../writing/SentenceBuilder.tsx';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
 
@@ -37,12 +40,28 @@ function blankAnswer(item: QuickItem): Answer {
   }
 }
 
-function isCorrect(item: QuickItem, a: Answer): boolean {
-  if (item.kind === 'mc' && a.kind === 'mc') return a.selected === item.answer;
+/**
+ * Points earned and available. Word building is marked per blank — one wrong
+ * letter should not throw away credit for the other nine words.
+ */
+function scoreOf(item: QuickItem, a: Answer): { got: number; max: number } {
+  if (item.kind === 'letters' && a.kind === 'letters') {
+    const got = item.blanks.filter((b, i) => (a.inputs[i] || '').toLowerCase() === b.answer.toLowerCase()).length;
+    return { got, max: item.blanks.length };
+  }
+  if (item.kind === 'mc' && a.kind === 'mc') return { got: a.selected === item.answer ? 1 : 0, max: 1 };
+  if (item.kind === 'order' && a.kind === 'order')
+    return { got: a.placed.join(' ') === item.correct.join(' ') ? 1 : 0, max: 1 };
+  return { got: 0, max: 0 };
+}
+
+/** How much of an item was engaged with — the guard on the CEFR estimate. */
+function attemptedOf(item: QuickItem, a: Answer): number {
   if (item.kind === 'letters' && a.kind === 'letters')
-    return item.blanks.every((b, i) => (a.inputs[i] || '').toLowerCase() === b.answer.toLowerCase());
-  if (item.kind === 'order' && a.kind === 'order') return a.placed.join(' ') === item.correct.join(' ');
-  return false;
+    return item.blanks.filter((_, i) => (a.inputs[i] || '').trim().length > 0).length;
+  if (item.kind === 'mc' && a.kind === 'mc') return a.selected >= 0 ? 1 : 0;
+  if (item.kind === 'order' && a.kind === 'order') return a.placed.length > 0 ? 1 : 0;
+  return 0;
 }
 
 function countWords(text: string) {
@@ -70,13 +89,51 @@ export function QuickTest() {
   /** The missed question currently open for review, if any. */
   const [review, setReview] = useState<{ item: QuickItem; answer: Answer; number: number } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const item = items[idx];
   const answer = answers[idx];
 
   function patch(next: Answer) {
     setAnswers((prev) => prev.map((a, i) => (i === idx ? next : a)));
+  }
+
+  // Both of these read prev inside the updater: two keystrokes or two chip taps
+  // landing in one React batch must not overwrite each other.
+  function setLetter(blankIdx: number, letterIdx: number, value: string) {
+    const cur = items[idx];
+    if (cur.kind !== 'letters') return;
+    const width = cur.blanks[blankIdx].answer.length;
+    setAnswers((prev) =>
+      prev.map((a, i) => {
+        if (i !== idx || a.kind !== 'letters') return a;
+        const chars = (a.inputs[blankIdx] || '').padEnd(width, ' ').split('');
+        chars[letterIdx] = value || ' ';
+        return {
+          kind: 'letters',
+          inputs: a.inputs.map((w, k) => (k === blankIdx ? chars.join('').replace(/ +$/, '') : w)),
+        };
+      }),
+    );
+  }
+
+  function placeWord(word: string) {
+    const cur = items[idx];
+    if (cur.kind !== 'order') return;
+    setAnswers((prev) =>
+      prev.map((a, i) => {
+        if (i !== idx || a.kind !== 'order') return a;
+        if (a.placed.length >= cur.correct.length) return a;
+        const inBank = a.bank.filter((w) => w === word).length;
+        if (a.placed.filter((w) => w === word).length >= inBank) return a;
+        return { ...a, placed: [...a.placed, word] };
+      }),
+    );
+  }
+
+  function undoWord() {
+    setAnswers((prev) =>
+      prev.map((a, i) => (i === idx && a.kind === 'order' ? { ...a, placed: a.placed.slice(0, -1) } : a)),
+    );
   }
 
   function go(next: number) {
@@ -144,20 +201,21 @@ export function QuickTest() {
         return;
       }
 
-      const ok = isCorrect(it, answers[i]);
-      scored++;
-      if (ok) correct++;
-      sec.total++;
-      if (ok) sec.correct++;
+      const { got, max } = scoreOf(it, answers[i]);
+      const ok = got === max;
+      scored += max;
+      correct += got;
+      sec.total += max;
+      sec.correct += got;
 
       let ex = sec.exercises.find((e) => e.skill === it.skill);
       if (!ex) {
         ex = { skill: it.skill, href: it.practiceHref, correct: 0, total: 0, types: [], missed: [] };
         sec.exercises.push(ex);
       }
-      ex.total++;
-      if (ok) ex.correct++;
-      else ex.missed.push({ item: it, answer: answers[i], number: i + 1 });
+      ex.total += max;
+      ex.correct += got;
+      if (!ok) ex.missed.push({ item: it, answer: answers[i], number: i + 1 });
 
       // Only some sources label their questions; skip the row rather than invent one.
       if (it.type) {
@@ -166,13 +224,35 @@ export function QuickTest() {
           ty = { name: it.type, correct: 0, total: 0 };
           ex.types.push(ty);
         }
-        ty.total++;
-        if (ok) ty.correct++;
+        ty.total += max;
+        ty.correct += got;
       }
     });
 
     const list = order.map((s) => sections.get(s)).filter((s): s is SectionRow => Boolean(s));
-    return { correct, scored, sections: list, seenCount: seen.length };
+
+    // A band is only offered once enough of the auto-marked test was engaged
+    // with — three answered questions cannot place anyone.
+    let maxPoints = 0;
+    let attempted = 0;
+    items.forEach((it, i) => {
+      maxPoints += scoreOf(it, answers[i]).max;
+      attempted += attemptedOf(it, answers[i]);
+    });
+    const enough = maxPoints > 0 && attempted / maxPoints >= CEFR_MIN_ATTEMPTED;
+    const skills = list
+      .filter((s) => s.total > 0)
+      .map((s) => ({
+        section: s.section,
+        pct: Math.round((s.correct / s.total) * 100),
+        band: bandFor((s.correct / s.total) * 100),
+      }));
+    const cefr =
+      enough && scored > 0
+        ? { overall: bandFor((correct / scored) * 100), pct: Math.round((correct / scored) * 100), skills }
+        : null;
+
+    return { correct, scored, sections: list, seenCount: seen.length, cefr, attempted, maxPoints };
   }, [items, answers, reached]);
 
   if (finished) {
@@ -185,7 +265,7 @@ export function QuickTest() {
               <span className="big">
                 {results.correct}/{results.scored}
               </span>
-              <span className="small">scored</span>
+              <span className="small">points</span>
             </div>
             <p className="score-msg">
               {results.seenCount < items.length
@@ -198,6 +278,8 @@ export function QuickTest() {
               New quick test
             </button>
           </div>
+
+          <CefrPanel cefr={results.cefr} />
 
           {results.sections.map((sec) => {
             const pct = sec.total ? Math.round((sec.correct / sec.total) * 100) : 0;
@@ -315,7 +397,6 @@ export function QuickTest() {
 
   const last = idx === items.length - 1;
   const sectionStart = idx === 0 || items[idx - 1].section !== item.section;
-  inputRefs.current = [];
 
   return (
     <div className={`section-${item.section}`}>
@@ -381,11 +462,28 @@ export function QuickTest() {
           )}
 
           {item.kind === 'letters' && answer.kind === 'letters' && (
-            <LettersItem item={item} answer={answer} onChange={patch} inputRefs={inputRefs} />
+            <>
+              <div className="q-number">Fill in the missing letters.</div>
+              <CTestParagraph
+                paragraph={item.paragraph}
+                blanks={item.blanks}
+                inputs={answer.inputs}
+                onLetter={setLetter}
+              />
+            </>
           )}
 
           {item.kind === 'order' && answer.kind === 'order' && (
-            <OrderItem item={item} answer={answer} onChange={patch} />
+            <SentenceBuilder
+              question={item.question}
+              prompt={item.prompt}
+              correct={item.correct}
+              bank={answer.bank}
+              placed={answer.placed}
+              isQuestion={item.isQuestion}
+              onPlace={placeWord}
+              onUndo={undoWord}
+            />
           )}
 
           {item.kind === 'write' && answer.kind === 'write' && (
@@ -444,6 +542,46 @@ export function QuickTest() {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+type CefrResult = {
+  overall: CefrBand;
+  pct: number;
+  skills: { section: QuickSection; pct: number; band: CefrBand }[];
+} | null;
+
+/**
+ * Reading, Listening and Build a Sentence are the parts that mark themselves,
+ * so they are the parts that can carry a level.
+ */
+function CefrPanel({ cefr }: { cefr: CefrResult }) {
+  if (!cefr) {
+    return (
+      <div className="card qt-cefr is-thin">
+        <div className="qt-cefr-thin">Not enough answered to estimate a level.</div>
+      </div>
+    );
+  }
+  return (
+    <div className="card qt-cefr">
+      <div className="qt-cefr-head">
+        <div className="qt-cefr-band">{cefr.overall}</div>
+        <div>
+          <div className="qt-cefr-name">{CEFR_NAME[cefr.overall]}</div>
+          <div className="qt-cefr-sub">{cefr.pct}% on the auto-marked questions</div>
+        </div>
+      </div>
+      <div className="qt-cefr-skills">
+        {cefr.skills.map((s) => (
+          <div className={`qt-cefr-skill section-${s.section}`} key={s.section}>
+            <span className="qt-cefr-skill-name">{SECTION_LABEL[s.section]}</span>
+            <span className="qt-cefr-skill-band">{s.band}</span>
+            <span className="qt-cefr-skill-pct">{s.pct}%</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -513,19 +651,7 @@ function ReviewModal({
           {item.kind === 'letters' && answer.kind === 'letters' && (
             <>
               <div className="qt-modal-stem">{item.title}</div>
-              <ul className="qt-modal-blanks">
-                {item.blanks.map((b, bi) => {
-                  const given = answer.inputs[bi] || '';
-                  const right = given.toLowerCase() === b.answer.toLowerCase();
-                  return (
-                    <li key={bi} className={right ? 'is-right' : 'is-wrong'}>
-                      <span className="qt-blank-num">Blank {bi + 1}</span>
-                      <span className="qt-blank-given">{given || '(empty)'}</span>
-                      {!right && <span className="qt-blank-answer">→ {b.answer}</span>}
-                    </li>
-                  );
-                })}
-              </ul>
+              <CTestReview paragraph={item.paragraph} blanks={item.blanks} inputs={answer.inputs} />
             </>
           )}
 
@@ -557,171 +683,5 @@ function ReviewModal({
 
       </div>
     </div>
-  );
-}
-
-function LettersItem({
-  item,
-  answer,
-  onChange,
-  inputRefs,
-}: {
-  item: Extract<QuickItem, { kind: 'letters' }>;
-  answer: Extract<Answer, { kind: 'letters' }>;
-  onChange: (a: Answer) => void;
-  inputRefs: React.RefObject<(HTMLInputElement | null)[]>;
-}) {
-  const parts = item.paragraph.split('__BLANK__');
-
-  const flatIndex = useMemo(() => {
-    const map: Record<string, number> = {};
-    let n = 0;
-    item.blanks.forEach((b, bi) => {
-      for (let li = 0; li < b.answer.length; li++) map[`${bi}-${li}`] = n++;
-    });
-    return map;
-  }, [item]);
-
-  function setLetter(bi: number, li: number, value: string) {
-    const width = item.blanks[bi].answer.length;
-    const chars = (answer.inputs[bi] || '').padEnd(width, ' ').split('');
-    chars[li] = value || ' ';
-    onChange({
-      kind: 'letters',
-      inputs: answer.inputs.map((w, k) => (k === bi ? chars.join('').replace(/ +$/, '') : w)),
-    });
-  }
-
-  function focusFirstGap(bi: number) {
-    const typed = answer.inputs[bi] || '';
-    const width = item.blanks[bi].answer.length;
-    let target = 0;
-    for (let i = 0; i < width; i++) {
-      if (!typed[i] || typed[i] === ' ') {
-        target = i;
-        break;
-      }
-      if (i === width - 1) target = 0;
-    }
-    inputRefs.current[flatIndex[`${bi}-${target}`]]?.focus();
-  }
-
-  return (
-    <>
-      <div className="q-number">Fill in the missing letters.</div>
-      <p className="para">
-        {parts.map((part, pi) => {
-          const isLast = pi === parts.length - 1;
-          const blank = isLast ? null : item.blanks[pi];
-          let before = part;
-          let prefix = '';
-          if (!isLast && part) {
-            const lastSpace = part.lastIndexOf(' ');
-            before = part.substring(0, lastSpace + 1);
-            prefix = part.substring(lastSpace + 1);
-          }
-          if (!blank) return <span key={pi}>{before}</span>;
-          return (
-            <span key={pi}>
-              {before}
-              <span
-                className="word-chip"
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  focusFirstGap(pi);
-                }}
-              >
-                {prefix && <strong className="chip-prefix">{prefix}</strong>}
-                {Array.from({ length: blank.answer.length }).map((_, li) => (
-                  <input
-                    key={li}
-                    ref={(el) => {
-                      inputRefs.current[flatIndex[`${pi}-${li}`]] = el;
-                    }}
-                    type="text"
-                    maxLength={1}
-                    className="letter-input"
-                    tabIndex={li === 0 ? 0 : -1}
-                    aria-label={`${prefix || 'Blank'} — letter ${li + 1} of ${blank.answer.length}`}
-                    value={(answer.inputs[pi] || '')[li]?.trim() || ''}
-                    onChange={(e) => {
-                      const v = e.target.value.slice(-1);
-                      setLetter(pi, li, v);
-                      if (v) inputRefs.current[flatIndex[`${pi}-${li}`] + 1]?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Backspace' && !e.currentTarget.value)
-                        inputRefs.current[flatIndex[`${pi}-${li}`] - 1]?.focus();
-                    }}
-                  />
-                ))}
-              </span>
-            </span>
-          );
-        })}
-      </p>
-    </>
-  );
-}
-
-function OrderItem({
-  item,
-  answer,
-  onChange,
-}: {
-  item: Extract<QuickItem, { kind: 'order' }>;
-  answer: Extract<Answer, { kind: 'order' }>;
-  onChange: (a: Answer) => void;
-}) {
-  const total = item.correct.length;
-  const usedCounts: Record<string, number> = {};
-  answer.placed.forEach((w) => (usedCounts[w] = (usedCounts[w] || 0) + 1));
-
-  return (
-    <>
-      <div className="q-number">Complete the response to this question:</div>
-      <div className="qt-quote">"{item.question}"</div>
-
-      <div className="qt-slots">
-        {item.prompt && <span className="qt-prompt">{item.prompt}</span>}
-        {Array.from({ length: total }).map((_, i) => {
-          const word = answer.placed[i];
-          return (
-            <div className={`blank-box ${word === undefined ? 'empty' : 'filled'}`} key={i}>
-              {word ?? '—'}
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="word-bank">
-        {answer.bank.map((word, ci) => {
-          const before = answer.bank.slice(0, ci).filter((w) => w === word).length;
-          const used = before < (usedCounts[word] || 0);
-          return (
-            <button
-              key={ci}
-              className={`bank-chip${used ? ' used' : ''}`}
-              onClick={() => {
-                if (answer.placed.length >= total) return;
-                const inBank = answer.bank.filter((w) => w === word).length;
-                if ((usedCounts[word] || 0) >= inBank) return;
-                onChange({ ...answer, placed: [...answer.placed, word] });
-              }}
-            >
-              {word}
-            </button>
-          );
-        })}
-      </div>
-
-      {answer.placed.length > 0 && (
-        <div className="btn-row" style={{ marginTop: '1rem' }}>
-          <button className="btn" onClick={() => onChange({ ...answer, placed: answer.placed.slice(0, -1) })}>
-            ↩ Undo
-          </button>
-        </div>
-      )}
-    </>
   );
 }

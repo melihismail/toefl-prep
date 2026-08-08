@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
@@ -6,6 +6,7 @@ import { shuffle } from '../shuffle.ts';
 import { cTestTexts } from '../../data/reading/cTestTexts.ts';
 import { buildCTest } from '../../data/reading/ctest.ts';
 import type { MissingWordsQuestion } from '../../data/reading/types.ts';
+import { CTestParagraph, CTestReview } from './CTestParagraph.tsx';
 import './CompleteTheWords.css';
 
 const EXAM_SIZE = 10;
@@ -39,7 +40,6 @@ export function CompleteTheWords() {
   const [state, setState] = useState<QState[]>(() => freshState(exam));
   const [currentIdx, setCurrentIdx] = useState(0);
   const [finished, setFinished] = useState(false);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const size = exam.length;
   const q = exam[currentIdx];
@@ -63,41 +63,6 @@ export function CompleteTheWords() {
         return { ...v, inputs };
       }),
     );
-  }
-
-  /** Flat DOM order of the letter inputs, so focus can move across blanks. */
-  const flatIndex = useMemo(() => {
-    const map: Record<string, number> = {};
-    let n = 0;
-    q.blanks.forEach((b, bi) => {
-      for (let li = 0; li < b.answer.length; li++) map[`${bi}-${li}`] = n++;
-    });
-    return map;
-  }, [q]);
-
-  function focusOffset(blankIdx: number, letterIdx: number, delta: number) {
-    const target = flatIndex[`${blankIdx}-${letterIdx}`] + delta;
-    inputRefs.current[target]?.focus();
-  }
-
-  /**
-   * Clicking a chip always lands on its leftmost unfilled letter, never on
-   * whichever cell happened to be under the cursor — typing mid-word and
-   * leaving earlier gaps empty is not something the exercise should allow.
-   */
-  function focusFirstGap(blankIdx: number) {
-    const typed = s.inputs[blankIdx] || '';
-    const width = q.blanks[blankIdx].answer.length;
-    let letterIdx = 0;
-    for (let i = 0; i < width; i++) {
-      if (!typed[i] || typed[i] === ' ') {
-        letterIdx = i;
-        break;
-      }
-      // Every cell is filled — go back to the start so a retype overwrites.
-      if (i === width - 1) letterIdx = 0;
-    }
-    inputRefs.current[flatIndex[`${blankIdx}-${letterIdx}`]]?.focus();
   }
 
   /**
@@ -171,35 +136,15 @@ export function CompleteTheWords() {
           <div className="card">
             <div className="review-title">Your answers</div>
             {exam.map((qq, i) => {
-              const marks = qq.blanks.map(
+              const right = qq.blanks.filter(
                 (b, bi) => (state[i].inputs[bi] || '').toLowerCase() === b.answer.toLowerCase(),
-              );
+              ).length;
               return (
                 <div key={i} className="ctw-review-item">
                   <div className="review-q-text">
-                    Q{i + 1}: {qq.title}
+                    Q{i + 1}: {qq.title} — {right}/{qq.blanks.length}
                   </div>
-
-                  <div className="blank-map">
-                    {marks.map((ok, bi) => (
-                      <span
-                        key={bi}
-                        className={`blank-mark ${ok ? 'ok' : 'bad'}`}
-                        title={`Blank ${bi + 1}: ${ok ? 'correct' : 'incorrect'}`}
-                        aria-label={`Blank ${bi + 1}: ${ok ? 'correct' : 'incorrect'}`}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Only the blanks that failed — the map already covers the rest. */}
-                  {qq.blanks.map((b, bi) =>
-                    marks[bi] ? null : (
-                      <div className="ctw-fix" key={bi}>
-                        Blank {bi + 1}: <span className="given">{state[i].inputs[bi] || '(empty)'}</span> →{' '}
-                        <span className="correct">{b.answer}</span>
-                      </div>
-                    ),
-                  )}
+                  <CTestReview paragraph={qq.paragraph} blanks={qq.blanks} inputs={state[i].inputs} />
                 </div>
               );
             })}
@@ -214,11 +159,6 @@ export function CompleteTheWords() {
       </div>
     );
   }
-
-  // The paragraph is prose split on __BLANK__; the word fragment immediately
-  // before each marker is bolded as the visible prefix.
-  const parts = q.paragraph.split('__BLANK__');
-  inputRefs.current = [];
 
   return (
     <div className="section-reading">
@@ -247,86 +187,14 @@ export function CompleteTheWords() {
             </div>
           </div>
 
-          <p className="para">
-            {parts.map((part, pi) => {
-              const isLast = pi === parts.length - 1;
-              const blank = isLast ? null : q.blanks[pi];
-
-              // The fragment right before a marker is the visible prefix; it
-              // belongs inside the chip so the word never splits across lines.
-              let before = part;
-              let prefix = '';
-              if (!isLast && part) {
-                const lastSpace = part.lastIndexOf(' ');
-                before = part.substring(0, lastSpace + 1);
-                prefix = part.substring(lastSpace + 1);
-              }
-
-              if (!blank) return <span key={pi}>{before}</span>;
-
-              const typed = s.inputs[pi] || '';
-              const blankCorrect = typed.toLowerCase() === blank.answer.toLowerCase();
-              const chipCls = ['word-chip'];
-              if (s.revealed) chipCls.push('is-correct');
-              else if (s.checked) chipCls.push(blankCorrect ? 'is-correct' : 'is-wrong');
-
-              return (
-                <span key={pi}>
-                  {before}
-                  <span
-                    className={chipCls.join(' ')}
-                    onMouseDown={
-                      locked
-                        ? undefined
-                        : (e) => {
-                            // Cancels the browser's own focus/caret placement,
-                            // then we choose the cell.
-                            e.preventDefault();
-                            focusFirstGap(pi);
-                          }
-                    }
-                  >
-                    {prefix && <strong className="chip-prefix">{prefix}</strong>}
-                    {Array.from({ length: blank.answer.length }).map((_, li) => {
-                      let cls = 'letter-input';
-                      let value = typed[li] || '';
-                      if (s.revealed) {
-                        value = blank.answer[li];
-                        cls += ' correct';
-                      } else if (s.checked) {
-                        cls += typed[li]?.toLowerCase() === blank.answer[li].toLowerCase() ? ' correct' : ' wrong';
-                      }
-                      return (
-                        <input
-                          key={li}
-                          ref={(el) => {
-                            inputRefs.current[flatIndex[`${pi}-${li}`]] = el;
-                          }}
-                          type="text"
-                          maxLength={1}
-                          className={cls}
-                          disabled={locked}
-                          // Tab moves between words; letters are reached by
-                          // typing, which advances on its own.
-                          tabIndex={li === 0 ? 0 : -1}
-                          aria-label={`${prefix || 'Blank'} — letter ${li + 1} of ${blank.answer.length}`}
-                          value={value.trim()}
-                          onChange={(e) => {
-                            const v = e.target.value.slice(-1);
-                            setLetter(pi, li, v);
-                            if (v) focusOffset(pi, li, 1);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Backspace' && !e.currentTarget.value) focusOffset(pi, li, -1);
-                          }}
-                        />
-                      );
-                    })}
-                  </span>
-                </span>
-              );
-            })}
-          </p>
+          <CTestParagraph
+            paragraph={q.paragraph}
+            blanks={q.blanks}
+            inputs={s.inputs}
+            checked={s.checked}
+            revealed={s.revealed}
+            onLetter={setLetter}
+          />
 
           <div className="btn-row">
             <button
