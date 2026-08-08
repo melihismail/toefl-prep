@@ -52,24 +52,45 @@ export function CTestParagraph({ paragraph, blanks, inputs, checked, revealed, o
     inputRefs.current[flatIndex[`${bi}-${li}`] + delta]?.focus();
   }
 
-  /**
-   * Clicking a chip always lands on its leftmost unfilled letter, never on
-   * whichever cell happened to be under the cursor — typing mid-word and
-   * leaving earlier gaps empty is not something the exercise should allow.
-   */
-  function focusFirstGap(bi: number) {
+  /** -1 once every cell in the blank holds a character. */
+  function firstGap(bi: number) {
     const typed = inputs[bi] || '';
     const width = blanks[bi].answer.length;
-    let letterIdx = 0;
-    for (let i = 0; i < width; i++) {
-      if (!typed[i] || typed[i] === ' ') {
-        letterIdx = i;
-        break;
-      }
-      // Every cell is filled — go back to the start so a retype overwrites.
-      if (i === width - 1) letterIdx = 0;
+    for (let i = 0; i < width; i++) if (!typed[i] || typed[i] === ' ') return i;
+    return -1;
+  }
+
+  function focusCell(bi: number, li: number) {
+    inputRefs.current[flatIndex[`${bi}-${li}`]]?.focus();
+  }
+
+  /**
+   * While a blank still has gaps, tapping it lands on the leftmost one — typing
+   * mid-word and leaving earlier gaps empty is not something the exercise should
+   * allow. Once it is full there is no gap left to protect, so the tap keeps the
+   * letter it was aimed at and a typo can be fixed in place.
+   */
+  function onChipDown(bi: number, clientX: number) {
+    const gap = firstGap(bi);
+    if (gap >= 0) {
+      focusCell(bi, gap);
+      return;
     }
-    inputRefs.current[flatIndex[`${bi}-${letterIdx}`]]?.focus();
+    // The cells have pointer-events: none, so the chip works out which letter
+    // was aimed at from where along its width the tap landed.
+    let best = 0;
+    let bestDist = Infinity;
+    for (let li = 0; li < blanks[bi].answer.length; li++) {
+      const el = inputRefs.current[flatIndex[`${bi}-${li}`]];
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      const d = Math.abs(clientX - (r.left + r.width / 2));
+      if (d < bestDist) {
+        bestDist = d;
+        best = li;
+      }
+    }
+    focusCell(bi, best);
   }
 
   inputRefs.current = [];
@@ -95,7 +116,7 @@ export function CTestParagraph({ paragraph, blanks, inputs, checked, revealed, o
                   : (e) => {
                       // Cancels the browser's own caret placement, then we choose the cell.
                       e.preventDefault();
-                      focusFirstGap(pi);
+                      onChipDown(pi, e.clientX);
                     }
               }
             >
@@ -119,13 +140,23 @@ export function CTestParagraph({ paragraph, blanks, inputs, checked, revealed, o
                     maxLength={1}
                     className={cls}
                     disabled={locked}
+                    // Blanks are always mid-word, so a capital is never right —
+                    // and mobile keyboards capitalise single-character fields.
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                     // Tab moves between words; letters are reached by typing,
                     // which advances on its own.
                     tabIndex={li === 0 ? 0 : -1}
                     aria-label={`${prefix || 'Blank'} — letter ${li + 1} of ${blank.answer.length}`}
                     value={value.trim()}
+                    // maxLength is 1, so a filled cell would reject the next
+                    // keystroke unless its character is selected first.
+                    onFocus={(e) => e.currentTarget.select()}
                     onChange={(e) => {
-                      const v = e.target.value.slice(-1);
+                      // autoCapitalize is a hint some keyboards ignore, so fold
+                      // the character down here too.
+                      const v = e.target.value.slice(-1).toLowerCase();
                       onLetter(pi, li, v);
                       if (v) focusOffset(pi, li, 1);
                     }}
