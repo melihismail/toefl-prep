@@ -49,6 +49,15 @@ function countWords(text: string) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+/** A one-line label for an item, whatever kind it is. */
+function stemOf(item: QuickItem): string {
+  if (item.kind === 'mc') return item.stem;
+  if (item.kind === 'order') return `“${item.question}”`;
+  if (item.kind === 'letters') return item.title;
+  if (item.kind === 'write') return item.task;
+  return item.prompt;
+}
+
 export function QuickTest() {
   const { t } = useLanguage();
   const [items, setItems] = useState<QuickItem[]>(buildQuickTest);
@@ -58,6 +67,8 @@ export function QuickTest() {
   /** How far they got, so an early exit only grades what was seen. */
   const [reached, setReached] = useState(0);
   const [playing, setPlaying] = useState(false);
+  /** The missed question currently open for review, if any. */
+  const [review, setReview] = useState<{ item: QuickItem; answer: Answer; number: number } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -95,7 +106,16 @@ export function QuickTest() {
   }
 
   type TypeRow = { name: string; correct: number; total: number };
-  type ExerciseRow = { skill: string; href: string; correct: number; total: number; types: TypeRow[] };
+  type Missed = { item: QuickItem; answer: Answer; number: number };
+  type ExerciseRow = {
+    skill: string;
+    href: string;
+    correct: number;
+    total: number;
+    types: TypeRow[];
+    /** The questions that were got wrong, for the review list. */
+    missed: Missed[];
+  };
   type SectionRow = {
     section: QuickSection;
     correct: number;
@@ -132,11 +152,12 @@ export function QuickTest() {
 
       let ex = sec.exercises.find((e) => e.skill === it.skill);
       if (!ex) {
-        ex = { skill: it.skill, href: it.practiceHref, correct: 0, total: 0, types: [] };
+        ex = { skill: it.skill, href: it.practiceHref, correct: 0, total: 0, types: [], missed: [] };
         sec.exercises.push(ex);
       }
       ex.total++;
       if (ok) ex.correct++;
+      else ex.missed.push({ item: it, answer: answers[i], number: i + 1 });
 
       // Only some sources label their questions; skip the row rather than invent one.
       if (it.type) {
@@ -223,6 +244,20 @@ export function QuickTest() {
                         </div>
                       )}
 
+                      {ex.missed.length > 0 && (
+                        <ul className="qt-missed">
+                          {ex.missed.map((m) => (
+                            <li key={m.number}>
+                              <button className="qt-missed-row" onClick={() => setReview(m)}>
+                                <span className="qt-missed-num">Q{m.number}</span>
+                                <span className="qt-missed-stem">{stemOf(m.item)}</span>
+                                <span className="qt-missed-see">See ↗</span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
                       {!done && (
                         <Link className="qt-practise" to={ex.href}>
                           Practise this →
@@ -272,6 +307,8 @@ export function QuickTest() {
             </button>
           </div>
         </div>
+
+        {review && <ReviewModal {...review} onClose={() => setReview(null)} />}
       </div>
     );
   }
@@ -406,6 +443,122 @@ export function QuickTest() {
               {last ? 'See results ✓' : 'Next →'}
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The exact question as it was sat, with the learner's answer against the key. */
+function ReviewModal({
+  item,
+  answer,
+  number,
+  onClose,
+}: {
+  item: QuickItem;
+  answer: Answer;
+  number: number;
+  onClose: () => void;
+}) {
+  return (
+    <div className="qt-modal" role="dialog" aria-modal="true" aria-label={`Question ${number}`}>
+      <button className="qt-modal-scrim" onClick={onClose} aria-label="Close" />
+      <div className={`qt-modal-card section-${item.section}`}>
+        <div className="qt-modal-head">
+          <span className="qt-modal-num">Question {number}</span>
+          <span className="qt-modal-tag">
+            {item.skill}
+            {item.type ? ` · ${item.type}` : ''}
+          </span>
+          <button className="qt-modal-close" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div className="qt-modal-body">
+          {item.kind === 'mc' && (
+            <>
+              {item.context && (
+                <div className="qt-modal-context">
+                  {item.context.title && <div className="qt-modal-context-title">{item.context.title}</div>}
+                  <div className="qt-modal-context-body">{item.context.body}</div>
+                </div>
+              )}
+              {item.audioFile && <div className="qt-modal-note">This question was played as audio.</div>}
+              <div className="qt-modal-stem">{item.stem}</div>
+              <ul className="qt-modal-options">
+                {item.options.map((opt, oi) => {
+                  const chose = answer.kind === 'mc' && answer.selected === oi;
+                  const right = oi === item.answer;
+                  return (
+                    <li
+                      key={oi}
+                      className={`qt-opt${right ? ' is-right' : ''}${chose && !right ? ' is-wrong' : ''}`}
+                    >
+                      <span className="qt-opt-letter">{LETTERS[oi]})</span>
+                      <span className="qt-opt-text">{opt}</span>
+                      {chose && <span className="qt-opt-mark">your answer</span>}
+                      {right && <span className="qt-opt-mark">correct</span>}
+                    </li>
+                  );
+                })}
+              </ul>
+              {answer.kind === 'mc' && answer.selected === -1 && (
+                <div className="qt-modal-note">You did not answer this one.</div>
+              )}
+            </>
+          )}
+
+          {item.kind === 'letters' && answer.kind === 'letters' && (
+            <>
+              <div className="qt-modal-stem">{item.title}</div>
+              <ul className="qt-modal-blanks">
+                {item.blanks.map((b, bi) => {
+                  const given = answer.inputs[bi] || '';
+                  const right = given.toLowerCase() === b.answer.toLowerCase();
+                  return (
+                    <li key={bi} className={right ? 'is-right' : 'is-wrong'}>
+                      <span className="qt-blank-num">Blank {bi + 1}</span>
+                      <span className="qt-blank-given">{given || '(empty)'}</span>
+                      {!right && <span className="qt-blank-answer">→ {b.answer}</span>}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+
+          {item.kind === 'order' && answer.kind === 'order' && (
+            <>
+              <div className="qt-modal-context">
+                <div className="qt-modal-context-body">“{item.question}”</div>
+              </div>
+              <div className="qt-modal-line is-wrong">
+                <span className="qt-line-label">Your answer</span>
+                <span>
+                  {item.prompt ? `${item.prompt} ` : ''}
+                  {answer.placed.join(' ') || '(nothing placed)'}
+                  {item.isQuestion ? '?' : '.'}
+                </span>
+              </div>
+              <div className="qt-modal-line is-right">
+                <span className="qt-line-label">Correct</span>
+                <span>
+                  {item.prompt ? `${item.prompt} ` : ''}
+                  {item.correct.join(' ')}
+                  {item.isQuestion ? '?' : '.'}
+                </span>
+              </div>
+              <div className="qt-modal-note">Not needed: {item.distractors.join(', ')}</div>
+            </>
+          )}
+        </div>
+
+        <div className="qt-modal-foot">
+          <Link className="btn btn-primary" to={item.practiceHref}>
+            Practise this →
+          </Link>
         </div>
       </div>
     </div>

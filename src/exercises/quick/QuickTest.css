@@ -100,6 +100,118 @@
 .qt-type-chip strong { color: var(--error-text); font-weight: 700; }
 .qt-type-chip.ok strong { color: var(--success-text); }
 
+/* ── Missed questions, listed under their exercise ── */
+.qt-missed { list-style: none; margin: 8px 0 0 18px; display: flex; flex-direction: column; gap: 4px; }
+.qt-missed-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s;
+}
+.qt-missed-row:hover { background: rgba(254, 226, 226, .9); }
+.qt-missed-num { font-size: 11px; font-weight: 700; color: var(--error-text); flex-shrink: 0; min-width: 26px; }
+.qt-missed-stem {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qt-missed-see { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+
+/* ── Question detail ── */
+.qt-modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.qt-modal-scrim { position: absolute; inset: 0; background: rgba(30,27,75,.4); backdrop-filter: blur(3px); border: none; cursor: pointer; }
+.qt-modal-card {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-flat);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(30,27,75,.28);
+  overflow: hidden;
+}
+.qt-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: .9rem 1.1rem;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.qt-modal-num { font-size: 14px; font-weight: 800; color: #fff; }
+.qt-modal-tag { flex: 1; font-size: 11.5px; color: rgba(255,255,255,.82); }
+.qt-modal-close { background: none; border: none; color: #fff; font-size: 15px; cursor: pointer; padding: 0 2px; }
+
+.qt-modal-body { padding: 1.1rem; overflow-y: auto; }
+.qt-modal-context {
+  background: rgba(255,255,255,.65);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .8rem 1rem;
+  margin-bottom: .9rem;
+  max-height: 190px;
+  overflow-y: auto;
+}
+.qt-modal-context-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.qt-modal-context-body { font-size: 13px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
+.qt-modal-stem { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: .8rem; line-height: 1.45; }
+.qt-modal-note { font-size: 12px; color: var(--muted); margin-top: .7rem; }
+
+.qt-modal-options { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.qt-opt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,.55);
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.qt-opt.is-right { background: var(--success-bg); border-color: var(--success-border); }
+.qt-opt.is-wrong { background: var(--error-bg); border-color: var(--error-border); }
+.qt-opt-letter { font-weight: 700; color: var(--muted); }
+.qt-opt-text { flex: 1; }
+.qt-opt-mark { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); white-space: nowrap; }
+.qt-opt.is-right .qt-opt-mark { color: var(--success-text); }
+.qt-opt.is-wrong .qt-opt-mark { color: var(--error-text); }
+
+.qt-modal-blanks { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.qt-modal-blanks li { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.qt-blank-num { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 58px; }
+.qt-modal-blanks .is-wrong .qt-blank-given { color: var(--error-text); }
+.qt-modal-blanks .is-right .qt-blank-given { color: var(--success-text); }
+.qt-blank-answer { color: var(--success-text); font-weight: 700; }
+
+.qt-modal-line {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+.qt-modal-line.is-wrong { background: var(--error-bg); border: 1px solid var(--error-border); }
+.qt-modal-line.is-right { background: var(--success-bg); border: 1px solid var(--success-border); }
+.qt-line-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); min-width: 74px; }
+
+.qt-modal-foot { padding: .9rem 1.1rem; border-top: 1px solid var(--border-solid); flex-shrink: 0; }
+
 .qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
 .qt-cat:first-of-type { border-top: none; padding-top: 2px; }
 .qt-cat-head { display: flex; align-items: center; gap: 9px; }
