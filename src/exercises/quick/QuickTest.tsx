@@ -12,7 +12,7 @@ import {
 } from '../../data/quickTest.ts';
 import { bandFor, CEFR_MIN_ATTEMPTED, CEFR_NAME, type CefrBand } from '../../data/cefr.ts';
 import { CTestParagraph, CTestReview } from '../reading/CTestParagraph.tsx';
-import { SentenceBuilder } from '../writing/SentenceBuilder.tsx';
+import { SentenceBuilder, sentenceText } from '../writing/SentenceBuilder.tsx';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
 
@@ -663,18 +663,14 @@ function ReviewModal({
               <div className="qt-modal-line is-wrong">
                 <span className="qt-line-label">Your answer</span>
                 <span>
-                  {item.prompt ? `${item.prompt} ` : ''}
-                  {answer.placed.join(' ') || '(nothing placed)'}
-                  {item.isQuestion ? '?' : '.'}
+                  {answer.placed.length
+                    ? sentenceText(item.prompt, answer.placed, item.isQuestion)
+                    : '(nothing placed)'}
                 </span>
               </div>
               <div className="qt-modal-line is-right">
                 <span className="qt-line-label">Correct</span>
-                <span>
-                  {item.prompt ? `${item.prompt} ` : ''}
-                  {item.correct.join(' ')}
-                  {item.isQuestion ? '?' : '.'}
-                </span>
+                <span>{sentenceText(item.prompt, item.correct, item.isQuestion)}</span>
               </div>
               <div className="qt-modal-note">Not needed: {item.distractors.join(', ')}</div>
             </>

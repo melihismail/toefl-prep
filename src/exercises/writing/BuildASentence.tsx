@@ -5,7 +5,7 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { sentenceQuestions } from '../../data/writing/buildASentence.ts';
 import type { SentenceQuestion } from '../../data/writing/types.ts';
-import { SentenceBuilder } from './SentenceBuilder.tsx';
+import { SentenceBuilder, sentenceText } from './SentenceBuilder.tsx';
 
 const EXAM_SIZE = 16;
 
@@ -29,9 +29,7 @@ function freshState(exam: SentenceQuestion[]): QState[] {
 }
 
 function fullAnswer(q: SentenceQuestion) {
-  const body = q.prompt ? `${q.prompt} ${q.correct.join(' ')}` : q.correct.join(' ');
-  // The mark is never a chip — it sits in place, as the task describes.
-  return q.isQuestion ? `${body}?` : `${body}.`;
+  return sentenceText(q.prompt, q.correct, q.isQuestion);
 }
 
 export function BuildASentence() {
@@ -120,12 +118,7 @@ export function BuildASentence() {
             {exam.map((qq, i) => {
               const ok = state[i].isCorrect === true;
               const placed = state[i].placed;
-              const given =
-                placed.length > 0
-                  ? qq.prompt
-                    ? `${qq.prompt} ${placed.join(' ')}`
-                    : placed.join(' ')
-                  : '(no answer)';
+              const given = placed.length > 0 ? sentenceText(qq.prompt, placed, qq.isQuestion) : '(no answer)';
               return (
                 <div key={i} className={`review-item ${ok ? 'correct-item' : 'wrong-item'}`}>
                   <div className={`tag ${ok ? 'tag-correct' : 'tag-wrong'}`} style={{ marginBottom: 6 }}>
