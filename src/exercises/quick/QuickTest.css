@@ -210,8 +210,6 @@
 .qt-modal-line.is-right { background: var(--success-bg); border: 1px solid var(--success-border); }
 .qt-line-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); min-width: 74px; }
 
-.qt-modal-foot { padding: .9rem 1.1rem; border-top: 1px solid var(--border-solid); flex-shrink: 0; }
-
 .qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
 .qt-cat:first-of-type { border-top: none; padding-top: 2px; }
 .qt-cat-head { display: flex; align-items: center; gap: 9px; }

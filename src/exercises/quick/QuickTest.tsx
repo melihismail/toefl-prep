@@ -555,11 +555,6 @@ function ReviewModal({
           )}
         </div>
 
-        <div className="qt-modal-foot">
-          <Link className="btn btn-primary" to={item.practiceHref}>
-            Practise this →
-          </Link>
-        </div>
       </div>
     </div>
   );
