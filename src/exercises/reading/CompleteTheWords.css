@@ -1,0 +1,104 @@
+/* Moved out of the shared stylesheet: only this exercise uses these. */
+
+.ctw-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 14px;
+}
+.ctw-progress { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+.para {
+  font-size: 15px;
+  line-height: 2.3;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* A partial word stays one object: the visible prefix and its letter cells
+   share a chip, and nowrap stops the word breaking across lines. */
+.word-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent-light);
+  border: 1.5px solid var(--accent-mid);
+  border-radius: 7px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: text;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+/* The active chip is obvious — with 40+ inputs on a question, losing your
+   place is otherwise easy. */
+.word-chip:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.word-chip.is-correct { border-color: var(--success-border); background: var(--success-bg); }
+.word-chip.is-wrong { border-color: var(--error-border); background: var(--error-bg); }
+
+.chip-prefix {
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
+.letter-input {
+  display: inline-block;
+  width: 14px;
+  height: 21px;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--accent);
+  padding: 0;
+  margin-left: 2px;
+  outline: none;
+  vertical-align: middle;
+  /* Clicks belong to the chip, which decides which cell to focus. */
+  pointer-events: none;
+  transition: border-color .15s;
+}
+.letter-input:first-of-type { margin-left: 3px; }
+.letter-input.correct { color: var(--success-text); border-bottom-color: var(--success-text); }
+.letter-input.wrong { color: var(--error-text); border-bottom-color: var(--error-text); }
+.letter-input:disabled { opacity: 1; cursor: default; }
+
+/* ── Score screen ── */
+.ctw-review-item { padding: 12px 0; border-top: 1px solid var(--border-solid); }
+.ctw-review-item:first-of-type { border-top: none; padding-top: 4px; }
+
+/* ── Read-only review: the whole paragraph, marked in place ── */
+.ctw-review-para { font-size: 14.5px; line-height: 2.3; }
+.review-chip {
+  display: inline-flex;
+  align-items: baseline;
+  border-radius: 6px;
+  /* Negative margin cancels the padding, so highlighting a word does not push
+     the punctuation after it away. */
+  padding: 1px 3px;
+  margin: 0 -3px;
+  white-space: nowrap;
+}
+.review-chip.is-correct { background: var(--success-bg); }
+.review-chip.is-wrong { background: var(--error-bg); }
+.review-letter { font-weight: 700; }
+.review-letter.correct { color: var(--success-text); }
+.review-letter.wrong { color: var(--error-text); text-decoration: line-through; }
+/* The right completion, tucked beside the word it belongs to. */
+.review-fix {
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--success-text);
+}
+.review-fix::before { content: '→ '; font-weight: 400; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .word-chip, .letter-input { transition: none; }
+}

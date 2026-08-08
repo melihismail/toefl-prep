@@ -1,0 +1,262 @@
+.qt-source { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.qt-type {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Passage or transcript. Bounded so a long talk cannot push the question
+   off screen — this is meant to be quick. */
+.qt-context {
+  background: rgba(255,255,255,.5);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1.1rem;
+  margin-bottom: 1rem;
+  max-height: 230px;
+  overflow-y: auto;
+}
+.qt-context-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.qt-context-body { font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+
+.qt-section-banner {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+.qt-teacher-flag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+.qt-task { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 1rem; font-weight: 500; }
+.qt-speak-prompt {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.qt-nav-right { display: flex; gap: 8px; align-items: center; }
+.qt-quit { font-size: 12px; }
+
+/* ── Results: section → exercise → question type ── */
+/* Each card carries its own section-* class, so the accent follows the skill. */
+.qt-section { margin-top: 1rem; }
+.qt-section:first-of-type { margin-top: 0; }
+
+.qt-sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.qt-sec-name { font-size: 17px; font-weight: 800; color: var(--accent); letter-spacing: -.01em; }
+.qt-sec-score { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+.qt-sec-of { font-size: 14px; font-weight: 600; color: var(--muted); }
+.qt-sec-pending { font-size: 12px; font-weight: 700; color: var(--accent-dark); background: var(--accent-light); border: 1px solid var(--accent-mid); border-radius: 99px; padding: 3px 10px; }
+
+.qt-sec-bar { height: 6px; border-radius: 99px; background: var(--accent-light); margin: 10px 0 4px; overflow: hidden; }
+.qt-sec-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; }
+
+.qt-ex { padding: 10px 0; border-top: 1px solid var(--border-solid); }
+.qt-ex-head { display: flex; align-items: center; gap: 9px; }
+.qt-ex-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+.qt-ex-score { font-size: 13px; font-weight: 600; color: var(--muted); }
+.qt-ex-pending { font-weight: 500; }
+
+/* Question types sit under their exercise, since only some sources label them. */
+.qt-types { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0 18px; }
+.qt-type-chip {
+  font-size: 11.5px;
+  color: var(--muted);
+  background: rgba(255,255,255,.55);
+  border: 1px solid var(--border-solid);
+  border-radius: 99px;
+  padding: 3px 10px;
+}
+.qt-type-chip strong { color: var(--error-text); font-weight: 700; }
+.qt-type-chip.ok strong { color: var(--success-text); }
+
+/* ── Missed questions, listed under their exercise ── */
+.qt-missed { list-style: none; margin: 8px 0 0 18px; display: flex; flex-direction: column; gap: 4px; }
+.qt-missed-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s;
+}
+.qt-missed-row:hover { background: rgba(254, 226, 226, .9); }
+.qt-missed-num { font-size: 11px; font-weight: 700; color: var(--error-text); flex-shrink: 0; min-width: 26px; }
+.qt-missed-stem {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qt-missed-see { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+
+/* ── Question detail ── */
+.qt-modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.qt-modal-scrim { position: absolute; inset: 0; background: rgba(30,27,75,.4); backdrop-filter: blur(3px); border: none; cursor: pointer; }
+.qt-modal-card {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-flat);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(30,27,75,.28);
+  overflow: hidden;
+}
+.qt-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: .9rem 1.1rem;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.qt-modal-num { font-size: 14px; font-weight: 800; color: #fff; }
+.qt-modal-tag { flex: 1; font-size: 11.5px; color: rgba(255,255,255,.82); }
+.qt-modal-close { background: none; border: none; color: #fff; font-size: 15px; cursor: pointer; padding: 0 2px; }
+
+.qt-modal-body { padding: 1.1rem; overflow-y: auto; }
+.qt-modal-context {
+  background: rgba(255,255,255,.65);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .8rem 1rem;
+  margin-bottom: .9rem;
+  max-height: 190px;
+  overflow-y: auto;
+}
+.qt-modal-context-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.qt-modal-context-body { font-size: 13px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
+.qt-modal-stem { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: .8rem; line-height: 1.45; }
+.qt-modal-note { font-size: 12px; color: var(--muted); margin-top: .7rem; }
+
+.qt-modal-options { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.qt-opt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border: 1px solid var(--card-border);
+  background: rgba(255,255,255,.55);
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+.qt-opt.is-right { background: var(--success-bg); border-color: var(--success-border); }
+.qt-opt.is-wrong { background: var(--error-bg); border-color: var(--error-border); }
+.qt-opt-letter { font-weight: 700; color: var(--muted); }
+.qt-opt-text { flex: 1; }
+.qt-opt-mark { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); white-space: nowrap; }
+.qt-opt.is-right .qt-opt-mark { color: var(--success-text); }
+.qt-opt.is-wrong .qt-opt-mark { color: var(--error-text); }
+
+.qt-modal-line {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  font-size: 13.5px;
+  margin-bottom: 6px;
+}
+.qt-modal-line.is-wrong { background: var(--error-bg); border: 1px solid var(--error-border); }
+.qt-modal-line.is-right { background: var(--success-bg); border: 1px solid var(--success-border); }
+.qt-line-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); min-width: 74px; }
+
+.qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
+.qt-cat:first-of-type { border-top: none; padding-top: 2px; }
+.qt-cat-head { display: flex; align-items: center; gap: 9px; }
+.qt-cat-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+.qt-cat-score { font-size: 13px; color: var(--muted); }
+.qt-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.qt-dot.ok { background: var(--success-text); }
+.qt-dot.bad { background: var(--error-text); }
+.qt-practise {
+  display: inline-block;
+  margin: 6px 0 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.qt-practise:hover { color: var(--accent-dark); }
+.qt-dot.pending { background: var(--accent-mid); }
+
+.qt-teacher-note { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+.qt-teacher-answer { margin: 6px 0 0 18px; }
+.qt-teacher-count { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.qt-teacher-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-wrap;
+  background: rgba(255,255,255,.55);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: .6rem .8rem;
+  margin-top: 4px;
+}
+
+/* ── Estimated level ── */
+/* Only Reading, Listening and Build a Sentence mark themselves, so only they
+   feed the band. */
+.qt-cefr { margin-bottom: 1rem; }
+.qt-cefr-head { display: flex; align-items: center; gap: 14px; }
+.qt-cefr-band {
+  flex-shrink: 0;
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+.qt-cefr-name { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -.01em; }
+.qt-cefr-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+.qt-cefr-skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.qt-cefr-skill {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  border: 1px solid var(--accent-mid);
+  background: var(--accent-light);
+  border-radius: 10px;
+  padding: 6px 11px;
+}
+.qt-cefr-skill-name { font-size: 12px; font-weight: 600; color: var(--muted); }
+.qt-cefr-skill-band { font-size: 15px; font-weight: 800; color: var(--accent-dark); }
+.qt-cefr-skill-pct { font-size: 11.5px; color: var(--muted); }
+
+.qt-cefr.is-thin { padding-top: .9rem; padding-bottom: .9rem; }
+.qt-cefr-thin { font-size: 13px; color: var(--muted); }

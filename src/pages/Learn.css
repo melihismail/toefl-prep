@@ -1,0 +1,108 @@
+/* Page chrome only. The step cards themselves are the HowItWorks component,
+   which is Tailwind-styled. */
+.learn-page { min-height: 100vh; }
+
+/* One slim row so the cards get the screen. */
+.learn-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 2rem 0;
+}
+.learn-back {
+  font-size: 20px;
+  line-height: 1;
+  color: #7c3aed;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.learn-back:hover { color: #4338ca; }
+
+.learn-title {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+
+.learn-cta {
+  flex-shrink: 0;
+  background: #1e1b4b;
+  color: #fff;
+  border-radius: 99px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s;
+}
+.learn-cta:hover { background: #2a2560; }
+
+/* The component's own vertical padding is sized for a full-page section. */
+.learn-works { padding-top: .5rem !important; padding-bottom: .5rem !important; }
+
+/* ── Section detail panel ── */
+.learn-overlay { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; }
+.learn-overlay-scrim { position: absolute; inset: 0; background: rgba(30,27,75,.34); backdrop-filter: blur(3px); border: none; cursor: pointer; }
+.learn-panel {
+  position: relative;
+  width: min(460px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg-flat);
+  padding: 1.5rem 1.5rem 3rem;
+  box-shadow: -12px 0 40px rgba(30,27,75,.18);
+}
+.learn-panel-back { background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 700; color: var(--sec-dark); cursor: pointer; padding: 0 0 1.25rem; }
+.learn-panel-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--sec); margin-bottom: 6px; }
+.learn-panel-title { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -.02em; line-height: 1.2; }
+.learn-panel-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.learn-panel-desc { font-size: 14.5px; line-height: 1.7; color: var(--text); margin: 1rem 0 1.25rem; }
+
+/* One task per row, expanding to its tips and scoring. */
+.learn-acc { border-top: 1px solid var(--border-solid); }
+.learn-acc:last-of-type { border-bottom: 1px solid var(--border-solid); margin-bottom: 1.25rem; }
+.learn-acc-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  padding: 13px 0;
+  cursor: pointer;
+}
+.learn-acc-name { flex: 1; font-size: 14.5px; font-weight: 700; color: var(--text); }
+.learn-acc-meta { font-size: 12px; color: var(--muted); }
+.learn-acc-chev { font-size: 17px; font-weight: 700; color: var(--sec); width: 14px; text-align: center; }
+.learn-acc.is-open .learn-acc-name { color: var(--sec-dark); }
+
+.learn-acc-body { padding-bottom: 1rem; }
+.learn-acc-desc { font-size: 13.5px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+
+.learn-block { background: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.7); border-radius: 14px; padding: .9rem 1.05rem; margin-bottom: 10px; }
+.learn-block-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sec); margin-bottom: 5px; }
+.learn-block p { font-size: 13px; line-height: 1.7; color: var(--text); }
+
+.learn-panel-cta {
+  display: inline-block;
+  margin-top: 4px;
+  background: var(--sec);
+  color: #fff;
+  border-radius: 99px;
+  padding: 9px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.learn-panel-cta:hover { background: var(--sec-dark); }
+
+@media (max-width: 700px) {
+  .learn-panel { width: 100%; }
+}

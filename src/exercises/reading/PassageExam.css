@@ -1,0 +1,132 @@
+/* Split view: passage and questions side by side, each scrolling on its own,
+   so the text stays on screen while answering — as in the real exam. */
+.rx-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh; /* phones: excludes the browser chrome */
+}
+
+.rx-top {
+  flex-shrink: 0;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1rem 0;
+}
+
+.rx-split {
+  flex: 1;
+  min-height: 0; /* lets the children scroll instead of stretching the page */
+  display: flex;
+  gap: 14px;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: .75rem 1rem 0;
+}
+
+.rx-passage,
+.rx-questions {
+  background: var(--card);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .06);
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* A wider passage column means fewer lines, so it is likelier to fit whole. */
+.rx-passage { flex: 0 0 55%; }
+.rx-questions { flex: 1; overflow-y: auto; }
+
+.rx-passage-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+.rx-passage-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  line-height: 1.85;
+  color: var(--text);
+  font-size: 15px; /* the auto-fit pass may step this down to 13px */
+}
+
+.rx-nav {
+  flex-shrink: 0;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: .75rem 1rem 1rem;
+}
+.rx-nav .nav-row { margin-top: 0; }
+
+/* Desktop keeps the full labels; the short forms are for the slim mobile bar. */
+.rx-back-short,
+.rx-count-short,
+.rx-arrow { display: none; }
+
+/* Stacked on narrow screens: the passage keeps the top of the screen with its
+   own scroll, questions take the rest. The chrome is stripped back hard — it
+   was costing 140px of an 812px screen, leaving only five lines of passage. */
+@media (max-width: 900px) {
+  .rx-split { flex-direction: column; gap: 8px; padding: .5rem .6rem 0; }
+  .rx-passage { flex: 0 0 46%; }
+  .rx-questions { flex: 1; padding-bottom: 4.25rem; } /* clears the floating buttons */
+  .rx-passage,
+  .rx-questions { padding-left: .9rem; padding-right: .9rem; padding-top: .8rem; }
+
+  .rx-top { padding: .4rem .6rem 0; }
+  .rx-top .topbar { margin-bottom: 6px; }
+  .rx-top .exam-label { display: none; }
+  .rx-back-full,
+  .rx-count-full { display: none; }
+  .rx-back-short,
+  .rx-count-short { display: inline; }
+  .rx-back-short { font-size: 18px; line-height: 1; }
+  .rx-top .progress-wrap { height: 2px; }
+  .rx-passage-title { font-size: 13px; margin-bottom: 4px; }
+
+  /* Floating over the questions rather than a bar that costs 65px of height. */
+  .rx-nav {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    left: auto;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    z-index: 30;
+  }
+  .rx-nav .nav-row { gap: 8px; margin-top: 0; }
+  .rx-nav .btn {
+    min-width: 0;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(30, 27, 75, .18);
+  }
+  .rx-nav .rx-label { display: none; }
+  .rx-nav .rx-arrow { display: inline; font-size: 18px; line-height: 1; }
+
+  /* Quiet until the passage is finished, then it reads as the next step. */
+  .rx-next:not(.is-ready) {
+    background: rgba(255, 255, 255, .85);
+    color: var(--muted);
+    border-color: var(--border-solid);
+  }
+  .rx-next.is-ready { animation: rx-next-in .22s ease-out; }
+  @keyframes rx-next-in {
+    from { transform: scale(.82); }
+    to { transform: scale(1); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rx-next.is-ready { animation: none; }
+}

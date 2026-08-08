@@ -1,0 +1,19 @@
+/* Shared by the Build a Sentence practice page and the quick test, so the two
+   present the task identically. */
+.sb-quote {
+  background: var(--accent-light);
+  border: 1px solid var(--accent-mid);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  font-size: 15px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text);
+}
+
+.sb-slots { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+.sb-prompt { font-size: 15px; font-weight: 700; color: var(--accent); margin-right: 2px; }
+/* The full stop or question mark is never a chip — it sits in place, as the
+   real task presents it. */
+.sb-mark { font-size: 17px; font-weight: 700; color: var(--accent); margin-left: 2px; }
