@@ -60,7 +60,7 @@
   margin-left: 2px;
   outline: none;
   vertical-align: middle;
-  /* Clicks belong to the chip, which decides which cell to focus. */
+  /* Clicks belong to the chip, which picks the cell from where the tap fell. */
   pointer-events: none;
   transition: border-color .15s;
 }
