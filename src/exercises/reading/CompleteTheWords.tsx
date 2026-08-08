@@ -7,6 +7,7 @@ import { cTestTexts } from '../../data/reading/cTestTexts.ts';
 import { buildCTest } from '../../data/reading/ctest.ts';
 import type { MissingWordsQuestion } from '../../data/reading/types.ts';
 import { CTestParagraph, CTestReview } from './CTestParagraph.tsx';
+import { AnswerControls } from '../AnswerControls.tsx';
 import './CompleteTheWords.css';
 
 const EXAM_SIZE = 10;
@@ -44,7 +45,6 @@ export function CompleteTheWords() {
   const size = exam.length;
   const q = exam[currentIdx];
   const s = state[currentIdx];
-  const locked = s.checked || s.revealed;
 
   function patch(change: Partial<QState>) {
     setState((prev) => prev.map((v, i) => (i === currentIdx ? { ...v, ...change } : v)));
@@ -196,29 +196,18 @@ export function CompleteTheWords() {
             onLetter={setLetter}
           />
 
-          <div className="btn-row">
-            <button
-              className="btn btn-primary"
-              disabled={locked}
-              onClick={() => patch({ checked: true, isCorrect: gradeOne(q, s.inputs) })}
-            >
-              {s.checked ? (s.isCorrect ? 'Correct ✓' : 'Wrong ✗') : 'Check answer ↗'}
-            </button>
-            <button
-              className="btn btn-outline"
-              disabled={s.revealed}
-              onClick={() => patch({ revealed: true, isCorrect: s.isCorrect ?? false })}
-            >
-              {s.revealed ? 'Answer shown' : 'Show answer'}
-            </button>
-            <button
-              className="btn"
-              disabled={locked}
-              onClick={() => patch({ inputs: q.blanks.map(() => ''), checked: false, revealed: false, isCorrect: null })}
-            >
-              Reset
-            </button>
-          </div>
+          <AnswerControls
+            complete={filledCount === q.blanks.length}
+            attempted={s.inputs.some((w) => w.trim().length > 0)}
+            checked={s.checked}
+            revealed={s.revealed}
+            correct={s.isCorrect === true}
+            onCheck={() => patch({ checked: true, isCorrect: gradeOne(q, s.inputs) })}
+            onReveal={() => patch({ revealed: true, isCorrect: s.isCorrect ?? false })}
+            onRetry={() =>
+              patch({ inputs: q.blanks.map(() => ''), checked: false, revealed: false, isCorrect: null })
+            }
+          />
 
           {s.checked && (
             <div className={`feedback ${s.isCorrect ? 'correct' : 'wrong'}`} style={{ display: 'block' }}>

@@ -6,6 +6,7 @@ import { shuffle } from '../shuffle.ts';
 import { sentenceQuestions } from '../../data/writing/buildASentence.ts';
 import type { SentenceQuestion } from '../../data/writing/types.ts';
 import { SentenceBuilder, sentenceText } from './SentenceBuilder.tsx';
+import { AnswerControls } from '../AnswerControls.tsx';
 
 const EXAM_SIZE = 16;
 
@@ -184,33 +185,24 @@ export function BuildASentence() {
             onUndo={undo}
           />
 
-          <div className="btn-row">
-            <button
-              className="btn btn-primary"
-              disabled={s.placed.length !== totalWords || locked}
-              onClick={() => patch({ checked: true, isCorrect: s.placed.join(' ') === q.correct.join(' ') })}
-            >
-              {s.checked ? (s.isCorrect ? 'Correct ✓' : 'Wrong ✗') : 'Check answer ↗'}
-            </button>
-            <button className="btn btn-outline" disabled={s.revealed} onClick={() => patch({ revealed: true })}>
-              {s.revealed ? 'Answer shown' : 'Show answer'}
-            </button>
-            <button
-              className="btn"
-              disabled={locked}
-              onClick={() =>
-                patch({
-                  bank: shuffle([...q.correct, ...q.distractors]),
-                  placed: [],
-                  checked: false,
-                  revealed: false,
-                  isCorrect: null,
-                })
-              }
-            >
-              Reset
-            </button>
-          </div>
+          <AnswerControls
+            complete={s.placed.length === totalWords}
+            attempted={s.placed.length > 0}
+            checked={s.checked}
+            revealed={s.revealed}
+            correct={s.isCorrect === true}
+            onCheck={() => patch({ checked: true, isCorrect: s.placed.join(' ') === q.correct.join(' ') })}
+            onReveal={() => patch({ revealed: true })}
+            onRetry={() =>
+              patch({
+                bank: shuffle([...q.correct, ...q.distractors]),
+                placed: [],
+                checked: false,
+                revealed: false,
+                isCorrect: null,
+              })
+            }
+          />
 
           {s.checked && (
             <div className={`feedback ${s.isCorrect ? 'correct' : 'wrong'}`} style={{ display: 'block' }}>
