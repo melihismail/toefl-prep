@@ -5,6 +5,7 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { useListeningExam } from './useListeningExam.ts';
 import type { ListeningPassage } from '../../data/listening/types.ts';
 import type { TranslationKey } from '../../i18n/translations.ts';
+import { AnswerControls } from '../AnswerControls.tsx';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
@@ -217,27 +218,23 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
                   })}
                 </div>
 
-                <div className="btn-row" style={{ marginTop: '.75rem' }}>
-                  <button
-                    className="btn btn-primary"
-                    style={{ fontSize: 12 }}
-                    disabled={s.qSelected[qi] === -1 || locked}
-                    onClick={() => patchQuestion(currentIdx, 'qChecked', qi, true)}
-                  >
-                    {s.qChecked[qi] ? (s.qSelected[qi] === q.answer ? 'Correct ✓' : 'Wrong ✗') : 'Check ↗'}
-                  </button>
-                  <button
-                    className="btn btn-outline"
-                    style={{ fontSize: 12 }}
-                    disabled={s.qRevealed[qi]}
-                    onClick={() => {
-                      patchQuestion(currentIdx, 'qSelected', qi, q.answer);
-                      patchQuestion(currentIdx, 'qRevealed', qi, true);
-                    }}
-                  >
-                    {s.qRevealed[qi] ? 'Shown' : 'Show answer'}
-                  </button>
-                </div>
+                <AnswerControls
+                  compact
+                  complete={s.qSelected[qi] !== -1}
+                  attempted={s.qSelected[qi] !== -1}
+                  checked={s.qChecked[qi]}
+                  revealed={s.qRevealed[qi]}
+                  correct={s.qSelected[qi] === q.answer}
+                  onCheck={() => patchQuestion(currentIdx, 'qChecked', qi, true)}
+                  onReveal={() => {
+                    patchQuestion(currentIdx, 'qSelected', qi, q.answer);
+                    patchQuestion(currentIdx, 'qRevealed', qi, true);
+                  }}
+                  onRetry={() => {
+                    patchQuestion(currentIdx, 'qSelected', qi, -1);
+                    patchQuestion(currentIdx, 'qChecked', qi, false);
+                  }}
+                />
 
                 {s.qChecked[qi] && (
                   <div

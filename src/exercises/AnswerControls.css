@@ -1,0 +1,5 @@
+/* The row is now conditional, so it needs its own spacing rather than relying
+   on always being there. */
+.ac-row { margin-top: 1.25rem; }
+.ac-compact { margin-top: .75rem; }
+.ac-compact .btn { font-size: 12px; }

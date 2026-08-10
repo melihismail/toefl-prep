@@ -1,25 +1,4 @@
 .qt-source { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.qt-type {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
-/* Passage or transcript. Bounded so a long talk cannot push the question
-   off screen — this is meant to be quick. */
-.qt-context {
-  background: rgba(255,255,255,.5);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
-  padding: .9rem 1.1rem;
-  margin-bottom: 1rem;
-  max-height: 230px;
-  overflow-y: auto;
-}
-.qt-context-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.qt-context-body { font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
 
 .qt-section-banner {
   font-size: 12px;
@@ -115,79 +94,6 @@
 }
 .qt-missed-see { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
 
-/* ── Question detail ── */
-.qt-modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-.qt-modal-scrim { position: absolute; inset: 0; background: rgba(30,27,75,.4); backdrop-filter: blur(3px); border: none; cursor: pointer; }
-.qt-modal-card {
-  position: relative;
-  width: min(640px, 100%);
-  max-height: 86vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-flat);
-  border-radius: 16px;
-  box-shadow: 0 24px 60px rgba(30,27,75,.28);
-  overflow: hidden;
-}
-.qt-modal-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: .9rem 1.1rem;
-  background: var(--accent);
-  flex-shrink: 0;
-}
-.qt-modal-num { font-size: 14px; font-weight: 800; color: #fff; }
-.qt-modal-tag { flex: 1; font-size: 11.5px; color: rgba(255,255,255,.82); }
-.qt-modal-close { background: none; border: none; color: #fff; font-size: 15px; cursor: pointer; padding: 0 2px; }
-
-.qt-modal-body { padding: 1.1rem; overflow-y: auto; }
-.qt-modal-context {
-  background: rgba(255,255,255,.65);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
-  padding: .8rem 1rem;
-  margin-bottom: .9rem;
-  max-height: 190px;
-  overflow-y: auto;
-}
-.qt-modal-context-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-.qt-modal-context-body { font-size: 13px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
-.qt-modal-stem { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: .8rem; line-height: 1.45; }
-.qt-modal-note { font-size: 12px; color: var(--muted); margin-top: .7rem; }
-
-.qt-modal-options { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.qt-opt {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  border: 1px solid var(--card-border);
-  background: rgba(255,255,255,.55);
-  border-radius: var(--radius-sm);
-  padding: 8px 11px;
-  font-size: 13.5px;
-  color: var(--text);
-}
-.qt-opt.is-right { background: var(--success-bg); border-color: var(--success-border); }
-.qt-opt.is-wrong { background: var(--error-bg); border-color: var(--error-border); }
-.qt-opt-letter { font-weight: 700; color: var(--muted); }
-.qt-opt-text { flex: 1; }
-.qt-opt-mark { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); white-space: nowrap; }
-.qt-opt.is-right .qt-opt-mark { color: var(--success-text); }
-.qt-opt.is-wrong .qt-opt-mark { color: var(--error-text); }
-
-.qt-modal-line {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  border-radius: var(--radius-sm);
-  padding: 8px 11px;
-  font-size: 13.5px;
-  margin-bottom: 6px;
-}
-.qt-modal-line.is-wrong { background: var(--error-bg); border: 1px solid var(--error-border); }
-.qt-modal-line.is-right { background: var(--success-bg); border: 1px solid var(--success-border); }
-.qt-line-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); min-width: 74px; }
 
 .qt-cat { padding: 10px 0; border-top: 1px solid var(--border-solid); }
 .qt-cat:first-of-type { border-top: none; padding-top: 2px; }

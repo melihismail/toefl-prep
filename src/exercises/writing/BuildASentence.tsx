@@ -5,7 +5,8 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { sentenceQuestions } from '../../data/writing/buildASentence.ts';
 import type { SentenceQuestion } from '../../data/writing/types.ts';
-import { SentenceBuilder } from './SentenceBuilder.tsx';
+import { SentenceBuilder, sentenceText } from './SentenceBuilder.tsx';
+import { AnswerControls } from '../AnswerControls.tsx';
 
 const EXAM_SIZE = 16;
 
@@ -29,9 +30,7 @@ function freshState(exam: SentenceQuestion[]): QState[] {
 }
 
 function fullAnswer(q: SentenceQuestion) {
-  const body = q.prompt ? `${q.prompt} ${q.correct.join(' ')}` : q.correct.join(' ');
-  // The mark is never a chip — it sits in place, as the task describes.
-  return q.isQuestion ? `${body}?` : `${body}.`;
+  return sentenceText(q.prompt, q.correct, q.isQuestion);
 }
 
 export function BuildASentence() {
@@ -120,12 +119,7 @@ export function BuildASentence() {
             {exam.map((qq, i) => {
               const ok = state[i].isCorrect === true;
               const placed = state[i].placed;
-              const given =
-                placed.length > 0
-                  ? qq.prompt
-                    ? `${qq.prompt} ${placed.join(' ')}`
-                    : placed.join(' ')
-                  : '(no answer)';
+              const given = placed.length > 0 ? sentenceText(qq.prompt, placed, qq.isQuestion) : '(no answer)';
               return (
                 <div key={i} className={`review-item ${ok ? 'correct-item' : 'wrong-item'}`}>
                   <div className={`tag ${ok ? 'tag-correct' : 'tag-wrong'}`} style={{ marginBottom: 6 }}>
@@ -191,33 +185,24 @@ export function BuildASentence() {
             onUndo={undo}
           />
 
-          <div className="btn-row">
-            <button
-              className="btn btn-primary"
-              disabled={s.placed.length !== totalWords || locked}
-              onClick={() => patch({ checked: true, isCorrect: s.placed.join(' ') === q.correct.join(' ') })}
-            >
-              {s.checked ? (s.isCorrect ? 'Correct ✓' : 'Wrong ✗') : 'Check answer ↗'}
-            </button>
-            <button className="btn btn-outline" disabled={s.revealed} onClick={() => patch({ revealed: true })}>
-              {s.revealed ? 'Answer shown' : 'Show answer'}
-            </button>
-            <button
-              className="btn"
-              disabled={locked}
-              onClick={() =>
-                patch({
-                  bank: shuffle([...q.correct, ...q.distractors]),
-                  placed: [],
-                  checked: false,
-                  revealed: false,
-                  isCorrect: null,
-                })
-              }
-            >
-              Reset
-            </button>
-          </div>
+          <AnswerControls
+            complete={s.placed.length === totalWords}
+            attempted={s.placed.length > 0}
+            checked={s.checked}
+            revealed={s.revealed}
+            correct={s.isCorrect === true}
+            onCheck={() => patch({ checked: true, isCorrect: s.placed.join(' ') === q.correct.join(' ') })}
+            onReveal={() => patch({ revealed: true })}
+            onRetry={() =>
+              patch({
+                bank: shuffle([...q.correct, ...q.distractors]),
+                placed: [],
+                checked: false,
+                revealed: false,
+                isCorrect: null,
+              })
+            }
+          />
 
           {s.checked && (
             <div className={`feedback ${s.isCorrect ? 'correct' : 'wrong'}`} style={{ display: 'block' }}>

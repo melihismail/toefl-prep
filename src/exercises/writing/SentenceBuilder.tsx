@@ -1,5 +1,19 @@
 import './SentenceBuilder.css';
 
+/**
+ * Every word in the bank is stored lower-case, or the one capital would point
+ * straight at the opening word. The capital is put back only on the way out.
+ */
+export function capitaliseFirst(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** The finished sentence, with the mark already in position. */
+export function sentenceText(prompt: string | undefined, words: string[], isQuestion?: boolean) {
+  const body = prompt ? `${prompt} ${words.join(' ')}` : capitaliseFirst(words.join(' '));
+  return `${body}${isQuestion ? '?' : '.'}`;
+}
+
 export type SentenceBuilderProps = {
   question: string;
   /** Fixed opening words shown before the slots. */
@@ -71,7 +85,7 @@ export function SentenceBuilder({
               key={i}
               style={colour ? { color: colour, borderBottomColor: colour } : undefined}
             >
-              {word}
+              {i === 0 && !prompt ? capitaliseFirst(word) : word}
             </div>
           );
         })}

@@ -5,6 +5,7 @@ import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { chooseResponseQuestions } from '../../data/listening/chooseAResponse.ts';
 import type { ChooseResponseQuestion } from '../../data/listening/types.ts';
+import { AnswerControls } from '../AnswerControls.tsx';
 
 const EXAM_SIZE = 8;
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -231,29 +232,16 @@ export function ChooseAResponse() {
             })}
           </div>
 
-          <div className="btn-row" style={{ marginTop: '1.5rem' }}>
-            <button
-              className="btn btn-primary"
-              disabled={s.selected === -1 || locked}
-              onClick={() => patch({ checked: true })}
-            >
-              {s.checked ? (s.selected === q.answer ? 'Correct ✓' : 'Wrong ✗') : 'Check answer ↗'}
-            </button>
-            <button
-              className="btn btn-outline"
-              disabled={s.revealed}
-              onClick={() => patch({ selected: q.answer, revealed: true })}
-            >
-              {s.revealed ? 'Answer shown' : 'Show answer'}
-            </button>
-            <button
-              className="btn"
-              disabled={locked}
-              onClick={() => patch({ selected: -1, checked: false, revealed: false })}
-            >
-              Reset
-            </button>
-          </div>
+          <AnswerControls
+            complete={s.selected !== -1}
+            attempted={s.selected !== -1}
+            checked={s.checked}
+            revealed={s.revealed}
+            correct={s.selected === q.answer}
+            onCheck={() => patch({ checked: true })}
+            onReveal={() => patch({ selected: q.answer, revealed: true })}
+            onRetry={() => patch({ selected: -1, checked: false, revealed: false })}
+          />
 
           {s.checked && (
             <div className={`feedback ${s.selected === q.answer ? 'correct' : 'wrong'}`} style={{ display: 'block' }}>

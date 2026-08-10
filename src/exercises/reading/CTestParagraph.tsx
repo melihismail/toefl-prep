@@ -36,7 +36,9 @@ export type CTestParagraphProps = {
 /** The typing surface, shared by the practice page and the quick test. */
 export function CTestParagraph({ paragraph, blanks, inputs, checked, revealed, onLetter }: CTestParagraphProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const locked = Boolean(revealed);
+  // A marked answer stays put until Try again clears it, or the red letters
+  // could be edited away without the verdict changing.
+  const locked = Boolean(revealed || checked);
 
   /** Flat DOM order of the letter cells, so focus can move across blanks. */
   const flatIndex = useMemo(() => {
