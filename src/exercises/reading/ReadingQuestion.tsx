@@ -17,6 +17,11 @@ export type ReadingQuestionProps = {
   context?: ReadingContext;
   /** The chips above the passage. Each caller labels its own. */
   head?: React.ReactNode;
+  /**
+   * Position within the questions on this passage, 0-based. Omitted where the
+   * question stands alone, as in the quick test.
+   */
+  step?: { index: number; total: number };
   stem: string;
   options: string[];
   /** -1 for unanswered. */
@@ -31,7 +36,16 @@ export type ReadingQuestionProps = {
  * exam is actually sat — you read, then look back. One question per screen so
  * the pair fits a phone without a split pane.
  */
-export function ReadingQuestion({ context, head, stem, options, selected, onSelect, children }: ReadingQuestionProps) {
+export function ReadingQuestion({
+  context,
+  head,
+  step,
+  stem,
+  options,
+  selected,
+  onSelect,
+  children,
+}: ReadingQuestionProps) {
   return (
     <>
       {head && <div className="rq-head">{head}</div>}
@@ -46,6 +60,24 @@ export function ReadingQuestion({ context, head, stem, options, selected, onSele
       )}
 
       {children}
+
+      {/* Labels the question below it, so it sits with what it describes rather
+          than beside Previous/Next, which would suggest it can be tapped. */}
+      {step && step.total > 1 && (
+        <div className="rq-step">
+          <span className="rq-step-label">
+            Question {step.index + 1} of {step.total}
+          </span>
+          <span className="rq-step-rail" aria-hidden="true">
+            {Array.from({ length: step.total }).map((_, i) => (
+              <i
+                key={i}
+                className={`rq-tick${i < step.index ? ' is-done' : i === step.index ? ' is-current' : ''}`}
+              />
+            ))}
+          </span>
+        </div>
+      )}
 
       <div className="q-stem">{stem}</div>
       <div className="options">

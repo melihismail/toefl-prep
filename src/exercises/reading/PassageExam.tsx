@@ -24,6 +24,8 @@ type Props = {
 type Item = {
   passageIdx: number;
   questionIdx: number;
+  /** How many questions this passage has, for the stepper. */
+  questionCount: number;
   context: ReadingContext;
   type?: string;
   stem: string;
@@ -46,6 +48,7 @@ function buildItems(exam: ReadingPassage[], variant: Props['variant']): Item[] {
       items.push({
         passageIdx: pi,
         questionIdx: qi,
+        questionCount: p.questions.length,
         context,
         type: variant === 'academic' ? q.type : undefined,
         stem: q.stem,
@@ -214,6 +217,7 @@ export function PassageExam({ data, examSize, titleKey, backTo, backLabelKey, va
                 {item.type && <span className="rq-type">{item.type}</span>}
               </>
             }
+            step={{ index: item.questionIdx, total: item.questionCount }}
             stem={item.stem}
             options={item.options}
             selected={selected[idx]}
