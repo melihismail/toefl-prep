@@ -1,25 +1,4 @@
 .qt-source { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.qt-type {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
-/* Passage or transcript. Bounded so a long talk cannot push the question
-   off screen — this is meant to be quick. */
-.qt-context {
-  background: rgba(255,255,255,.5);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
-  padding: .9rem 1.1rem;
-  margin-bottom: 1rem;
-  max-height: 230px;
-  overflow-y: auto;
-}
-.qt-context-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.qt-context-body { font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
 
 .qt-section-banner {
   font-size: 12px;

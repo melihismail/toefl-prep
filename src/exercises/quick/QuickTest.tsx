@@ -12,6 +12,7 @@ import {
 } from '../../data/quickTest.ts';
 import { bandFor, CEFR_MIN_ATTEMPTED, CEFR_NAME, type CefrBand } from '../../data/cefr.ts';
 import { CTestParagraph, CTestReview } from '../reading/CTestParagraph.tsx';
+import { ReadingQuestion } from '../reading/ReadingQuestion.tsx';
 import { SentenceBuilder, sentenceText } from '../writing/SentenceBuilder.tsx';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
@@ -397,6 +398,14 @@ export function QuickTest() {
 
   const last = idx === items.length - 1;
   const sectionStart = idx === 0 || items[idx - 1].section !== item.section;
+  /** Same chips whichever kind of item this is. */
+  const head = (
+    <>
+      <span className="topic-tag">{item.skill}</span>
+      {item.type && <span className="rq-type">{item.type}</span>}
+      {!isScorable(item) && <span className="qt-teacher-flag">Teacher marked</span>}
+    </>
+  );
 
   return (
     <div className={`section-${item.section}`}>
@@ -418,21 +427,17 @@ export function QuickTest() {
         {sectionStart && <div className="qt-section-banner">{SECTION_LABEL[item.section]}</div>}
 
         <div className="card">
-          <div className="qt-source">
-            <span className="topic-tag">{item.skill}</span>
-            {item.type && <span className="qt-type">{item.type}</span>}
-            {!isScorable(item) && <span className="qt-teacher-flag">Teacher marked</span>}
-          </div>
+          {item.kind !== 'mc' && <div className="qt-source">{head}</div>}
 
-          {item.kind === 'mc' && (
-            <>
-              {item.context && (
-                <div className="qt-context">
-                  {item.context.title && <div className="qt-context-title">{item.context.title}</div>}
-                  <div className="qt-context-body">{item.context.body}</div>
-                </div>
-              )}
-
+          {item.kind === 'mc' && answer.kind === 'mc' && (
+            <ReadingQuestion
+              context={item.context}
+              head={head}
+              stem={item.stem}
+              options={item.options}
+              selected={answer.selected}
+              onSelect={(oi) => patch({ kind: 'mc', selected: oi })}
+            >
               {item.audioFile && (
                 <div className="tts-bar">
                   <button className="tts-play" onClick={() => playAudio(item.audioFile!)} disabled={playing}>
@@ -444,21 +449,7 @@ export function QuickTest() {
                   </div>
                 </div>
               )}
-
-              <div className="q-stem">{item.stem}</div>
-              <div className="options">
-                {item.options.map((opt, oi) => (
-                  <button
-                    key={oi}
-                    className={`option${answer.kind === 'mc' && answer.selected === oi ? ' selected' : ''}`}
-                    onClick={() => patch({ kind: 'mc', selected: oi })}
-                  >
-                    <span className="option-letter">{LETTERS[oi]})</span>
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </>
+            </ReadingQuestion>
           )}
 
           {item.kind === 'letters' && answer.kind === 'letters' && (
