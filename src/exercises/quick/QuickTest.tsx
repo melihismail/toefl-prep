@@ -14,10 +14,10 @@ import { bandFor, CEFR_MIN_ATTEMPTED, CEFR_NAME, type CefrBand } from '../../dat
 import { CTestParagraph, CTestReview } from '../reading/CTestParagraph.tsx';
 import { ReadingQuestion } from '../reading/ReadingQuestion.tsx';
 import { SentenceBuilder, sentenceText } from '../writing/SentenceBuilder.tsx';
+import { ReviewModal, ReviewContext, ReviewOptions } from '../ReviewModal.tsx';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
 
-const LETTERS = ['A', 'B', 'C', 'D'];
 
 type Answer =
   | { kind: 'mc'; selected: number }
@@ -391,7 +391,7 @@ export function QuickTest() {
           </div>
         </div>
 
-        {review && <ReviewModal {...review} onClose={() => setReview(null)} />}
+        {review && <QuickReview {...review} onClose={() => setReview(null)} />}
       </div>
     );
   }
@@ -578,8 +578,8 @@ function CefrPanel({ cefr }: { cefr: CefrResult }) {
   );
 }
 
-/** The exact question as it was sat, with the learner's answer against the key. */
-function ReviewModal({
+/** The exact question as it was sat, with the learner's answer against the key. *//** The exact question as it was sat, with the learner's answer against the key. */
+function QuickReview({
   item,
   answer,
   number,
@@ -591,84 +591,44 @@ function ReviewModal({
   onClose: () => void;
 }) {
   return (
-    <div className="qt-modal" role="dialog" aria-modal="true" aria-label={`Question ${number}`}>
-      <button className="qt-modal-scrim" onClick={onClose} aria-label="Close" />
-      <div className={`qt-modal-card section-${item.section}`}>
-        <div className="qt-modal-head">
-          <span className="qt-modal-num">Question {number}</span>
-          <span className="qt-modal-tag">
-            {item.skill}
-            {item.type ? ` · ${item.type}` : ''}
-          </span>
-          <button className="qt-modal-close" onClick={onClose} aria-label="Close">
-            ✕
-          </button>
-        </div>
+    <ReviewModal
+      title={`Question ${number}`}
+      tag={`${item.skill}${item.type ? ` · ${item.type}` : ''}`}
+      sectionClass={`section-${item.section}`}
+      onClose={onClose}
+    >
+      {item.kind === 'mc' && answer.kind === 'mc' && (
+        <>
+          {item.context && <ReviewContext title={item.context.title} body={item.context.body} />}
+          {item.audioFile && <div className="rm-note">This question was played as audio.</div>}
+          <div className="rm-stem">{item.stem}</div>
+          <ReviewOptions options={item.options} answer={item.answer} chosen={answer.selected} />
+        </>
+      )}
 
-        <div className="qt-modal-body">
-          {item.kind === 'mc' && (
-            <>
-              {item.context && (
-                <div className="qt-modal-context">
-                  {item.context.title && <div className="qt-modal-context-title">{item.context.title}</div>}
-                  <div className="qt-modal-context-body">{item.context.body}</div>
-                </div>
-              )}
-              {item.audioFile && <div className="qt-modal-note">This question was played as audio.</div>}
-              <div className="qt-modal-stem">{item.stem}</div>
-              <ul className="qt-modal-options">
-                {item.options.map((opt, oi) => {
-                  const chose = answer.kind === 'mc' && answer.selected === oi;
-                  const right = oi === item.answer;
-                  return (
-                    <li
-                      key={oi}
-                      className={`qt-opt${right ? ' is-right' : ''}${chose && !right ? ' is-wrong' : ''}`}
-                    >
-                      <span className="qt-opt-letter">{LETTERS[oi]})</span>
-                      <span className="qt-opt-text">{opt}</span>
-                      {chose && <span className="qt-opt-mark">your answer</span>}
-                      {right && <span className="qt-opt-mark">correct</span>}
-                    </li>
-                  );
-                })}
-              </ul>
-              {answer.kind === 'mc' && answer.selected === -1 && (
-                <div className="qt-modal-note">You did not answer this one.</div>
-              )}
-            </>
-          )}
+      {item.kind === 'letters' && answer.kind === 'letters' && (
+        <>
+          <div className="rm-stem">{item.title}</div>
+          <CTestReview paragraph={item.paragraph} blanks={item.blanks} inputs={answer.inputs} />
+        </>
+      )}
 
-          {item.kind === 'letters' && answer.kind === 'letters' && (
-            <>
-              <div className="qt-modal-stem">{item.title}</div>
-              <CTestReview paragraph={item.paragraph} blanks={item.blanks} inputs={answer.inputs} />
-            </>
-          )}
-
-          {item.kind === 'order' && answer.kind === 'order' && (
-            <>
-              <div className="qt-modal-context">
-                <div className="qt-modal-context-body">“{item.question}”</div>
-              </div>
-              <div className="qt-modal-line is-wrong">
-                <span className="qt-line-label">Your answer</span>
-                <span>
-                  {answer.placed.length
-                    ? sentenceText(item.prompt, answer.placed, item.isQuestion)
-                    : '(nothing placed)'}
-                </span>
-              </div>
-              <div className="qt-modal-line is-right">
-                <span className="qt-line-label">Correct</span>
-                <span>{sentenceText(item.prompt, item.correct, item.isQuestion)}</span>
-              </div>
-              <div className="qt-modal-note">Not needed: {item.distractors.join(', ')}</div>
-            </>
-          )}
-        </div>
-
-      </div>
-    </div>
+      {item.kind === 'order' && answer.kind === 'order' && (
+        <>
+          <ReviewContext body={`“${item.question}”`} />
+          <div className="rm-line is-wrong">
+            <span className="rm-line-label">Your answer</span>
+            <span>
+              {answer.placed.length ? sentenceText(item.prompt, answer.placed, item.isQuestion) : '(nothing placed)'}
+            </span>
+          </div>
+          <div className="rm-line is-right">
+            <span className="rm-line-label">Correct</span>
+            <span>{sentenceText(item.prompt, item.correct, item.isQuestion)}</span>
+          </div>
+          <div className="rm-note">Not needed: {item.distractors.join(', ')}</div>
+        </>
+      )}
+    </ReviewModal>
   );
 }

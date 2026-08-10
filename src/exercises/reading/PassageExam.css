@@ -9,3 +9,32 @@
   color: var(--accent);
   margin: 0 0 10px;
 }
+
+/* ── Results: one tile per question, grouped by passage ── */
+.rr-passage { padding: 14px 0; border-top: 1px solid var(--border-solid); }
+.rr-passage:first-of-type { border-top: none; padding-top: 2px; }
+
+.rr-passage-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.rr-passage-name { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: -.01em; }
+.rr-passage-score { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+
+.rr-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.rr-tile {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .12s;
+}
+.rr-tile:hover { transform: translateY(-1px); }
+.rr-tile.is-right { background: var(--success-bg); color: var(--success-text); }
+/* A wrong one carries a border as well as a fill, so it is not colour alone. */
+.rr-tile.is-wrong { background: var(--error-bg); color: var(--error-text); border-color: var(--error-border); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rr-tile { transition: none; }
+}
