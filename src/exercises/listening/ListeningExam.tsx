@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { useListeningExam } from './useListeningExam.ts';
@@ -21,12 +21,34 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
   const { exam, state, currentIdx, finished, size, goTo, next, restart, patch, patchQuestion, score } =
     useListeningExam(data);
   const [speaking, setSpeaking] = useState(false);
+  const audio = useRef<HTMLAudioElement | null>(null);
 
   const passage = exam[currentIdx];
   const s = state[currentIdx];
 
+  /**
+   * A recorded file where one exists, the browser's own voice otherwise —
+   * passages are being voiced a few at a time, so both have to work.
+   */
   function speak() {
-    speechSynthesis.cancel();
+    stop();
+    if (passage.audioFile) {
+      const el = new Audio(encodeURI(passage.audioFile));
+      audio.current = el;
+      const done = () => {
+        audio.current = null;
+        setSpeaking(false);
+      };
+      el.onended = () => {
+        done();
+        patch(currentIdx, { played: true });
+      };
+      // A missing or unplayable file must not leave the button stuck on stop.
+      el.onerror = done;
+      setSpeaking(true);
+      void el.play().catch(done);
+      return;
+    }
     const utt = new SpeechSynthesisUtterance(passage.transcript);
     utt.lang = 'en-US';
     utt.rate = 0.88;
@@ -40,8 +62,15 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
 
   function stop() {
     speechSynthesis.cancel();
+    if (audio.current) {
+      audio.current.pause();
+      audio.current = null;
+    }
     setSpeaking(false);
   }
+
+  // Leaving a passage must not leave its audio running over the next one.
+  useEffect(() => stop, [currentIdx]);
 
   if (finished) {
     return (
