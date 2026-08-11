@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
@@ -14,6 +14,7 @@ import { bandFor, CEFR_MIN_ATTEMPTED, CEFR_NAME, type CefrBand } from '../../dat
 import { CTestParagraph, CTestReview } from '../reading/CTestParagraph.tsx';
 import { ReadingQuestion } from '../reading/ReadingQuestion.tsx';
 import { SentenceBuilder, sentenceText } from '../writing/SentenceBuilder.tsx';
+import { useAudioClip } from '../useAudioClip.ts';
 import { ReviewModal, ReviewContext, ReviewOptions } from '../ReviewModal.tsx';
 import '../reading/CompleteTheWords.css';
 import './QuickTest.css';
@@ -86,13 +87,13 @@ export function QuickTest() {
   const [finished, setFinished] = useState(false);
   /** How far they got, so an early exit only grades what was seen. */
   const [reached, setReached] = useState(0);
-  const [playing, setPlaying] = useState(false);
   /** The missed question currently open for review, if any. */
   const [review, setReview] = useState<{ item: QuickItem; answer: Answer; number: number } | null>(null);
-  const audio = useRef<HTMLAudioElement | null>(null);
 
   const item = items[idx];
   const answer = answers[idx];
+
+  const clip = useAudioClip(item.kind === 'mc' ? item.audioFile : undefined);
 
   function patch(next: Answer) {
     setAnswers((prev) => prev.map((a, i) => (i === idx ? next : a)));
@@ -138,8 +139,7 @@ export function QuickTest() {
   }
 
   function go(next: number) {
-    audio.current?.pause();
-    setPlaying(false);
+    clip.stop();
     setReached((r) => Math.max(r, next));
     setIdx(next);
   }
@@ -153,15 +153,6 @@ export function QuickTest() {
     setFinished(false);
   }
 
-  function playAudio(src: string) {
-    audio.current?.pause();
-    const el = new Audio(encodeURI(src));
-    audio.current = el;
-    setPlaying(true);
-    el.onended = () => setPlaying(false);
-    el.onerror = () => setPlaying(false);
-    void el.play().catch(() => setPlaying(false));
-  }
 
   type TypeRow = { name: string; correct: number; total: number };
   type Missed = { item: QuickItem; answer: Answer; number: number };
@@ -441,12 +432,14 @@ export function QuickTest() {
             >
               {item.audioFile && (
                 <div className="tts-bar">
-                  <button className="tts-play" onClick={() => playAudio(item.audioFile!)} disabled={playing}>
-                    {playing ? '⏹' : '▶'}
+                  <button className="tts-play" onClick={clip.play} disabled={clip.status !== 'idle'}>
+                    {clip.status === 'loading' ? '…' : clip.status === 'playing' ? '⏹' : '▶'}
                   </button>
                   <div className="tts-info">
                     <div className="tts-title">Listen to the sentence</div>
-                    <div className="tts-sub">Press play, then choose the best reply</div>
+                    <div className="tts-sub">
+                      {clip.status === 'loading' ? 'Loading audio…' : 'Press play, then choose the best reply'}
+                    </div>
                   </div>
                 </div>
               )}

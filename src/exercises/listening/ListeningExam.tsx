@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { useListeningExam } from './useListeningExam.ts';
 import type { ListeningPassage } from '../../data/listening/types.ts';
 import type { TranslationKey } from '../../i18n/translations.ts';
 import { AnswerControls } from '../AnswerControls.tsx';
+import { useAudioClip } from '../useAudioClip.ts';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
@@ -20,11 +21,15 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
   const { t } = useLanguage();
   const { exam, state, currentIdx, finished, size, goTo, next, restart, patch, patchQuestion, score } =
     useListeningExam(data);
+  /** Only the browser voice needs tracking here; the clip reports its own state. */
   const [speaking, setSpeaking] = useState(false);
-  const audio = useRef<HTMLAudioElement | null>(null);
 
   const passage = exam[currentIdx];
   const s = state[currentIdx];
+
+  // Buffers as soon as the passage is on screen, so pressing play does not
+  // start mid-download and clip the opening words.
+  const clip = useAudioClip(passage.audioFile, () => patch(currentIdx, { played: true }));
 
   /**
    * A recorded file where one exists, the browser's own voice otherwise —
@@ -32,21 +37,8 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
    */
   function speak() {
     stop();
-    if (passage.audioFile) {
-      const el = new Audio(encodeURI(passage.audioFile));
-      audio.current = el;
-      const done = () => {
-        audio.current = null;
-        setSpeaking(false);
-      };
-      el.onended = () => {
-        done();
-        patch(currentIdx, { played: true });
-      };
-      // A missing or unplayable file must not leave the button stuck on stop.
-      el.onerror = done;
-      setSpeaking(true);
-      void el.play().catch(done);
+    if (clip.hasClip) {
+      void clip.play();
       return;
     }
     const utt = new SpeechSynthesisUtterance(passage.transcript);
@@ -62,15 +54,12 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
 
   function stop() {
     speechSynthesis.cancel();
-    if (audio.current) {
-      audio.current.pause();
-      audio.current = null;
-    }
+    clip.stop();
     setSpeaking(false);
   }
 
-  // Leaving a passage must not leave its audio running over the next one.
-  useEffect(() => stop, [currentIdx]);
+  const busy = speaking || clip.status !== 'idle';
+  const loading = clip.status === 'loading';
 
   if (finished) {
     return (
@@ -175,12 +164,19 @@ export function ListeningExam({ data, titleKey, backTo, backLabelKey }: Props) {
           <div className="passage-title">{passage.title}</div>
 
           <div className="tts-bar">
-            <button className="tts-play" onClick={speaking ? stop : speak} title={speaking ? 'Stop' : 'Play'}>
-              {speaking ? '⏹' : '▶'}
+            <button
+              className="tts-play"
+              onClick={busy ? stop : speak}
+              disabled={loading}
+              title={busy ? 'Stop' : 'Play'}
+            >
+              {loading ? '…' : busy ? '⏹' : '▶'}
             </button>
             <div className="tts-info">
               <div className="tts-title">{passage.title}</div>
-              <div className="tts-sub">{s.played ? 'Played — you can replay' : 'Press play to listen'}</div>
+              <div className="tts-sub">
+                {loading ? 'Loading audio…' : s.played ? 'Played — you can replay' : 'Press play to listen'}
+              </div>
               <div className="tts-progress-wrap">
                 <div className="tts-progress-fill" />
               </div>
