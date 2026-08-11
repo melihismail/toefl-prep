@@ -35,7 +35,7 @@ export const learnSections: LearnSection[] = [
     color: '#059669',
     colorDark: '#047857',
     name: { en: 'Listening', tr: 'Dinleme' },
-    time: '~27 min',
+    time: '~32 min',
     desc: {
       en: 'Tests your ability to understand spoken English in academic and everyday settings.',
       tr: 'Akademik ve günlük ortamlarda konuşulan İngilizceyi anlama becerinizi test eder.',
@@ -81,9 +81,28 @@ export const learnSections: LearnSection[] = [
       },
       {
         id: 'l3',
+        name: { en: 'Announcement', tr: 'Duyuru' },
+        time: '~5 min',
+        count: { en: '4 announcements', tr: '4 duyuru' },
+        desc: {
+          en: 'Listen to a campus or class announcement and answer questions.',
+          tr: 'Bir kampüs veya ders duyurusunu dinleyin ve soruları cevaplayın.',
+        },
+        practiceHref: '/listening/announcement',
+        tips: {
+          en: 'Announcements always ask you to do something. Note what changed, and what you are expected to do about it.',
+          tr: 'Duyurular her zaman bir eylem ister. Neyin değiştiğini ve sizden ne beklendiğini not edin.',
+        },
+        scoring: {
+          en: 'Multiple choice, each worth 1 point. 5 questions per announcement.',
+          tr: 'Çoktan seçmeli, her biri 1 puan. Duyuru başına 5 soru.',
+        },
+      },
+      {
+        id: 'l4',
         name: { en: 'Academic Talk', tr: 'Akademik Sunum' },
         time: '~12 min',
-        count: { en: '3 passages', tr: '3 metin' },
+        count: { en: '9 passages', tr: '9 metin' },
         desc: {
           en: 'Listen to a short lecture and answer questions.',
           tr: 'Kısa bir dersi dinleyin ve soruları cevaplayın.',

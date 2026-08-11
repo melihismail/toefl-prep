@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../i18n/useLanguage.ts';
 import { LanguageToggle } from '../../components/LanguageToggle.tsx';
 import { shuffle } from '../shuffle.ts';
 import { chooseResponseQuestions } from '../../data/listening/chooseAResponse.ts';
 import type { ChooseResponseQuestion } from '../../data/listening/types.ts';
+import { useAudioClip } from '../useAudioClip.ts';
 import { AnswerControls } from '../AnswerControls.tsx';
 
 const EXAM_SIZE = 8;
@@ -29,49 +30,19 @@ export function ChooseAResponse() {
   const [state, setState] = useState<QState[]>(() => freshState(exam));
   const [currentIdx, setCurrentIdx] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const audio = useRef<HTMLAudioElement | null>(null);
 
   const size = exam.length;
   const q = exam[currentIdx];
   const s = state[currentIdx];
   const locked = s.checked || s.revealed;
 
-  function stopAudio() {
-    if (audio.current) {
-      audio.current.pause();
-      audio.current = null;
-    }
-    setPlaying(false);
-  }
-
-  // Stop playback when leaving the question or unmounting, so a clip never
-  // keeps playing over the next one.
-  useEffect(() => stopAudio, [currentIdx]);
+  const clip = useAudioClip(q.audioFile, () => patch({ played: true }));
+  const stopAudio = clip.stop;
 
   function patch(change: Partial<QState>) {
     setState((prev) => prev.map((v, i) => (i === currentIdx ? { ...v, ...change } : v)));
   }
 
-  function play() {
-    stopAudio();
-    const el = new Audio(encodeURI(q.audioFile));
-    audio.current = el;
-    setPlaying(true);
-    el.onended = () => {
-      audio.current = null;
-      setPlaying(false);
-      patch({ played: true });
-    };
-    el.onerror = () => {
-      audio.current = null;
-      setPlaying(false);
-    };
-    void el.play().catch(() => {
-      audio.current = null;
-      setPlaying(false);
-    });
-  }
 
   const score = useMemo(
     () => {
@@ -188,8 +159,8 @@ export function ChooseAResponse() {
 
         <div className="card">
           <div className="tts-bar">
-            <button className="tts-play" onClick={play} disabled={playing}>
-              {playing ? '⏹' : '▶'}
+            <button className="tts-play" onClick={clip.play} disabled={clip.status !== 'idle'}>
+              {clip.status === 'loading' ? '…' : clip.status === 'playing' ? '⏹' : '▶'}
             </button>
             <div className="tts-info">
               <div className="tts-title">Listen to the sentence</div>

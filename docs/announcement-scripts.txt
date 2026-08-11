@@ -1,0 +1,73 @@
+Announcement - recording scripts
+
+One speaker, addressing a group. Save into:
+  public/listening/announcement/audio/
+
+audioFile is currently null in src/data/listening/announcement.ts.
+Once the files exist, set each to the path below and the player will
+use them instead of the browser voice.
+
+========================================================================
+FILE:    an-01.mp3   ->  /listening/announcement/audio/an-01.mp3
+TITLE:   Library Closure for Refurbishment
+SETTING: Campus Notice
+WORDS:   129  (~53s at 145 wpm)
+========================================================================
+
+Good morning, everyone. Before you settle in, a quick announcement about the main library.
+
+From Monday the fourteenth, the second and third floors will close for refurbishment. The ground floor stays open as normal, and the twenty-four-hour study room is unaffected.
+
+Now, this matters for anyone with books currently on loan from the upper floors. Those shelves are being emptied, so the usual renewal system will not work. If you need a title beyond the fourteenth, bring it to the ground-floor desk this week and staff will extend it manually. If you leave it until Monday, the book will have been moved into storage and it will take three working days to retrieve.
+
+Work is scheduled to finish before the examination period. We will email everyone if that changes.
+
+
+========================================================================
+FILE:    an-02.mp3   ->  /listening/announcement/audio/an-02.mp3
+TITLE:   Change of Room for the Statistics Seminar
+SETTING: Class Announcement
+WORDS:   133  (~55s at 145 wpm)
+========================================================================
+
+Right, everyone, listen up for a moment before we start.
+
+Thursday's statistics seminar is moving. We have outgrown this room — there were people standing at the back last week — so from this Thursday we are in the Fielding Building, lecture theatre two. Same time, half past nine.
+
+Two things follow from that. First, the Fielding Building is on the far side of campus, so give yourself ten minutes to walk over. Second, lecture theatre two has power at every seat, which this room does not, so if you have been sharing sockets or working off a dying battery, that problem goes away.
+
+The room change is already on the online timetable. It is not on the printed handbook, which was produced in August, so trust the website rather than the booklet.
+
+
+========================================================================
+FILE:    an-03.mp3   ->  /listening/announcement/audio/an-03.mp3
+TITLE:   Campus Shuttle Service Update
+SETTING: Campus Notice
+WORDS:   132  (~55s at 145 wpm)
+========================================================================
+
+Attention passengers waiting for the campus shuttle. Please listen carefully, as the timetable has changed this week.
+
+Because of resurfacing work on Chapel Road, the shuttle can no longer stop outside the science building. Instead it will use the temporary stop beside the sports centre, about two minutes' walk further north. Look for the yellow sign.
+
+Services are running every fifteen minutes rather than every ten, so allow extra time if you are heading to a nine o'clock class. The last shuttle of the evening leaves at eleven, as usual.
+
+If you have a reduced-mobility pass, please do not wait at the temporary stop. Call the number on the back of your pass and a driver will collect you from the science building entrance directly.
+
+Normal service resumes the week after next.
+
+
+========================================================================
+FILE:    an-04.mp3   ->  /listening/announcement/audio/an-04.mp3
+TITLE:   Deadline Extension for Research Proposals
+SETTING: Department Announcement
+WORDS:   150  (~62s at 145 wpm)
+========================================================================
+
+A short announcement from the department before you go.
+
+The deadline for research proposals has moved from the first of March to the fifteenth. This is because the submission portal was unavailable for most of last weekend, and a number of you could not upload your drafts.
+
+I want to be clear about what has and has not changed. The deadline is later. The word limit, the reference format and the requirement for a supervisor's signature are all exactly as they were. Please do not read an extension as a relaxation of anything else.
+
+One more thing, and this is the part people get wrong every year. Your supervisor needs time to read a draft before signing it. If you send it to them on the fourteenth, you will not get a signature, and an unsigned proposal is not accepted. Aim to have a draft with them by the eighth.

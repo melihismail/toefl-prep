@@ -9,6 +9,7 @@ import { ChooseAResponse } from './exercises/listening/ChooseAResponse.tsx';
 import { QuickTest } from './exercises/quick/QuickTest.tsx';
 import { conversationPassages } from './data/listening/conversation.ts';
 import { academicTalkPassages } from './data/listening/academicTalk.ts';
+import { announcementPassages } from './data/listening/announcement.ts';
 import { PassageExam } from './exercises/reading/PassageExam.tsx';
 import { CompleteTheWords } from './exercises/reading/CompleteTheWords.tsx';
 import { dailyLifePassages } from './data/reading/dailyLife.ts';
@@ -42,6 +43,17 @@ export function App() {
           <ListeningExam
             data={conversationPassages}
             titleKey="conversation"
+            backTo="/sections/listening"
+            backLabelKey="back_listening"
+          />
+        }
+      />
+      <Route
+        path="/listening/announcement"
+        element={
+          <ListeningExam
+            data={announcementPassages}
+            titleKey="announcement"
             backTo="/sections/listening"
             backLabelKey="back_listening"
           />

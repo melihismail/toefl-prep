@@ -1,10 +1,12 @@
 import { shuffle } from '../exercises/shuffle.ts';
+import type { ListeningPassage } from './listening/types.ts';
 import { academicPassages } from './reading/academicPassage.ts';
 import { dailyLifePassages } from './reading/dailyLife.ts';
 import { cTestTexts } from './reading/cTestTexts.ts';
 import { buildCTest } from './reading/ctest.ts';
 import { conversationPassages } from './listening/conversation.ts';
 import { academicTalkPassages } from './listening/academicTalk.ts';
+import { announcementPassages } from './listening/announcement.ts';
 import { chooseResponseQuestions } from './listening/chooseAResponse.ts';
 import { sentenceQuestions } from './writing/buildASentence.ts';
 import { SENTENCE_CATEGORY_LABEL } from './writing/types.ts';
@@ -32,6 +34,11 @@ export type QuickItem = Base &
         answer: number;
         /** Passage or transcript to read before answering. */
         context?: { label: string; title?: string; body: string };
+        /**
+         * Position among the questions sharing this passage. Absent where the
+         * question really does stand alone, as in Choose a Response.
+         */
+        step?: { index: number; total: number };
         audioFile?: string;
       }
     | { kind: 'letters'; title: string; paragraph: string; blanks: { answer: string }[] }
@@ -59,6 +66,41 @@ function take<T>(list: readonly T[], n: number): T[] {
 }
 
 /**
+ * Every question on a listening passage, carrying everything the player needs.
+ *
+ * The three listening exercises used to be three hand-written object literals
+ * here, and each new field — audioFile, step — had to be remembered in all of
+ * them. audioFile was not, so the quick test played nothing and showed the
+ * transcript instead, turning listening into reading. One builder now, so they
+ * cannot drift apart again.
+ */
+function fromListening(
+  source: readonly ListeningPassage[],
+  count: number,
+  skill: string,
+  practiceHref: string,
+  label: (p: ListeningPassage) => string | undefined,
+): QuickItem[] {
+  return take(source, count).flatMap((p) =>
+    p.questions.map(
+      (q, qi): QuickItem => ({
+        kind: 'mc',
+        skill,
+        section: 'listening',
+        type: q.type,
+        practiceHref,
+        stem: q.stem,
+        options: q.options,
+        answer: q.answer,
+        step: { index: qi, total: p.questions.length },
+        audioFile: p.audioFile ?? undefined,
+        context: { label: label(p) || skill, title: p.title, body: p.transcript },
+      }),
+    ),
+  );
+}
+
+/**
  * A quarter-length run of the whole exam, in section order. Every exercise
  * appears; each contributes about a quarter of its usual count, rather than a
  * single token question.
@@ -82,7 +124,7 @@ export function buildQuickTest(): QuickItem[] {
   });
 
   take(dailyLifePassages, 2).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Everyday reading',
@@ -92,13 +134,14 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: p.textType || 'Text', title: p.title, body: p.passage },
       }),
     ),
   );
 
   take(academicPassages, 2).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Academic reading',
@@ -108,6 +151,7 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: p.topic || 'Academic', title: p.title, body: p.passage },
       }),
     ),
@@ -127,36 +171,16 @@ export function buildQuickTest(): QuickItem[] {
     }),
   );
 
-  take(conversationPassages, 1).forEach((p) =>
-    p.questions.forEach((q) =>
-      items.push({
-        kind: 'mc',
-        skill: 'Conversation',
-        section: 'listening',
-        type: q.type,
-        practiceHref: '/listening/conversation',
-        stem: q.stem,
-        options: q.options,
-        answer: q.answer,
-        context: { label: 'Conversation', title: p.title, body: p.transcript },
-      }),
-    ),
+  fromListening(conversationPassages, 1, 'Conversation', '/listening/conversation', () => 'Conversation').forEach(
+    (i) => items.push(i),
   );
 
-  take(academicTalkPassages, 1).forEach((p) =>
-    p.questions.forEach((q) =>
-      items.push({
-        kind: 'mc',
-        skill: 'Academic talk',
-        section: 'listening',
-        type: q.type,
-        practiceHref: '/listening/academic-talk',
-        stem: q.stem,
-        options: q.options,
-        answer: q.answer,
-        context: { label: p.subject || 'Talk', title: p.title, body: p.transcript },
-      }),
-    ),
+  fromListening(announcementPassages, 1, 'Announcement', '/listening/announcement', (p) => p.subject).forEach((i) =>
+    items.push(i),
+  );
+
+  fromListening(academicTalkPassages, 1, 'Academic talk', '/listening/academic-talk', (p) => p.subject).forEach((i) =>
+    items.push(i),
   );
 
   // ── Writing ────────────────────────────────────────────────────────────────

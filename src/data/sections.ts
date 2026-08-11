@@ -106,7 +106,7 @@ export const sections: Section[] = [
     headingKey: 'listening_section',
     color: '#059669',
     colorDark: '#047857',
-    totalMinutes: 27,
+    totalMinutes: 32,
     noteKey: 'listening_info_short',
     noteIcon: 'ti-headphones',
     tasks: [
@@ -125,6 +125,14 @@ export const sections: Section[] = [
         titleKey: 'conversation',
         countKey: 'conv_short',
         minutes: 10,
+      },
+      {
+        href: '/listening/announcement',
+        ported: true,
+        icon: 'ti-bell',
+        titleKey: 'announcement',
+        countKey: 'ann_short',
+        minutes: 5,
       },
       {
         href: '/listening/academic-talk',
