@@ -77,7 +77,7 @@ The Columbian Exchange, then, is not simply a story of trade and discovery. It i
     title: "Mycorrhizal Networks",
     subject: "Biology",
     audioFile: "/listening/academic-talk/audio/at-04.mp3",
-    duration: "1:45",
+    duration: "1:39",
     transcript: `When you walk through a forest, you see individual trees standing apart from one another. What you cannot see is that beneath your feet, most of those trees are physically connected.
 
 The connection is made by fungi. Nearly ninety percent of land plants form a partnership with fungi called a mycorrhiza, which simply means "fungus root". The fungus wraps around, and often grows into, the plant's roots. From there its threads spread through the soil, reaching far beyond where the roots themselves can go.
@@ -100,7 +100,7 @@ This has led to the popular phrase "the wood wide web". I would ask you to treat
     title: "How We Find Planets Around Other Stars",
     subject: "Astronomy",
     audioFile: "/listening/academic-talk/audio/at-05.mp3",
-    duration: "1:45",
+    duration: "1:44",
     transcript: `In 1990 we knew of no planets outside our own solar system. Today the confirmed count is over five thousand. What changed was not our telescopes becoming powerful enough to see these planets — we still cannot see most of them. What changed was our willingness to look for them indirectly.
 
 The difficulty is one of contrast. A star is roughly a billion times brighter than any planet orbiting it. Photographing the planet is like trying to photograph a moth beside a searchlight. So instead of looking at the planet, we watch the star for signs that something is there.
@@ -123,7 +123,7 @@ Note the limitation in that word "happens". The transit method only works for th
     title: "The Invention of Linear Perspective",
     subject: "Art History",
     audioFile: "/listening/academic-talk/audio/at-06.mp3",
-    duration: "1:45",
+    duration: "1:42",
     transcript: `Look at a European painting made before about 1400 and something will seem wrong, though it may take you a moment to say what. Figures at the back are the same size as figures at the front. Buildings sit at impossible angles. The painting shows you objects, but it does not show you a space.
 
 That changed in Florence, around 1420, with an architect named Filippo Brunelleschi. He worked out, and demonstrated publicly, that lines running away from the viewer appear to converge on a single point on the horizon — the vanishing point. Organise a picture around that point and flat paint suddenly reads as depth.
@@ -146,7 +146,7 @@ I want to leave you with a caution, though. It is tempting to describe perspecti
     title: "The Tragedy of the Commons",
     subject: "Economics",
     audioFile: "/listening/academic-talk/audio/at-07.mp3",
-    duration: "1:45",
+    duration: "1:42",
     transcript: `In 1968 the ecologist Garrett Hardin published a short essay that has shaped environmental policy ever since. He asked you to picture a pasture open to all. Each herder grazing there faces a simple calculation: adding one more animal brings them the full benefit of that animal, while the cost — slightly poorer grazing — is shared across everyone. So each herder adds animals. And the pasture collapses.
 
 Hardin called this the tragedy of the commons, and the word tragedy was deliberate. Nobody in the story behaves irrationally or maliciously. Each person does the sensible thing, and the sensible thing produces ruin. You can see the same structure in overfishing, in groundwater depletion, and in carbon emissions.
@@ -169,7 +169,7 @@ Her point was not that commons never collapse. Many do. Her point was that Hardi
     title: "The Critical Period for Language",
     subject: "Linguistics",
     audioFile: "/listening/academic-talk/audio/at-08.mp3",
-    duration: "1:45",
+    duration: "1:42",
     transcript: `Every healthy child raised among speakers acquires their first language, fully and without instruction, by roughly age five. No one teaches a three-year-old the rules of grammar, and yet three-year-olds follow them. Adults learning a second language, by contrast, study for years and rarely reach the same fluency. Why the difference?
 
 One answer is the critical period hypothesis, proposed by Eric Lenneberg in 1967. The claim is that the brain has a window, closing somewhere around puberty, during which language is acquired almost automatically. After it closes, language must be learned the hard way, using general-purpose reasoning rather than a dedicated capacity.
@@ -192,7 +192,7 @@ But here I would resist a tidy conclusion. The evidence does not really show a w
     title: "Why Roman Concrete Outlasted Ours",
     subject: "Materials Science",
     audioFile: "/listening/academic-talk/audio/at-09.mp3",
-    duration: "1:45",
+    duration: "1:42",
     transcript: `The Pantheon in Rome has stood for nineteen centuries, and its dome is still the largest unreinforced concrete dome on Earth. Roman harbour walls have sat in seawater for two thousand years. Meanwhile, a modern motorway bridge is designed to last perhaps a hundred years, and often does worse. This ought to bother us.
 
 Part of the answer is the mix. Roman builders combined lime with volcanic ash from the region around Naples — a material called pozzolana. Seawater reacting with that ash slowly grows interlocking mineral crystals inside the concrete. The material does not merely resist the sea; it uses the sea to keep hardening.
