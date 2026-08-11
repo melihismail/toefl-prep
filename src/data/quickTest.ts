@@ -5,6 +5,7 @@ import { cTestTexts } from './reading/cTestTexts.ts';
 import { buildCTest } from './reading/ctest.ts';
 import { conversationPassages } from './listening/conversation.ts';
 import { academicTalkPassages } from './listening/academicTalk.ts';
+import { announcementPassages } from './listening/announcement.ts';
 import { chooseResponseQuestions } from './listening/chooseAResponse.ts';
 import { sentenceQuestions } from './writing/buildASentence.ts';
 import { SENTENCE_CATEGORY_LABEL } from './writing/types.ts';
@@ -147,6 +148,23 @@ export function buildQuickTest(): QuickItem[] {
         answer: q.answer,
         step: { index: qi, total: p.questions.length },
         context: { label: 'Conversation', title: p.title, body: p.transcript },
+      }),
+    ),
+  );
+
+  take(announcementPassages, 1).forEach((p) =>
+    p.questions.forEach((q, qi) =>
+      items.push({
+        kind: 'mc',
+        skill: 'Announcement',
+        section: 'listening',
+        type: q.type,
+        practiceHref: '/listening/announcement',
+        stem: q.stem,
+        options: q.options,
+        answer: q.answer,
+        step: { index: qi, total: p.questions.length },
+        context: { label: p.subject || 'Announcement', title: p.title, body: p.transcript },
       }),
     ),
   );
