@@ -433,6 +433,7 @@ export function QuickTest() {
             <ReadingQuestion
               context={item.context}
               head={head}
+              step={item.step}
               stem={item.stem}
               options={item.options}
               selected={answer.selected}

@@ -32,6 +32,11 @@ export type QuickItem = Base &
         answer: number;
         /** Passage or transcript to read before answering. */
         context?: { label: string; title?: string; body: string };
+        /**
+         * Position among the questions sharing this passage. Absent where the
+         * question really does stand alone, as in Choose a Response.
+         */
+        step?: { index: number; total: number };
         audioFile?: string;
       }
     | { kind: 'letters'; title: string; paragraph: string; blanks: { answer: string }[] }
@@ -82,7 +87,7 @@ export function buildQuickTest(): QuickItem[] {
   });
 
   take(dailyLifePassages, 2).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Everyday reading',
@@ -92,13 +97,14 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: p.textType || 'Text', title: p.title, body: p.passage },
       }),
     ),
   );
 
   take(academicPassages, 2).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Academic reading',
@@ -108,6 +114,7 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: p.topic || 'Academic', title: p.title, body: p.passage },
       }),
     ),
@@ -128,7 +135,7 @@ export function buildQuickTest(): QuickItem[] {
   );
 
   take(conversationPassages, 1).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Conversation',
@@ -138,13 +145,14 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: 'Conversation', title: p.title, body: p.transcript },
       }),
     ),
   );
 
   take(academicTalkPassages, 1).forEach((p) =>
-    p.questions.forEach((q) =>
+    p.questions.forEach((q, qi) =>
       items.push({
         kind: 'mc',
         skill: 'Academic talk',
@@ -154,6 +162,7 @@ export function buildQuickTest(): QuickItem[] {
         stem: q.stem,
         options: q.options,
         answer: q.answer,
+        step: { index: qi, total: p.questions.length },
         context: { label: p.subject || 'Talk', title: p.title, body: p.transcript },
       }),
     ),
