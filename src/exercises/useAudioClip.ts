@@ -43,12 +43,15 @@ function whenReady(el: HTMLAudioElement): Promise<boolean> {
 export function useAudioClip(src: string | null | undefined, onEnded?: () => void) {
   const el = useRef<HTMLAudioElement | null>(null);
   const [status, setStatus] = useState<ClipStatus>('idle');
+  /** A declared file that will not load counts as no file at all. */
+  const [broken, setBroken] = useState(false);
   /** Read through a ref so changing the callback does not rebuild the element. */
   const ended = useRef(onEnded);
   ended.current = onEnded;
 
   useEffect(() => {
     setStatus('idle');
+    setBroken(false);
     if (!src) {
       el.current = null;
       return;
@@ -56,13 +59,24 @@ export function useAudioClip(src: string | null | undefined, onEnded?: () => voi
     const a = new Audio();
     a.preload = 'auto';
     a.src = encodeURI(src);
+    // Preloading doubles as a check that the file is really there, so a caller
+    // can offer its fallback instead of a play button that does nothing.
+    const onError = () => {
+      // Tearing the previous clip down fires error on it, and that lands after
+      // the next clip's effect has already cleared the flag. Only the element
+      // currently in use may set it.
+      if (el.current === a) setBroken(true);
+    };
+    a.addEventListener('error', onError);
     // Buffering starts here, not on the click.
     a.load();
     el.current = a;
     return () => {
+      a.removeEventListener('error', onError);
       a.pause();
-      a.src = '';
       el.current = null;
+      // Releases the download; must come after the listener is gone.
+      a.src = '';
     };
   }, [src]);
 
@@ -108,5 +122,5 @@ export function useAudioClip(src: string | null | undefined, onEnded?: () => voi
   // Nothing should keep playing once the component goes away.
   useEffect(() => stop, [stop]);
 
-  return { status, play, stop, hasClip: Boolean(src) };
+  return { status, play, stop, hasClip: Boolean(src) && !broken };
 }

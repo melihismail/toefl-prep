@@ -46,3 +46,18 @@
 @media (prefers-reduced-motion: reduce) {
   .rq-tick { transition: none; }
 }
+
+/* A transcript stays shut until asked for — reading it defeats the exercise. */
+.rq-context-toggle {
+  background: none;
+  border: 1px solid var(--accent-mid);
+  border-radius: 99px;
+  color: var(--accent-dark);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 13px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+.rq-context-toggle:hover { background: var(--accent-light); }

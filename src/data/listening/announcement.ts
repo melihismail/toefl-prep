@@ -2,6 +2,10 @@
 // site did not have. One speaker addressing a group, in an academic or campus
 // setting, so these can be voiced the same way as the academic talks.
 //
+// audioFile is null until the recordings exist: declaring a path for a file
+// that is not there gives the learner a play button that does nothing.
+// Scripts and intended filenames are in docs/announcement-scripts.txt.
+//
 // The questions follow what ETS says the task measures: the speaker's purpose,
 // key information, implied meaning, and what listeners should do next. That
 // last type — Next Action — appears nowhere else in the app.
@@ -12,7 +16,7 @@ export const announcementPassages: ListeningPassage[] = [
     id: 1,
     title: 'Library Closure for Refurbishment',
     subject: 'Campus Notice',
-    audioFile: '/listening/announcement/audio/an-01.mp3',
+    audioFile: null,
     duration: '0:50',
     transcript: `Good morning, everyone. Before you settle in, a quick announcement about the main library.
 
@@ -78,7 +82,7 @@ Work is scheduled to finish before the examination period. We will email everyon
     id: 2,
     title: 'Change of Room for the Statistics Seminar',
     subject: 'Class Announcement',
-    audioFile: '/listening/announcement/audio/an-02.mp3',
+    audioFile: null,
     duration: '0:45',
     transcript: `Right, everyone, listen up for a moment before we start.
 
@@ -144,7 +148,7 @@ The room change is already on the online timetable. It is not on the printed han
     id: 3,
     title: 'Campus Shuttle Service Update',
     subject: 'Campus Notice',
-    audioFile: '/listening/announcement/audio/an-03.mp3',
+    audioFile: null,
     duration: '0:50',
     transcript: `Attention passengers waiting for the campus shuttle. Please listen carefully, as the timetable has changed this week.
 
@@ -212,7 +216,7 @@ Normal service resumes the week after next.`,
     id: 4,
     title: 'Deadline Extension for Research Proposals',
     subject: 'Department Announcement',
-    audioFile: '/listening/announcement/audio/an-04.mp3',
+    audioFile: null,
     duration: '0:50',
     transcript: `A short announcement from the department before you go.
 

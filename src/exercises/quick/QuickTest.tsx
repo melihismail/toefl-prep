@@ -423,6 +423,9 @@ export function QuickTest() {
           {item.kind === 'mc' && answer.kind === 'mc' && (
             <ReadingQuestion
               context={item.context}
+              // With audio, the transcript is a crutch; without it, the text is
+              // the only way to answer, so it stays open.
+              collapsibleContext={Boolean(item.audioFile)}
               head={head}
               step={item.step}
               stem={item.stem}
@@ -430,7 +433,7 @@ export function QuickTest() {
               selected={answer.selected}
               onSelect={(oi) => patch({ kind: 'mc', selected: oi })}
             >
-              {item.audioFile && (
+              {clip.hasClip && (
                 <div className="tts-bar">
                   <button className="tts-play" onClick={clip.play} disabled={clip.status !== 'idle'}>
                     {clip.status === 'loading' ? '…' : clip.status === 'playing' ? '⏹' : '▶'}

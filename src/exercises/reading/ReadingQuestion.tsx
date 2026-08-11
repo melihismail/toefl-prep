@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './ReadingQuestion.css';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -15,6 +16,11 @@ export type ReadingContext = {
 export type ReadingQuestionProps = {
   /** Absent for a question with nothing to read — a listening item. */
   context?: ReadingContext;
+  /**
+   * Hide the context behind a toggle. A listening transcript left open is just
+   * a reading question, so anything with audio collapses it.
+   */
+  collapsibleContext?: boolean;
   /** The chips above the passage. Each caller labels its own. */
   head?: React.ReactNode;
   /**
@@ -38,6 +44,7 @@ export type ReadingQuestionProps = {
  */
 export function ReadingQuestion({
   context,
+  collapsibleContext,
   head,
   step,
   stem,
@@ -46,11 +53,22 @@ export function ReadingQuestion({
   onSelect,
   children,
 }: ReadingQuestionProps) {
+  const [open, setOpen] = useState(false);
+  // A new question starts closed, however the last one was left.
+  useEffect(() => setOpen(false), [stem]);
+  const showContext = context && (!collapsibleContext || open);
+
   return (
     <>
       {head && <div className="rq-head">{head}</div>}
 
-      {context && (
+      {context && collapsibleContext && (
+        <button className="rq-context-toggle" onClick={() => setOpen((v) => !v)}>
+          {open ? 'Hide transcript' : 'Show transcript'}
+        </button>
+      )}
+
+      {showContext && (
         <div className="rq-context">
           {context.title && <div className="rq-context-title">{context.title}</div>}
           {context.subject && <div className="rq-context-meta">Subject: {context.subject}</div>}
