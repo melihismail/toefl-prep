@@ -75,3 +75,29 @@
   .landing-card:hover { transform: none; }
   .landing-status-dot { animation: none; }
 }
+
+/* ── Primary call to action ── */
+/* The plain version, shown until the shader chunk lands and under reduced
+   motion. It must match the specular button's box exactly or the page shifts
+   when the real one swaps in. */
+.landing-cta-plain {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: #4f46e5;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: .01em;
+  line-height: 1;
+  padding: 18px 40px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 10px 26px rgba(79,70,229,.28);
+  transition: transform .15s, background .15s;
+}
+.landing-cta-plain:hover { background: #4338ca; }
+.landing-cta-plain:active { transform: scale(.97); }
+
+.landing-cta-inner { display: inline-flex; align-items: center; gap: 10px; }
+.landing-cta-inner i { font-size: 20px; }
