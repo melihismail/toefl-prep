@@ -1,5 +1,25 @@
 /* Ported from the old index.html <style> block. */
+
+/* The animated background. Fixed so it covers the viewport rather than the
+   flow, and inert so the nav and cards above it stay clickable — the component
+   tracks the pointer on window for that reason. */
+.landing-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Soft enough to sit under text on a light page. */
+  opacity: .55;
+}
+/* Everything else stacks above it. */
+.landing-nav, .landing-content, .landing-cards { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-bg { display: none; }
+}
+
 .landing {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
