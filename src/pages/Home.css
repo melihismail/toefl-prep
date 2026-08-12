@@ -77,24 +77,24 @@
 }
 
 /* ── The primary card ── */
-/* Same glass card as the other, nudged so it reads as the thing to press:
-   a filled icon tile instead of a tinted one, a violet edge, and a lift that
-   goes a little further on hover. */
+/* Same card, washed violet so it stops being invisible. The icon tile inverts
+   to white to hold its own against the tint. Both cards keep the same height. */
 .landing-card.is-primary {
+  background: rgba(237, 233, 254, .85);
   border-color: #c4b5fd;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, .10);
+  color: #2e1065;
 }
-.landing-card.is-primary .landing-card-icon {
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-}
-.landing-card.is-primary .landing-card-icon i { color: #fff; }
-.landing-card.is-primary .landing-card-title { font-weight: 800; }
+/* .landing-card-title sets its own colour, so the card's inherited one never
+   reaches it. */
+.landing-card.is-primary .landing-card-title { color: #2e1065; }
+.landing-card.is-primary .landing-card-icon { background: #fff; }
+.landing-card.is-primary .landing-card-icon i { color: #4f46e5; }
 .landing-card.is-primary .landing-card-arrow { color: #7c3aed; }
 
 .landing-card.is-primary:hover {
+  background: rgba(233, 227, 253, .95);
   border-color: #a78bfa;
-  box-shadow: 0 8px 30px rgba(124, 58, 237, .20);
-  transform: translateY(-3px);
+  box-shadow: 0 6px 26px rgba(124, 58, 237, .18);
 }
 /* The arrow leans toward the destination on hover. */
 .landing-card-arrow { transition: transform .2s; }
@@ -102,6 +102,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .landing-card-arrow { transition: none; }
-  .landing-card.is-primary:hover { transform: none; }
   .landing-card.is-primary:hover .landing-card-arrow { transform: none; }
 }
