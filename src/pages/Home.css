@@ -76,28 +76,32 @@
   .landing-status-dot { animation: none; }
 }
 
-/* ── Primary call to action ── */
-/* The plain version, shown until the shader chunk lands and under reduced
-   motion. It must match the specular button's box exactly or the page shifts
-   when the real one swaps in. */
-.landing-cta-plain {
-  width: 100%;
-  border: none;
-  border-radius: 16px;
-  background: #4f46e5;
-  color: #fff;
-  font-family: inherit;
-  font-size: 1.15rem;
-  font-weight: 500;
-  letter-spacing: .01em;
-  line-height: 1;
-  padding: 18px 40px;
-  cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 10px 26px rgba(79,70,229,.28);
-  transition: transform .15s, background .15s;
+/* ── The primary card ── */
+/* Same glass card as the other, nudged so it reads as the thing to press:
+   a filled icon tile instead of a tinted one, a violet edge, and a lift that
+   goes a little further on hover. */
+.landing-card.is-primary {
+  border-color: #c4b5fd;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, .10);
 }
-.landing-cta-plain:hover { background: #4338ca; }
-.landing-cta-plain:active { transform: scale(.97); }
+.landing-card.is-primary .landing-card-icon {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+}
+.landing-card.is-primary .landing-card-icon i { color: #fff; }
+.landing-card.is-primary .landing-card-title { font-weight: 800; }
+.landing-card.is-primary .landing-card-arrow { color: #7c3aed; }
 
-.landing-cta-inner { display: inline-flex; align-items: center; gap: 10px; }
-.landing-cta-inner i { font-size: 20px; }
+.landing-card.is-primary:hover {
+  border-color: #a78bfa;
+  box-shadow: 0 8px 30px rgba(124, 58, 237, .20);
+  transform: translateY(-3px);
+}
+/* The arrow leans toward the destination on hover. */
+.landing-card-arrow { transition: transform .2s; }
+.landing-card.is-primary:hover .landing-card-arrow { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-card-arrow { transition: none; }
+  .landing-card.is-primary:hover { transform: none; }
+  .landing-card.is-primary:hover .landing-card-arrow { transform: none; }
+}
