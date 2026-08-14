@@ -2,7 +2,8 @@ export type Role = 'polite' | 'impolite';
 
 /** Sent by the browser to the signaling server. */
 export type ClientMessage =
-  | { type: 'join'; room: string; name: string }
+  /** clientId identifies the tab across reconnects, so it can reclaim its slot. */
+  | { type: 'join'; room: string; name: string; clientId: string }
   | { type: 'description'; description: RTCSessionDescriptionInit }
   | { type: 'candidate'; candidate: RTCIceCandidateInit };
 

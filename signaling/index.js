@@ -64,11 +64,25 @@ wss.on('connection', (ws) => {
   ws.on('error', () => leave(ws))
 })
 
-function join(ws, { room, name }) {
+function join(ws, { room, name, clientId }) {
   if (typeof room !== 'string' || !room) return
   if (ws.room) return // already joined
 
   const occupants = rooms.get(room) ?? new Set()
+
+  // A refreshed or reconnected tab reclaims the slot its previous socket held.
+  // Without this it gets turned away by its own zombie: a browser that navigates
+  // away often sends no close frame, so the old socket lingers until the
+  // heartbeat notices and the person who just left cannot get back in.
+  if (typeof clientId === 'string' && clientId) {
+    for (const peer of [...occupants]) {
+      if (peer.clientId !== clientId) continue
+      occupants.delete(peer)
+      peer.room = null // so its close handler doesn't announce a departure
+      peer.terminate()
+      log(`reclaim ${room} — ${peer.name}`)
+    }
+  }
 
   if (occupants.size >= MAX_PER_ROOM) {
     send(ws, { type: 'room-full' })
@@ -78,21 +92,27 @@ function join(ws, { room, name }) {
 
   ws.room = room
   ws.name = typeof name === 'string' && name.trim() ? name.trim().slice(0, 40) : 'Guest'
+  ws.clientId = typeof clientId === 'string' ? clientId : null
 
   const existing = [...occupants][0] ?? null
+
+  // The two roles must be opposite. Derive it from whoever is already here
+  // rather than from arrival order, which stops being reliable once a peer can
+  // drop and rejoin.
+  ws.role = existing ? (existing.role === 'polite' ? 'impolite' : 'polite') : 'polite'
+
   occupants.add(ws)
   rooms.set(room, occupants)
 
-  // First in is polite (they yield on glare); second is impolite.
   send(ws, {
     type: 'joined',
-    role: existing ? 'impolite' : 'polite',
+    role: ws.role,
     peer: existing ? { name: existing.name } : null,
   })
 
   if (existing) send(existing, { type: 'peer-joined', name: ws.name })
 
-  log(`join  ${room} (${occupants.size}/${MAX_PER_ROOM}) — ${ws.name}`)
+  log(`join  ${room} (${occupants.size}/${MAX_PER_ROOM}) — ${ws.name} [${ws.role}]`)
 }
 
 function leave(ws) {
@@ -134,7 +154,7 @@ const heartbeat = setInterval(() => {
     ws.isAlive = false
     ws.ping()
   }
-}, 15000)
+}, 8000)
 
 wss.on('close', () => clearInterval(heartbeat))
 

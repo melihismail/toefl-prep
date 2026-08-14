@@ -105,9 +105,9 @@ export function App() {
       <Route path="/writing/write-an-email" element={<WriteAnEmail />} />
       <Route path="/writing/academic-discussion" element={<AcademicDiscussion />} />
 
-      {/* Unlisted: nothing on the site links here, and every other unknown
-          path falls through to the redirect below. The path is still readable
-          in the JS bundle, so treat it as unlisted rather than private. */}
+      {/* Nothing on the site links here, but the path is short and guessable —
+          treat the room id in the query string as the only thing keeping a
+          call private, not the path. */}
       <Route path={VIDEO_LAB_PATH} element={<VideoLab />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,5 +1,5 @@
-/** The unlisted path this lives at. Not linked from anywhere in the site. */
-export const VIDEO_LAB_PATH = '/lab/UBULXURcPODj';
+/** Where the call page lives. Not linked from anywhere else in the site. */
+export const VIDEO_LAB_PATH = '/meet';
 
 /**
  * STUN only tells a browser what its own public address looks like — no media
