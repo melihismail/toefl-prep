@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useVideoCall } from './useVideoCall.ts';
 import { Video } from './Video.tsx';
+import { screenShareSupported } from '../core/MediaController.ts';
 import type { SignalingTransport } from '../core/types.ts';
 
 interface VideoCallProps {
@@ -31,29 +32,61 @@ export function VideoCall({
     status,
     peerName,
     remoteStream,
+    remoteScreen,
+    localScreen,
+    sharingAudio,
     error,
     notice,
     micEnabled,
     camEnabled,
     toggleMic,
     toggleCam,
+    toggleScreenShare,
   } = useVideoCall({ roomId, name, localStream, signalingUrl, transport, iceServers });
+
+  // A shared screen is the thing people are looking at, so it takes the stage
+  // and the faces move to tiles beside it.
+  const stage = remoteScreen ?? localScreen ?? remoteStream;
+  const stageIsScreen = Boolean(remoteScreen ?? localScreen);
+  const canShare = screenShareSupported();
 
   return (
     <div className="vc-call">
       <div className="vc-stage">
-        {remoteStream ? (
-          <Video stream={remoteStream} className="vc-video" />
+        {stage ? (
+          <Video
+            stream={stage}
+            muted={stage === localScreen}
+            className={stageIsScreen ? 'vc-video vc-contain' : 'vc-video'}
+          />
         ) : (
           <WaitingRoom status={status} error={error} notice={notice} />
         )}
 
-        <div className="vc-self">
-          <Video stream={localStream} muted mirrored className="vc-video" />
-          {!camEnabled && <div className="vc-self-off">Camera off</div>}
+        <div className="vc-tiles">
+          {stageIsScreen && remoteStream && (
+            <div className="vc-tile">
+              <Video stream={remoteStream} className="vc-video" />
+              {peerName && <div className="vc-tile-name">{peerName}</div>}
+            </div>
+          )}
+          <div className="vc-tile">
+            <Video stream={localStream} muted mirrored className="vc-video" />
+            {!camEnabled && <div className="vc-self-off">Camera off</div>}
+          </div>
         </div>
 
-        {peerName && remoteStream && <div className="vc-nameplate">{peerName}</div>}
+        {localScreen && (
+          <div className="vc-chip">
+            {sharingAudio
+              ? "You're sharing your screen with audio"
+              : "You're sharing your screen — no audio on this surface"}
+          </div>
+        )}
+        {remoteScreen && peerName && <div className="vc-chip">{peerName} is sharing a screen</div>}
+        {!stageIsScreen && peerName && remoteStream && (
+          <div className="vc-nameplate">{peerName}</div>
+        )}
       </div>
 
       <div className="vc-controls">
@@ -63,6 +96,14 @@ export function VideoCall({
         <button className={camEnabled ? 'vc-btn' : 'vc-btn vc-btn-off'} onClick={toggleCam}>
           {camEnabled ? 'Camera off' : 'Camera on'}
         </button>
+        {canShare && (
+          <button
+            className={localScreen ? 'vc-btn' : 'vc-btn vc-btn-off'}
+            onClick={() => void toggleScreenShare()}
+          >
+            {localScreen ? 'Stop sharing' : 'Share screen'}
+          </button>
+        )}
         <button className="vc-btn vc-btn-danger" onClick={onLeave}>
           Leave
         </button>
