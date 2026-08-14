@@ -12,6 +12,23 @@ export type CallStatus =
   | 'failed' // ICE gave up
   | 'error';
 
+const TAB_ID_KEY = 'vidconf-tab-id';
+
+/**
+ * Stable per-tab id, so a reconnecting or refreshed tab can reclaim its slot in
+ * the room instead of being turned away by its own stale socket. sessionStorage
+ * rather than localStorage on purpose: two tabs should count as two people,
+ * which is also what makes testing with yourself work.
+ */
+function tabId(): string {
+  let id = sessionStorage.getItem(TAB_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(TAB_ID_KEY, id);
+  }
+  return id;
+}
+
 export interface UseVideoCallOptions {
   roomId: string;
   name: string;
@@ -51,9 +68,15 @@ export function useVideoCall({
         onOpen: () => {
           if (!cancelled) setNotice(null);
         },
-        // The free-tier host sleeps when idle; say so instead of looking hung.
-        onRetry: (attempt) => {
-          if (!cancelled) setNotice(`Waking the signaling server… (attempt ${attempt})`);
+        onRetry: (attempt, everConnected) => {
+          if (cancelled) return;
+          // Two different situations wear the same spinner: a host that has
+          // gone to sleep, and a connection that dropped mid-call.
+          setNotice(
+            everConnected
+              ? `Reconnecting… (attempt ${attempt})`
+              : `Waking the signaling server… (attempt ${attempt})`,
+          );
         },
         onClose: () => {
           if (!cancelled) {
@@ -103,7 +126,10 @@ export function useVideoCall({
           roleRef.current = msg.role;
           if (msg.peer) {
             setPeerName(msg.peer.name);
-            startSession();
+            // This also arrives after a signaling reconnect. Media runs
+            // independently of the signaling socket, so a call that is still up
+            // must not be torn down just because the socket blipped.
+            if (sessionRef.current?.connectionState !== 'connected') startSession();
           } else {
             setStatus('waiting');
           }
@@ -134,7 +160,7 @@ export function useVideoCall({
       }
     });
 
-    signaling.send({ type: 'join', room: roomId, name });
+    signaling.send({ type: 'join', room: roomId, name, clientId: tabId() });
 
     return () => {
       cancelled = true;

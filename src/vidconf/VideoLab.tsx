@@ -16,6 +16,7 @@ import './vidconf.css';
 export function VideoLab() {
   const [params, setParams] = useSearchParams();
   const [joined, setJoined] = useState<{ name: string; stream: MediaStream } | null>(null);
+  const [left, setLeft] = useState(false);
 
   const roomId = params.get('room');
   const url = signalingUrl();
@@ -55,6 +56,27 @@ export function VideoLab() {
     );
   }
 
+  // Hanging up keeps the room in the URL and offers the way back in. Dropping
+  // to the create-room screen would be wrong: that screen is the entry point
+  // for someone who knows the bare link, not the exit from a call.
+  if (left) {
+    return (
+      <div className="vc-root">
+        <div className="vc-panel vc-narrow">
+          <div className="vc-panel-body">
+            <h1 className="vc-title">You left the call</h1>
+            <p className="vc-muted">
+              Room <code className="vc-code">{roomId}</code> is still open.
+            </p>
+            <button className="vc-btn" onClick={() => setLeft(false)}>
+              Rejoin
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!joined) {
     return (
       <div className="vc-root">
@@ -73,7 +95,7 @@ export function VideoLab() {
         onLeave={() => {
           joined.stream.getTracks().forEach((t) => t.stop());
           setJoined(null);
-          setParams({});
+          setLeft(true);
         }}
       />
     </div>

@@ -30,6 +30,7 @@ export class PeerSession {
 
   private audioTransceiver: RTCRtpTransceiver;
   private videoTransceiver: RTCRtpTransceiver;
+  private recoveryTimer: ReturnType<typeof setTimeout> | null = null;
   private closed = false;
 
   constructor(opts: PeerSessionOptions) {
@@ -66,8 +67,44 @@ export class PeerSession {
     };
 
     this.pc.onconnectionstatechange = () => {
-      opts.onConnectionState(this.pc.connectionState);
+      const state = this.pc.connectionState;
+      opts.onConnectionState(state);
+
+      if (state === 'connected') {
+        this.clearRecoveryTimer();
+      } else if (state === 'failed') {
+        this.restartIce();
+      } else if (state === 'disconnected') {
+        // 'disconnected' often heals on its own — a brief blip, a network
+        // switch. Give it a moment before forcing a new ICE round.
+        this.clearRecoveryTimer();
+        this.recoveryTimer = setTimeout(() => {
+          if (this.pc.connectionState === 'disconnected') this.restartIce();
+        }, 4000);
+      }
     };
+  }
+
+  /**
+   * Re-gathers candidates and renegotiates over the existing connection, which
+   * is how a call survives a network change. Only the impolite peer initiates,
+   * so the two sides don't both tear the path down at once; perfect negotiation
+   * would survive that, but it costs an extra round trip every time.
+   */
+  private restartIce() {
+    if (this.closed || this.opts.polite) return;
+    try {
+      this.pc.restartIce(); // fires onnegotiationneeded, which sends the offer
+    } catch (err) {
+      this.opts.onError?.(err);
+    }
+  }
+
+  private clearRecoveryTimer() {
+    if (this.recoveryTimer) {
+      clearTimeout(this.recoveryTimer);
+      this.recoveryTimer = null;
+    }
   }
 
   /** Attach local capture. Triggers negotiation via onnegotiationneeded. */
@@ -128,6 +165,7 @@ export class PeerSession {
   close() {
     if (this.closed) return;
     this.closed = true;
+    this.clearRecoveryTimer();
     this.pc.onnegotiationneeded = null;
     this.pc.onicecandidate = null;
     this.pc.ontrack = null;
