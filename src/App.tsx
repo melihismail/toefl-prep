@@ -17,6 +17,8 @@ import { academicPassages } from './data/reading/academicPassage.ts';
 import { BuildASentence } from './exercises/writing/BuildASentence.tsx';
 import { WriteAnEmail } from './exercises/writing/WriteAnEmail.tsx';
 import { AcademicDiscussion } from './exercises/writing/AcademicDiscussion.tsx';
+import { VideoLab } from './vidconf/VideoLab.tsx';
+import { VIDEO_LAB_PATH } from './vidconf/config.ts';
 
 function SectionRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -102,6 +104,11 @@ export function App() {
       <Route path="/writing/build-a-sentence" element={<BuildASentence />} />
       <Route path="/writing/write-an-email" element={<WriteAnEmail />} />
       <Route path="/writing/academic-discussion" element={<AcademicDiscussion />} />
+
+      {/* Unlisted: nothing on the site links here, and every other unknown
+          path falls through to the redirect below. The path is still readable
+          in the JS bundle, so treat it as unlisted rather than private. */}
+      <Route path={VIDEO_LAB_PATH} element={<VideoLab />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

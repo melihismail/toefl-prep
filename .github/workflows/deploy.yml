@@ -32,7 +32,12 @@ jobs:
       - run: npm ci
 
       # Runs tsc -b first, so a type error stops the deploy.
+      # VITE_SIGNALING_URL points the unlisted video test page at its WebSocket
+      # server. Set it as a repository variable named SIGNALING_URL; if it is
+      # empty the page just reports that it isn't configured.
       - run: npm run build
+        env:
+          VITE_SIGNALING_URL: ${{ vars.SIGNALING_URL }}
 
       - uses: actions/configure-pages@v5
 
