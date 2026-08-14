@@ -210,6 +210,12 @@ export class PeerSession {
     await this.flushTracks();
   }
 
+  /** Swap what the microphone line carries — raw capture, or processed. */
+  async setMicTrack(track: MediaStreamTrack | null) {
+    this.pending[MIC] = track;
+    await this.flushTracks();
+  }
+
   /**
    * Start or stop sharing. Once negotiated, this is a replaceTrack on m-lines
    * that already exist — no renegotiation, no round trip. `audio` is null

@@ -116,9 +116,18 @@ long enough to leave a frozen frame on screen.
 - **Both peers can share at once**, and each sees the other's screen. Nothing
   arbitrates.
 
+**Noise suppression.** Off by default, toggled per call. Enabling routes the
+microphone through an RNNoise AudioWorklet — mic track → source → worklet →
+destination → the track actually sent — and turns the browser's own noise
+suppression and gain control off while it runs, or the two fight. Echo
+cancellation stays on either way; nothing here replaces it. The wasm (~150 kB,
+lazily fetched) only loads when someone turns it on.
+
 ## Later
 
-**Noise suppression** is purely local — nothing on the wire changes. It slots
-into `MediaController` between capture and `outputAudioTrack`, an identity
-pipeline today. Turn off the browser's built-in `noiseSuppression` there when
-you add your own, or the two fight.
+**Noise suppression, without the toggle.** Whether it should default on is a
+question for real microphones and ears, not synthetic signals.
+
+**Tuning.** RNNoise runs at its stock settings. If it chews up speech or leaves
+too much through, the same package also carries Speex and GTCRN, swappable
+behind `NoiseSuppressor` without touching anything else.

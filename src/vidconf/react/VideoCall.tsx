@@ -35,6 +35,8 @@ export function VideoCall({
     remoteScreen,
     localScreen,
     sharingAudio,
+    denoise,
+    denoiseBusy,
     error,
     notice,
     micEnabled,
@@ -42,6 +44,7 @@ export function VideoCall({
     toggleMic,
     toggleCam,
     toggleScreenShare,
+    toggleNoiseSuppression,
   } = useVideoCall({ roomId, name, localStream, signalingUrl, transport, iceServers });
 
   // A shared screen is the thing people are looking at, so it takes the stage
@@ -104,6 +107,13 @@ export function VideoCall({
             {localScreen ? 'Stop sharing' : 'Share screen'}
           </button>
         )}
+        <button
+          className={denoise ? 'vc-btn' : 'vc-btn vc-btn-off'}
+          disabled={denoiseBusy}
+          onClick={() => void toggleNoiseSuppression()}
+        >
+          {denoiseBusy ? 'Loading…' : denoise ? 'Denoise on' : 'Denoise off'}
+        </button>
         <button className="vc-btn vc-btn-danger" onClick={onLeave}>
           Leave
         </button>

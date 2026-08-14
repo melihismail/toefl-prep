@@ -3,6 +3,7 @@ import { PeerSession } from '../core/PeerSession.ts';
 import { SignalingClient } from '../core/SignalingClient.ts';
 import type { Role, ServerMessage, SignalingTransport } from '../core/types.ts';
 import { captureScreen } from '../core/MediaController.ts';
+import { NoiseSuppressor, setBrowserAudioProcessing } from '../core/NoiseSuppressor.ts';
 import { ICE_SERVERS } from '../config.ts';
 
 export type CallStatus =
@@ -60,12 +61,19 @@ export function useVideoCall({
   const [remoteScreen, setRemoteScreen] = useState<MediaStream | null>(null);
   const [localScreen, setLocalScreen] = useState<MediaStream | null>(null);
   const [sharingAudio, setSharingAudio] = useState(false);
+  const [denoise, setDenoise] = useState(false);
+  const [denoiseBusy, setDenoiseBusy] = useState(false);
 
   const sessionRef = useRef<PeerSession | null>(null);
   // Kept in a ref as well, so a peer connection rebuilt after a reconnect or a
   // rejoin picks the share back up without the user re-choosing a window.
   const screenTrackRef = useRef<MediaStreamTrack | null>(null);
   const screenAudioRef = useRef<MediaStreamTrack | null>(null);
+
+  const suppressorRef = useRef<NoiseSuppressor | null>(null);
+  // What the microphone line should carry: the processed track while noise
+  // suppression is on, otherwise nothing here and the raw capture is used.
+  const micTrackRef = useRef<MediaStreamTrack | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,7 +133,7 @@ export function useVideoCall({
       setStatus('linking');
 
       void session.setLocalTracks(
-        localStream.getAudioTracks()[0] ?? null,
+        micTrackRef.current ?? localStream.getAudioTracks()[0] ?? null,
         localStream.getVideoTracks()[0] ?? null,
       );
       if (screenTrackRef.current) {
@@ -189,10 +197,47 @@ export function useVideoCall({
       screenAudioRef.current?.stop();
       screenTrackRef.current = null;
       screenAudioRef.current = null;
+      suppressorRef.current?.stop();
+      suppressorRef.current = null;
+      micTrackRef.current = null;
       // Only close a transport we created ourselves.
       if (!transport) signaling.close();
     };
   }, [roomId, name, localStream, signalingUrl, transport, iceServers]);
+
+  const toggleNoiseSuppression = useCallback(async () => {
+    const raw = localStream.getAudioTracks()[0];
+    if (!raw || denoiseBusy) return;
+
+    setDenoiseBusy(true);
+    try {
+      if (suppressorRef.current) {
+        suppressorRef.current.stop();
+        suppressorRef.current = null;
+        micTrackRef.current = null;
+        await setBrowserAudioProcessing(raw, true);
+        await sessionRef.current?.setMicTrack(raw);
+        setDenoise(false);
+      } else {
+        const suppressor = new NoiseSuppressor();
+        const processed = await suppressor.start(raw);
+        await setBrowserAudioProcessing(raw, false);
+        suppressorRef.current = suppressor;
+        micTrackRef.current = processed;
+        await sessionRef.current?.setMicTrack(processed);
+        setDenoise(true);
+      }
+    } catch (err) {
+      suppressorRef.current?.stop();
+      suppressorRef.current = null;
+      micTrackRef.current = null;
+      await sessionRef.current?.setMicTrack(raw);
+      setDenoise(false);
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setDenoiseBusy(false);
+    }
+  }, [localStream, denoiseBusy]);
 
   const toggleMic = useCallback(() => {
     setMicEnabled((prev) => {
@@ -258,6 +303,8 @@ export function useVideoCall({
     remoteScreen,
     localScreen,
     sharingAudio,
+    denoise,
+    denoiseBusy,
     error,
     notice,
     micEnabled,
@@ -265,5 +312,6 @@ export function useVideoCall({
     toggleMic,
     toggleCam,
     toggleScreenShare,
+    toggleNoiseSuppression,
   };
 }
