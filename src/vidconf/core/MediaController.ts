@@ -1,3 +1,35 @@
+/** Not available everywhere — notably absent on iOS Safari. */
+export function screenShareSupported(): boolean {
+  return typeof navigator.mediaDevices?.getDisplayMedia === 'function';
+}
+
+/**
+ * Screen capture is deliberately separate from the camera: its own stream on
+ * its own media lines, so sharing doesn't cost the other person your face, and
+ * its audio doesn't have to displace the microphone.
+ *
+ * The picker itself belongs to the browser — entire screen, window, or tab.
+ * Whether audio comes with it is the browser's call, not ours: a tab yields
+ * that tab's audio, an entire screen yields system audio on Windows but not
+ * macOS, and a window yields none anywhere. Firefox and Safari yield none at
+ * all. So audio is requested and simply may not arrive.
+ */
+export async function captureScreen(): Promise<MediaStream> {
+  return navigator.mediaDevices.getDisplayMedia({
+    video: { frameRate: { ideal: 15, max: 30 } },
+    // Left unprocessed: the browser's voice-oriented DSP would wreck music and
+    // video, and this track never carries a person speaking into a mic.
+    audio: {
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false,
+    },
+    // Chrome-only hint that puts "share system audio" in the picker; ignored
+    // elsewhere, hence the cast.
+    systemAudio: 'include',
+  } as DisplayMediaStreamOptions);
+}
+
 /**
  * Owns the local capture. Everything downstream reads tracks from
  * `outputAudioTrack` / `outputVideoTrack` rather than from the raw

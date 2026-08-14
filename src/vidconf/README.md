@@ -69,6 +69,32 @@ backoff and replays its join message. Media recovers separately via
 progress — which is also why a reconnect does not rebuild a peer connection
 that is still `connected`.
 
+**Screen sharing.** The session carries four media lines in a fixed order —
+microphone, camera, screen, screen audio — created up front, so starting a
+share is a `replaceTrack` on m-lines that already exist: no renegotiation, no
+round trip. Each side identifies an arriving track by the position of the
+transceiver it came in on. Screen audio rides its own line so it never has to
+displace the microphone, and joins the same `MediaStream` as the screen video
+so one `<video>` element plays both.
+
+The picker belongs to the browser — entire screen, window, or tab — and so does
+whether audio comes with it. A tab yields that tab's audio; an entire screen
+yields system audio on Windows but not macOS; a window yields none anywhere;
+Firefox and Safari yield none at all. Audio is requested and may simply not
+arrive, which the UI says out loud.
+
+Only the impolite peer creates those lines. If both did, each would offer its
+own set and they would negotiate into two disjoint groups of m-lines, one per
+direction, which breaks the positional mapping. The polite peer adopts whatever
+the offer creates, setting directions before building the answer so its tracks
+ride out on it.
+
+A small `control` data channel carries share on/off. Showing waits for real
+frames (the track's `unmute`), so the viewer never sees a black rectangle;
+hiding follows the control message, because a sender that stops just goes quiet
+and the browser takes several seconds of silence before muting the track —
+long enough to leave a frozen frame on screen.
+
 ## Limits
 
 - **No TURN.** Roughly one connection in five is on a network that refuses
@@ -80,13 +106,17 @@ that is still `connected`.
   keeping a call private.
 - **Close-and-reopen** gets a fresh `clientId`, so a lingering socket can still
   block a rejoin for up to ~16s. Refresh is covered; full tab close isn't.
+- **Sharing system audio echoes.** On Windows, "share system audio" is a
+  loopback of the default output device, so it re-sends whatever your speakers
+  are playing — including the other person's voice. The microphone's echo
+  canceller doesn't touch a separate capture track. Headphones, or a tab share,
+  avoid it.
+- **No screen share on iOS Safari** — `getDisplayMedia` doesn't exist there, so
+  the button is hidden.
+- **Both peers can share at once**, and each sees the other's screen. Nothing
+  arbitrates.
 
 ## Later
-
-**Screen sharing** changes what the two peers agree on, so the groundwork is in:
-`PeerSession` creates transceivers in a fixed order (audio = m-line 0, video =
-m-line 1) and swaps tracks via `replaceTrack`, and perfect negotiation makes
-mid-call renegotiation safe.
 
 **Noise suppression** is purely local — nothing on the wire changes. It slots
 into `MediaController` between capture and `outputAudioTrack`, an identity

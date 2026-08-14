@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PeerSession } from '../core/PeerSession.ts';
 import { SignalingClient } from '../core/SignalingClient.ts';
 import type { Role, ServerMessage, SignalingTransport } from '../core/types.ts';
+import { captureScreen } from '../core/MediaController.ts';
 import { ICE_SERVERS } from '../config.ts';
 
 export type CallStatus =
@@ -56,7 +57,15 @@ export function useVideoCall({
   const [micEnabled, setMicEnabled] = useState(true);
   const [camEnabled, setCamEnabled] = useState(true);
 
+  const [remoteScreen, setRemoteScreen] = useState<MediaStream | null>(null);
+  const [localScreen, setLocalScreen] = useState<MediaStream | null>(null);
+  const [sharingAudio, setSharingAudio] = useState(false);
+
   const sessionRef = useRef<PeerSession | null>(null);
+  // Kept in a ref as well, so a peer connection rebuilt after a reconnect or a
+  // rejoin picks the share back up without the user re-choosing a window.
+  const screenTrackRef = useRef<MediaStreamTrack | null>(null);
+  const screenAudioRef = useRef<MediaStreamTrack | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -97,6 +106,9 @@ export function useVideoCall({
         onRemoteStream: (stream) => {
           if (!cancelled) setRemoteStream(stream);
         },
+        onRemoteScreen: (stream) => {
+          if (!cancelled) setRemoteScreen(stream);
+        },
         onConnectionState: (state) => {
           if (cancelled) return;
           if (state === 'connected') setStatus('connected');
@@ -116,6 +128,9 @@ export function useVideoCall({
         localStream.getAudioTracks()[0] ?? null,
         localStream.getVideoTracks()[0] ?? null,
       );
+      if (screenTrackRef.current) {
+        void session.setScreenTrack(screenTrackRef.current, screenAudioRef.current);
+      }
     };
 
     const unsubscribe = signaling.onMessage((msg: ServerMessage) => {
@@ -144,6 +159,7 @@ export function useVideoCall({
           sessionRef.current?.close();
           sessionRef.current = null;
           setRemoteStream(null);
+          setRemoteScreen(null);
           setPeerName(null);
           setStatus('waiting');
           break;
@@ -167,6 +183,12 @@ export function useVideoCall({
       unsubscribe();
       sessionRef.current?.close();
       sessionRef.current = null;
+      // Leaving the call must also release the screen, or the browser keeps
+      // showing its "sharing" banner over an ended call.
+      screenTrackRef.current?.stop();
+      screenAudioRef.current?.stop();
+      screenTrackRef.current = null;
+      screenAudioRef.current = null;
       // Only close a transport we created ourselves.
       if (!transport) signaling.close();
     };
@@ -180,6 +202,47 @@ export function useVideoCall({
     });
   }, [localStream]);
 
+  const stopScreenShare = useCallback(() => {
+    screenTrackRef.current = null;
+    screenAudioRef.current = null;
+    setLocalScreen((prev) => {
+      prev?.getTracks().forEach((t) => t.stop());
+      return null;
+    });
+    setSharingAudio(false);
+    void sessionRef.current?.setScreenTrack(null, null);
+  }, []);
+
+  const toggleScreenShare = useCallback(async () => {
+    if (screenTrackRef.current) {
+      stopScreenShare();
+      return;
+    }
+    try {
+      const stream = await captureScreen();
+      const track = stream.getVideoTracks()[0] ?? null;
+      if (!track) return;
+
+      // Audio only comes with some surfaces — a tab, or a whole screen on
+      // Windows. A window never has it, and Firefox and Safari never do.
+      const audio = stream.getAudioTracks()[0] ?? null;
+
+      // The browser has its own "Stop sharing" control, and it ends the track
+      // without telling the app anything else.
+      track.addEventListener('ended', () => stopScreenShare());
+
+      screenTrackRef.current = track;
+      screenAudioRef.current = audio;
+      setLocalScreen(stream);
+      setSharingAudio(Boolean(audio));
+      await sessionRef.current?.setScreenTrack(track, audio);
+    } catch (err) {
+      // Dismissing the picker rejects; that is a choice, not a failure.
+      if (err instanceof DOMException && err.name === 'NotAllowedError') return;
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  }, [stopScreenShare]);
+
   const toggleCam = useCallback(() => {
     setCamEnabled((prev) => {
       const next = !prev;
@@ -192,11 +255,15 @@ export function useVideoCall({
     status,
     peerName,
     remoteStream,
+    remoteScreen,
+    localScreen,
+    sharingAudio,
     error,
     notice,
     micEnabled,
     camEnabled,
     toggleMic,
     toggleCam,
+    toggleScreenShare,
   };
 }
