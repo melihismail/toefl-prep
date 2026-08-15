@@ -57,11 +57,7 @@ export function VideoCall({
     <div className="vc-call">
       <div className="vc-stage">
         {stage ? (
-          <Video
-            stream={stage}
-            muted={stage === localScreen}
-            className={stageIsScreen ? 'vc-video vc-contain' : 'vc-video'}
-          />
+          <Video stream={stage} muted={stage === localScreen} className="vc-video" />
         ) : (
           <WaitingRoom status={status} error={error} notice={notice} />
         )}
