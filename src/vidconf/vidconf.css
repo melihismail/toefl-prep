@@ -1,0 +1,266 @@
+/* Self-contained styles for the call page. Every selector is prefixed so this
+   cannot leak into the rest of the site, and nothing here depends on Tailwind. */
+
+.vc-root {
+  --vc-bg: #0e1013;
+  --vc-surface: #171a1f;
+  --vc-border: #262b33;
+  --vc-text: #e8eaed;
+  --vc-muted: #9099a6;
+  --vc-accent: #4c8dff;
+  --vc-danger: #e5484d;
+
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--vc-bg);
+  color: var(--vc-text);
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color-scheme: dark;
+}
+
+.vc-root *,
+.vc-root *::before,
+.vc-root *::after {
+  box-sizing: border-box;
+}
+
+.vc-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--vc-text);
+}
+
+.vc-muted {
+  color: var(--vc-muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+.vc-error {
+  color: var(--vc-danger);
+  font-size: 13px;
+  margin: 0;
+}
+
+.vc-code {
+  background: #000;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* --- panel (landing + pre-join) --- */
+
+.vc-panel {
+  width: min(760px, 100%);
+  background: var(--vc-surface);
+  border: 1px solid var(--vc-border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+}
+
+.vc-panel.vc-narrow {
+  grid-template-columns: 1fr;
+  max-width: 420px;
+}
+
+.vc-panel-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+}
+
+.vc-preview {
+  background: #000;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.vc-input {
+  background: #0e1013;
+  border: 1px solid var(--vc-border);
+  color: var(--vc-text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  outline: none;
+}
+
+.vc-input:focus {
+  border-color: var(--vc-accent);
+}
+
+.vc-btn {
+  background: var(--vc-accent);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.vc-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.vc-btn-off {
+  background: var(--vc-surface);
+  border: 1px solid var(--vc-border);
+  color: var(--vc-text);
+}
+
+.vc-btn-danger {
+  background: var(--vc-danger);
+}
+
+/* --- call --- */
+
+.vc-call {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vc-stage {
+  position: relative;
+  flex: 1;
+  background: #000;
+  border: 1px solid var(--vc-border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fit, never fill. Cropping to the frame quietly cuts the edges off anything
+   that isn't the container's aspect ratio — a portrait phone camera worst of
+   all. Letterboxing shows the whole picture instead. */
+.vc-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  display: block;
+}
+
+.vc-tiles {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  gap: 10px;
+}
+
+.vc-tile {
+  position: relative;
+  width: clamp(120px, 18vw, 200px);
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--vc-border);
+  background: #000;
+}
+
+.vc-tile-name {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.vc-chip {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--vc-border);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.vc-self-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: var(--vc-muted);
+  font-size: 12px;
+}
+
+.vc-nameplate {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.vc-placeholder {
+  color: var(--vc-muted);
+  text-align: center;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.vc-link-copy {
+  background: #0e1013;
+  border: 1px solid var(--vc-border);
+  color: var(--vc-text);
+  font-size: 12px;
+  font-weight: 400;
+  word-break: break-all;
+  max-width: 420px;
+}
+
+.vc-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.vc-controls .vc-btn {
+  min-width: 110px;
+}
+
+@media (max-width: 640px) {
+  .vc-panel {
+    grid-template-columns: 1fr;
+  }
+}

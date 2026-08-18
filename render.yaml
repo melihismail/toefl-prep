@@ -1,0 +1,25 @@
+# Render Blueprint for the signaling server behind the unlisted video test page.
+# The site itself stays on GitHub Pages — this deploys only the signaling/ folder.
+#
+# Setup: Render dashboard → New → Blueprint → pick this repo. Render reads this
+# file, creates the service, and gives it a URL like
+# https://vidconf-signaling.onrender.com. The client wants the wss:// form of
+# that host, set as the repository variable SIGNALING_URL:
+#
+#   wss://vidconf-signaling.onrender.com
+#
+# Then re-run the Pages deploy so the site is rebuilt with it baked in.
+#
+# The free plan sleeps after ~15 minutes idle and takes roughly a minute to wake.
+# The client retries while that happens, so the first join of the day is slow
+# rather than broken.
+
+services:
+  - type: web
+    name: vidconf-signaling
+    runtime: node
+    plan: free
+    rootDir: signaling
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz

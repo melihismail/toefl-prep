@@ -10,6 +10,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
+    "@sapphi-red/web-noise-suppressor": "^0.4.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/three": "^0.185.4",
     "motion": "^13.0.0",
