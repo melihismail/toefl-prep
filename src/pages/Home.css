@@ -1,5 +1,25 @@
 /* Ported from the old index.html <style> block. */
+
+/* The animated background. Fixed so it covers the viewport rather than the
+   flow, and inert so the nav and cards above it stay clickable — the component
+   tracks the pointer on window for that reason. */
+.landing-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Soft enough to sit under text on a light page. */
+  opacity: .55;
+}
+/* Everything else stacks above it. */
+.landing-nav, .landing-content, .landing-cards { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-bg { display: none; }
+}
+
 .landing {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -54,4 +74,33 @@
   .landing-card { transition: none; }
   .landing-card:hover { transform: none; }
   .landing-status-dot { animation: none; }
+}
+
+/* ── The primary card ── */
+/* Same card, washed violet so it stops being invisible. The icon tile inverts
+   to white to hold its own against the tint. Both cards keep the same height. */
+.landing-card.is-primary {
+  background: rgba(237, 233, 254, .85);
+  border-color: #c4b5fd;
+  color: #2e1065;
+}
+/* .landing-card-title sets its own colour, so the card's inherited one never
+   reaches it. */
+.landing-card.is-primary .landing-card-title { color: #2e1065; }
+.landing-card.is-primary .landing-card-icon { background: #fff; }
+.landing-card.is-primary .landing-card-icon i { color: #4f46e5; }
+.landing-card.is-primary .landing-card-arrow { color: #7c3aed; }
+
+.landing-card.is-primary:hover {
+  background: rgba(233, 227, 253, .95);
+  border-color: #a78bfa;
+  box-shadow: 0 6px 26px rgba(124, 58, 237, .18);
+}
+/* The arrow leans toward the destination on hover. */
+.landing-card-arrow { transition: transform .2s; }
+.landing-card.is-primary:hover .landing-card-arrow { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-card-arrow { transition: none; }
+  .landing-card.is-primary:hover .landing-card-arrow { transform: none; }
 }
